@@ -1,0 +1,29 @@
+.icon--category {
+    &[data-category="Prosperous"],
+    &[data-category="Free"] {
+        --cateogry-color: var(--free--prosperous);
+    }
+    &[data-category="Mostly Prosperous"],
+    &[data-category="Mostly Free"] {
+        --cateogry-color: var(--mostly-free--mostly-prosperous);
+    }
+    &[data-category="Mostly Unprosperous"],
+    &[data-category="Mostly Unfree"]  {
+        --cateogry-color: var(--mostly-unfree--mostly-unprosperous);
+    }
+    &[data-category="Unprosperous"],
+    &[data-category="Unfree"] {
+        --cateogry-color: var(--unfree--unprosperous);
+    }
+    rect {
+        stroke-width: 0.5px;
+    }
+    &__indicator {
+        fill: var(--cateogry-color);
+        stroke: var(--cateogry-color);
+    }
+    &__background {
+        fill: #F4F6F8;
+        stroke: #F4F6F8;
+    }
+}

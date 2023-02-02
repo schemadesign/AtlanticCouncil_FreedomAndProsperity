@@ -1,0 +1,21 @@
+$MAX_WIDTH: 1200px;
+
+:root {
+    --free--prosperous: rgba(71, 148, 75, 1);
+    --mostly-free--mostly-prosperous: rgba(177, 216, 120, 1);
+    --mostly-unfree--mostly-unprosperous: rgba(225, 143, 106, 1);
+    --unfree--unprosperous: rgba(198, 50, 42, 1);
+
+    --free--properous--faded: #C2CFC3;
+    --mostly-free--mostly-prosperous--faded: #D3F1A8;
+    --mostly-unfree--mostly-unprosperous--faded: #FFD7C5;
+    --unfree--unprosperous--faded: rgba(234, 120, 114, 1);
+
+    --neutral---white: rgba(255, 255, 255, 1);
+    --neutral---background--white: rgba(242, 242, 242, 1);
+    --neutral---gray--light: rgba(230, 230, 230, 1);
+    --neutral---gray--medium: rgba(179, 179, 179, 1);
+    --neutral---gray--dark: rgba(102, 102, 102, 1);
+    --neutral---text: rgba(24, 24, 24, 1);
+    --neutral---black: rgba(0, 0, 0, 1);
+}

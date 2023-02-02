@@ -1,0 +1,14 @@
+.score-bar {
+    width: 5rem;
+    position: relative;
+    height: 0.5rem;
+    background: #DFE6F2;
+    &__value {
+        position: absolute;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: #99B4E0;
+        transition: width 300ms;
+    }
+}

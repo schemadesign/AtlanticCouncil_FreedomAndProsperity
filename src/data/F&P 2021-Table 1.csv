@@ -1,0 +1,175 @@
+Country,ISO3,Region,Region (WB 2022),Income group (WB 2022),Freedom rank 2021,Freedom category 2021,Freedom score 2021,Economic Freedom score 2021,Political Freedom score 2021,Legal Freedom score 2021,Prosperity rank 2021,Prosperity category 2021,Prosperity score 2021,Income score 2021,Environment score 2021,Minority Rights score 2021,Health score 2021,Happiness score 2021
+Switzerland,CHE,WE/EU,OECD members,High income,13,Free,87.6,89.3,96.4,77.1,1,Prosperous,97.1,100.0,100.0,92.8,97.9,94.9
+Norway,NOR,WE/EU,OECD members,High income,3,Free,90.2,85.4,97.1,88.1,2,Prosperous,96.3,94.7,100.0,99.9,95.3,91.5
+Luxembourg,LUX,WE/EU,OECD members,High income,6,Free,89.9,93.5,93.3,82.8,3,Prosperous,94.3,97.9,97.7,91.8,93.9,90.2
+Iceland,ISL,WE/EU,OECD members,High income,5,Free,90.0,88.1,95.3,86.7,4,Prosperous,92.0,75.5,100.0,95.9,94.2,94.5
+Ireland,IRL,WE/EU,OECD members,High income,9,Free,88.7,92.8,92.5,80.8,5,Prosperous,91.2,79.4,100.0,97.4,93.4,85.9
+Finland,FIN,WE/EU,OECD members,High income,1,Free,92.5,92.8,96.5,88.1,6,Prosperous,90.1,60.1,100.0,98.6,91.7,100.0
+Sweden,SWE,WE/EU,OECD members,High income,7,Free,89.8,90.5,95.5,83.4,7,Prosperous,89.7,65.3,97.7,99.0,95.5,91.0
+Denmark,DNK,WE/EU,OECD members,High income,2,Free,91.8,93.5,95.7,86.1,8,Prosperous,89.6,76.2,95.7,90.6,89.9,95.9
+Netherlands,NLD,WE/EU,OECD members,High income,4,Free,90.1,94.2,93.3,82.9,9,Prosperous,89.2,61.7,100.0,98.8,92.5,92.9
+Germany,DEU,WE/EU,OECD members,High income,10,Free,87.8,88.4,90.7,84.4,10,Prosperous,85.7,57.3,98.4,96.7,89.0,87.0
+United States of America,USA,AME,OECD members,High income,29,Free,79.2,87.3,79.9,70.5,11,Prosperous,85.6,78.0,89.2,95.6,82.1,83.3
+Australia,AUS,AP,OECD members,High income,15,Free,87.0,89.0,91.2,80.8,12,Prosperous,85.4,64.9,81.0,98.3,95.3,87.6
+Israel,ISR,MENA,OECD members,High income,42,Mostly Free,74.9,84.6,78.1,61.9,13,Prosperous,84.9,51.4,93.6,97.3,95.0,87.2
+Austria,AUT,WE/EU,OECD members,High income,12,Free,87.6,93.0,90.3,79.5,14,Prosperous,84.1,58.4,100.0,80.9,91.7,89.3
+United Kingdom,GBR,WE/EU,OECD members,High income,17,Free,85.8,89.1,90.0,78.4,15,Prosperous,83.9,48.1,100.0,96.1,89.9,85.3
+Canada,CAN,AME,OECD members,High income,11,Free,87.6,87.4,93.0,82.4,16,Prosperous,83.7,52.6,90.8,96.6,92.6,86.1
+Belgium,BEL,WE/EU,OECD members,High income,16,Free,86.8,90.6,92.5,77.3,17,Prosperous,83.1,55.2,92.9,94.6,91.6,81.0
+Singapore,SGP,AP,East Asia & Pacific,High income,43,Mostly Free,73.8,91.6,52.4,77.3,18,Prosperous,81.3,66.4,88.7,81.7,97.2,72.5
+New Zealand,NZL,AP,OECD members,High income,8,Free,89.8,90.7,93.7,84.9,19,Prosperous,81.1,50.2,74.4,100.0,91.5,89.5
+Italy,ITA,WE/EU,OECD members,High income,32,Free,78.2,87.4,84.1,63.0,20,Prosperous,81.0,38.9,97.6,97.5,96.3,74.4
+France,FRA,WE/EU,OECD members,High income,19,Free,82.6,87.6,85.8,74.5,21,Prosperous,80.6,47.6,93.6,88.9,94.3,78.4
+Japan,JPN,AP,OECD members,High income,20,Free,82.6,80.5,88.4,78.8,22,Prosperous,80.5,48.7,91.6,97.8,100.0,64.3
+Malta,MLT,WE/EU,Middle East & North Africa,High income,27,Free,81.0,88.7,83.5,70.6,23,Prosperous,79.1,30.5,100.0,93.9,94.3,76.7
+Spain,ESP,WE/EU,OECD members,High income,23,Free,82.2,88.8,86.9,70.9,24,Prosperous,78.8,32.9,94.6,94.6,97.2,74.6
+"Korea, South",KOR,AP,OECD members,High income,35,Free,76.4,75.6,81.1,72.4,25,Prosperous,76.6,39.7,84.4,99.8,96.4,62.6
+Cyprus,CYP,WE/EU,Europe & Central Asia,High income,30,Free,79.0,84.1,84.9,67.9,26,Mostly Prosperous,74.7,31.8,91.6,91.3,89.1,69.6
+Taiwan,TWN,AP,East Asia & Pacific,High income,18,Free,83.3,81.2,94.3,74.5,27,Mostly Prosperous,72.2,30.7,67.1,99.7,87.3,76.3
+Portugal,PRT,WE/EU,OECD members,High income,26,Free,81.4,86.3,89.2,68.7,28,Mostly Prosperous,71.8,26.2,85.5,95.1,88.2,64.1
+Slovenia,SVN,WE/EU,OECD members,High income,28,Free,79.6,82.6,86.8,69.3,29,Mostly Prosperous,70.2,30.5,70.1,86.3,90.1,74.1
+Czech Republic,CZE,WE/EU,OECD members,High income,22,Free,82.2,85.0,87.9,73.8,30,Mostly Prosperous,70.0,26.5,65.0,91.7,83.2,83.5
+Greece,GRC,WE/EU,OECD members,High income,45,Mostly Free,72.4,78.4,82.2,56.6,31,Mostly Prosperous,69.7,21.5,100.0,74.6,92.2,60.2
+Costa Rica,CRI,AME,Latin America & Caribbean,Upper middle income,39,Free,75.5,77.8,86.4,62.4,32,Mostly Prosperous,67.8,13.7,55.2,97.6,86.9,85.5
+Chile,CHL,AME,OECD members,High income,34,Free,76.8,79.8,85.9,64.8,33,Mostly Prosperous,67.1,16.1,66.7,97.4,86.6,68.6
+United Arab Emirates,ARE,MENA,Middle East & North Africa,High income,93,Mostly Free,54.5,73.7,25.2,64.5,34,Mostly Prosperous,66.5,47.6,51.6,78.1,79.5,75.9
+Uruguay,URY,AME,Latin America & Caribbean,High income,21,Free,82.3,85.9,91.3,69.6,35,Mostly Prosperous,66.0,18.9,61.6,97.0,79.3,73.5
+Estonia,EST,WE/EU,OECD members,High income,14,Free,87.1,92.1,90.0,79.2,36,Mostly Prosperous,65.6,27.8,59.0,90.9,81.1,69.0
+Slovakia,SVK,WE/EU,OECD members,High income,31,Free,78.6,83.8,85.5,66.5,37,Mostly Prosperous,64.2,22.7,64.5,84.3,77.8,71.6
+Poland,POL,WE/EU,Europe & Central Asia,High income,40,Free,75.4,82.9,77.4,65.9,38,Mostly Prosperous,64.0,18.2,65.6,88.7,79.1,68.6
+Lithuania,LTU,WE/EU,OECD members,High income,24,Free,81.8,85.5,87.3,72.6,39,Mostly Prosperous,63.9,23.5,57.2,94.7,73.5,70.3
+Brunei Darussalam,BRN,AP,East Asia & Pacific,High income,122,Mostly Unfree,45.3,70.9,22.4,42.6,40,Mostly Prosperous,63.5,38.0,79.7,no data,72.7,no data
+Croatia,HRV,WE/EU,Europe & Central Asia,High income,41,Free,75.4,83.9,79.4,62.7,41,Mostly Prosperous,63.0,17.4,63.1,90.6,80.9,63.2
+Latvia,LVA,WE/EU,OECD members,High income,25,Free,81.7,89.4,85.8,70.0,42,Mostly Prosperous,62.6,21.4,57.5,97.6,70.7,66.0
+Qatar,QAT,MENA,Middle East & North Africa,High income,132,Mostly Unfree,41.6,66.5,20.8,37.4,43,Mostly Prosperous,62.2,67.7,56.8,27.0,86.7,72.6
+Barbados,BRB,AME,Latin America & Caribbean,High income,37,Free,75.6,71.7,85.7,69.5,44,Mostly Prosperous,61.8,17.1,47.6,99.0,83.4,no data
+Hungary,HUN,WE/EU,OECD members,High income,58,Mostly Free,66.6,82.1,62.7,55.1,45,Mostly Prosperous,61.7,19.0,60.5,90.7,73.2,65.2
+Argentina,ARG,AME,Latin America & Caribbean,Upper middle income,60,Mostly Free,65.8,62.9,79.9,54.7,46,Mostly Prosperous,61.6,10.7,59.3,98.6,75.3,64.1
+Panama,PAN,AME,Latin America & Caribbean,High income,49,Mostly Free,69.5,80.3,79.5,48.6,47,Mostly Prosperous,60.7,14.8,41.6,97.1,81.2,68.8
+Mauritius,MUS,SSA,Sub-Saharan Africa,Upper middle income,33,Free,77.1,88.9,78.7,63.5,48,Mostly Prosperous,60.6,12.1,63.4,93.5,67.4,66.4
+Kuwait,KWT,MENA,Middle East & North Africa,High income,125,Mostly Unfree,43.3,56.6,35.9,37.4,49,Mostly Prosperous,60.2,42.6,57.0,62.6,71.5,67.5
+Serbia,SRB,ECA,Europe & Central Asia,Upper middle income,70,Mostly Free,61.6,77.8,58.9,48.0,50,Mostly Prosperous,60.2,8.7,60.3,93.1,72.1,66.9
+Romania,ROU,WE/EU,Europe & Central Asia,High income,36,Free,76.3,85.9,79.5,63.7,51,Mostly Prosperous,59.8,15.0,55.3,89.5,71.4,68.0
+Trinidad and Tobago,TTO,AME,Latin America & Caribbean,High income,57,Mostly Free,66.7,72.9,75.9,51.4,52,Mostly Prosperous,59.5,18.4,48.3,96.9,65.1,68.6
+Mexico,MEX,AME,Latin America & Caribbean,Upper middle income,82,Mostly Free,58.2,77.3,60.8,36.4,53,Mostly Prosperous,58.0,10.0,49.8,88.8,70.1,71.4
+Jamaica,JAM,AME,Latin America & Caribbean,Upper middle income,53,Mostly Free,67.9,76.5,75.5,51.8,54,Mostly Prosperous,58.0,5.4,47.2,97.9,68.2,71.2
+Bosnia and Herzegovina,BIH,ECA,Europe & Central Asia,Upper middle income,85,Mostly Free,57.3,69.6,53.9,48.5,55,Mostly Prosperous,57.7,7.1,57.1,84.7,77.6,61.8
+Oman,OMN,MENA,Middle East & North Africa,High income,143,Mostly Unfree,38.2,63.0,20.8,30.9,56,Mostly Prosperous,57.6,18.0,46.3,63.3,79.1,81.4
+Colombia,COL,AME,Latin America & Caribbean,Upper middle income,75,Mostly Free,59.7,72.4,62.1,44.7,57,Mostly Prosperous,57.4,6.7,49.9,87.6,77.2,65.6
+Ecuador,ECU,AME,Latin America & Caribbean,Upper middle income,91,Mostly Free,54.8,57.7,63.1,43.6,58,Mostly Prosperous,57.3,6.4,46.5,96.4,76.4,60.9
+Peru,PER,AME,Latin America & Caribbean,Upper middle income,65,Mostly Free,63.9,80.3,69.1,42.3,59,Mostly Prosperous,57.1,7.0,42.6,98.0,75.5,62.4
+Albania,ALB,ECA,Europe & Central Asia,Upper middle income,66,Mostly Free,63.6,77.3,61.9,51.6,60,Mostly Prosperous,56.0,6.0,50.2,93.7,81.4,48.9
+Thailand,THA,AP,East Asia & Pacific,Upper middle income,112,Mostly Unfree,49.3,66.8,32.8,48.2,61,Mostly Prosperous,55.9,8.3,42.5,86.7,76.8,65.0
+Bulgaria,BGR,WE/EU,Europe & Central Asia,Upper middle income,48,Mostly Free,70.7,83.1,72.8,56.0,62,Mostly Prosperous,55.7,11.4,57.8,88.1,69.6,51.7
+Montenegro,MNE,ECA,Europe & Central Asia,Upper middle income,64,Mostly Free,64.0,79.9,67.2,45.1,63,Mostly Prosperous,55.4,9.3,56.7,77.8,76.0,57.5
+Paraguay,PRY,AME,Latin America & Caribbean,Upper middle income,71,Mostly Free,61.5,75.5,63.6,45.3,64,Mostly Prosperous,55.1,6.0,45.1,98.0,67.5,58.8
+El Salvador,SLV,AME,Latin America & Caribbean,Lower middle income,77,Mostly Free,59.5,73.3,61.6,43.6,65,Mostly Prosperous,54.8,4.1,40.6,98.1,64.5,66.5
+Brazil,BRA,AME,Latin America & Caribbean,Upper middle income,73,Mostly Free,61.0,69.7,69.4,43.9,66,Mostly Prosperous,54.2,9.2,45.1,72.1,72.7,71.6
+North Macedonia,MKD,ECA,Europe & Central Asia,Upper middle income,67,Mostly Free,63.2,72.2,63.5,53.8,67,Mostly Prosperous,54.1,6.7,58.1,85.0,72.5,48.5
+Armenia,ARM,ECA,Europe & Central Asia,Upper middle income,83,Mostly Free,57.9,77.3,58.3,38.2,68,Mostly Prosperous,53.9,4.8,61.5,81.0,70.2,51.9
+Moldova,MDA,ECA,Europe & Central Asia,Upper middle income,72,Mostly Free,61.4,71.6,63.6,49.0,69,Mostly Prosperous,53.7,5.3,50.6,91.5,59.9,61.1
+Suriname,SUR,AME,Latin America & Caribbean,Upper middle income,76,Mostly Free,59.7,60.3,71.3,47.5,70,Mostly Prosperous,53.5,5.3,35.3,97.2,59.2,70.5
+Guatemala,GTM,AME,Latin America & Caribbean,Upper middle income,94,Mostly Free,54.3,72.5,53.8,36.5,71,Mostly Prosperous,53.0,5.2,27.1,91.8,67.6,73.5
+Dominican Republic,DOM,AME,Latin America & Caribbean,Upper middle income,68,Mostly Free,62.2,77.7,62.7,46.2,72,Mostly Prosperous,52.6,8.5,35.1,95.3,66.9,57.0
+Honduras,HND,AME,Latin America & Caribbean,Lower middle income,113,Mostly Unfree,48.8,67.9,43.8,34.6,73,Mostly Prosperous,52.4,2.4,30.8,94.0,70.8,63.9
+Lebanon,LBN,MENA,Middle East & North Africa,Lower middle income,117,Mostly Unfree,46.7,57.6,46.3,36.3,74,Mostly Prosperous,52.3,6.2,46.6,87.5,82.5,38.7
+Seychelles,SYC,SSA,Sub-Saharan Africa,High income,51,Mostly Free,69.4,75.0,80.7,52.3,75,Mostly Prosperous,52.3,14.5,45.7,82.4,66.5,no data
+Bahrain,BHR,MENA,Middle East & North Africa,High income,146,Mostly Unfree,36.9,72.0,11.5,27.2,76,Mostly Prosperous,51.9,23.9,49.9,31.0,77.3,77.6
+Bolivia,BOL,AME,Latin America & Caribbean,Lower middle income,111,Mostly Unfree,49.3,51.3,61.0,35.6,77,Mostly Prosperous,50.6,3.6,38.3,92.1,58.7,60.2
+Nicaragua,NIC,AME,Latin America & Caribbean,Lower middle income,120,Mostly Unfree,45.3,69.0,30.8,36.1,78,Mostly Prosperous,50.4,2.0,42.0,75.1,68.2,64.8
+Cuba,CUB,AME,Latin America & Caribbean,Upper middle income,170,Unfree,18.0,13.3,9.4,31.3,79,Mostly Prosperous,50.2,8.8,45.9,64.2,82.1,no data
+Georgia,GEO,ECA,Europe & Central Asia,Upper middle income,54,Mostly Free,67.2,83.6,59.8,58.1,80,Mostly Prosperous,50.1,4.9,52.2,82.9,65.9,44.5
+Cabo Verde,CPV,SSA,Sub-Saharan Africa,Lower middle income,38,Free,75.6,77.3,94.8,54.8,81,Mostly Prosperous,50.1,3.4,34.4,99.0,63.4,no data
+Belarus,BLR,ECA,Europe & Central Asia,Upper middle income,139,Mostly Unfree,39.4,54.4,17.9,45.8,82,Mostly Prosperous,50.0,7.4,60.6,58.2,67.4,56.6
+Kyrgyzstan,KGZ,ECA,Europe & Central Asia,Lower middle income,118,Mostly Unfree,46.6,63.6,36.6,39.4,83,Mostly Unprosperous,50.0,1.1,47.2,82.1,58.9,60.5
+Mongolia,MNG,AP,East Asia & Pacific,Lower middle income,59,Mostly Free,66.4,66.1,77.4,55.8,84,Mostly Unprosperous,49.5,4.3,43.7,86.9,53.4,59.4
+Uzbekistan,UZB,ECA,Europe & Central Asia,Lower middle income,149,Mostly Unfree,35.0,39.3,20.4,45.3,85,Mostly Unprosperous,49.4,1.8,53.8,63.2,59.3,68.8
+Kazakhstan,KAZ,ECA,Europe & Central Asia,Upper middle income,116,Mostly Unfree,47.7,63.3,29.5,50.3,86,Mostly Unprosperous,49.4,10.3,55.8,48.6,64.0,68.2
+Malaysia,MYS,AP,East Asia & Pacific,Upper middle income,80,Mostly Free,59.0,69.6,51.6,55.8,87,Mostly Unprosperous,49.0,12.6,48.1,57.2,73.6,53.8
+Russia,RUS,ECA,Europe & Central Asia,Upper middle income,135,Mostly Unfree,41.2,55.6,25.4,42.5,88,Mostly Unprosperous,49.0,12.7,55.7,57.4,63.7,55.6
+Bahamas,BHS,AME,Latin America & Caribbean,High income,50,Mostly Free,69.4,67.5,82.7,57.9,89,Mostly Unprosperous,48.5,31.4,47.7,no data,66.4,no data
+Guyana,GUY,AME,Latin America & Caribbean,Upper middle income,74,Mostly Free,60.3,66.8,68.6,45.5,90,Mostly Unprosperous,47.8,8.4,32.5,97.0,53.5,no data
+Ukraine,UKR,ECA,Europe & Central Asia,Lower middle income,92,Mostly Free,54.5,56.7,63.4,43.4,91,Mostly Unprosperous,47.7,4.1,55.0,75.8,59.7,44.2
+Tunisia,TUN,MENA,Middle East & North Africa,Lower middle income,78,Mostly Free,59.1,58.2,70.7,48.3,92,Mostly Unprosperous,47.7,3.7,48.9,71.3,75.4,39.1
+Philippines,PHL,AP,East Asia & Pacific,Lower middle income,88,Mostly Free,55.3,70.2,56.2,39.5,93,Mostly Unprosperous,47.7,3.9,34.3,79.2,57.8,63.2
+Sri Lanka,LKA,AP,South Asia,Lower middle income,106,Mostly Free,51.5,53.8,57.6,43.1,94,Mostly Unprosperous,47.2,4.2,46.6,74.8,76.3,33.9
+Sao Tome and Principe,STP,SSA,Sub-Saharan Africa,Lower middle income,55,Mostly Free,66.9,65.8,87.5,47.3,95,Mostly Unprosperous,46.9,2.2,34.0,96.2,55.0,no data
+Turkey,TUR,ECA,Europe & Central Asia,Upper middle income,115,Mostly Unfree,47.8,68.7,35.7,38.9,96,Mostly Unprosperous,46.0,10.7,46.9,48.0,78.5,45.7
+Vietnam,VNM,AP,East Asia & Pacific,Lower middle income,123,Mostly Unfree,44.7,64.3,25.3,44.6,97,Mostly Unprosperous,45.9,2.9,50.7,50.5,71.2,54.3
+Saudi Arabia,SAU,MENA,Middle East & North Africa,High income,152,Mostly Unfree,34.6,68.1,4.2,31.5,98,Mostly Unprosperous,45.5,26.3,50.9,5.1,70.3,74.7
+Venezuela,VEN,AME,Latin America & Caribbean,unclassified,165,Unfree,23.8,33.9,16.3,21.3,99,Mostly Unprosperous,45.0,1.7,43.5,75.0,60.4,44.5
+Belize,BLZ,AME,Latin America & Caribbean,Upper middle income,69,Mostly Free,61.9,63.2,75.8,46.7,100,Mostly Unprosperous,44.4,4.7,39.5,no data,68.7,64.7
+Azerbaijan,AZE,ECA,Europe & Central Asia,Upper middle income,153,Mostly Unfree,32.4,70.1,11.5,15.8,101,Mostly Unprosperous,44.1,5.2,46.4,55.8,63.5,49.8
+Solomon Islands,SLB,AP,East Asia & Pacific,Lower middle income,90,Mostly Free,54.9,39.4,81.3,44.0,102,Mostly Unprosperous,43.7,2.5,14.3,94.7,63.4,no data
+Vanuatu,VUT,AP,East Asia & Pacific,Lower middle income,52,Mostly Free,68.8,68.1,83.3,55.0,103,Mostly Unprosperous,43.7,3.6,21.3,94.7,55.3,no data
+Bangladesh,BGD,AP,South Asia,Lower middle income,133,Mostly Unfree,41.5,51.0,38.6,35.1,104,Mostly Unprosperous,43.7,2.2,26.8,80.3,62.1,47.0
+Dominica,DMA,AME,Latin America & Caribbean,Upper middle income,47,Mostly Free,71.8,76.1,81.2,58.1,105,Mostly Unprosperous,43.2,8.5,43.3,no data,77.6,no data
+Jordan,JOR,MENA,Middle East & North Africa,Upper middle income,100,Mostly Free,52.0,70.3,35.7,50.1,106,Mostly Unprosperous,43.0,5.0,54.2,52.3,68.4,35.2
+Algeria,DZA,MENA,Middle East & North Africa,Lower middle income,138,Mostly Unfree,40.3,39.8,35.7,45.3,107,Mostly Unprosperous,42.4,4.1,49.0,38.3,75.9,44.5
+Nepal,NPL,AP,South Asia,Lower middle income,101,Mostly Free,51.8,50.4,59.9,45.2,108,Mostly Unprosperous,42.1,1.2,25.7,75.8,56.3,51.7
+St Lucia,LCA,AME,Latin America & Caribbean,Upper middle income,44,Mostly Free,72.5,76.3,80.5,60.7,109,Mostly Unprosperous,42.0,10.1,42.1,no data,73.8,no data
+Timor-Leste,TLS,AP,East Asia & Pacific,Lower middle income,84,Mostly Free,57.5,62.5,79.7,30.3,110,Mostly Unprosperous,41.9,2.1,26.1,87.3,52.2,no data
+South Africa,ZAF,SSA,Sub-Saharan Africa,Upper middle income,63,Mostly Free,64.9,66.0,76.0,52.7,111,Mostly Unprosperous,41.8,7.0,23.2,98.2,34.9,45.8
+Morocco,MAR,MENA,Middle East & North Africa,Lower middle income,102,Mostly Free,51.8,69.8,40.6,44.9,112,Mostly Unprosperous,41.2,3.4,36.6,45.6,75.3,45.1
+Ghana,GHA,SSA,Sub-Saharan Africa,Lower middle income,62,Mostly Free,65.1,68.5,76.6,50.2,113,Mostly Unprosperous,40.9,2.6,20.3,98.5,34.7,48.3
+China,CHN,AP,East Asia & Pacific,Upper middle income,140,Mostly Unfree,39.2,53.0,17.0,47.7,114,Mostly Unprosperous,40.6,12.5,58.2,3.1,76.0,53.0
+Gabon,GAB,SSA,Sub-Saharan Africa,Upper middle income,157,Mostly Unfree,30.4,49.5,18.8,23.1,115,Mostly Unprosperous,40.4,8.3,27.1,80.6,42.4,43.8
+Senegal,SEN,SSA,Sub-Saharan Africa,Lower middle income,79,Mostly Free,59.1,61.2,66.4,49.5,116,Mostly Unprosperous,40.2,1.5,12.9,90.5,47.2,49.1
+Cambodia,KHM,AP,East Asia & Pacific,Lower middle income,137,Mostly Unfree,40.3,68.1,23.2,29.6,117,Mostly Unprosperous,40.2,1.5,33.2,69.6,53.2,43.4
+Indonesia,IDN,AP,East Asia & Pacific,Lower middle income,81,Mostly Free,58.6,64.3,64.6,47.0,118,Mostly Unprosperous,39.7,4.4,24.8,57.0,59.3,53.0
+Namibia,NAM,SSA,Sub-Saharan Africa,Upper middle income,56,Mostly Free,66.8,71.4,73.2,55.8,119,Mostly Unprosperous,38.9,5.2,18.8,98.7,33.5,38.5
+Kenya,KEN,SSA,Sub-Saharan Africa,Lower middle income,109,Mostly Unfree,49.6,64.5,49.3,35.2,120,Mostly Unprosperous,38.9,2.0,13.6,96.3,43.2,39.3
+Libya,LBY,MENA,Middle East & North Africa,Upper middle income,171,Unfree,15.7,27.1,8.9,11.3,121,Mostly Unprosperous,38.8,5.7,48.1,22.8,63.2,54.3
+Iran,IRN,MENA,Middle East & North Africa,Lower middle income,159,Mostly Unfree,30.0,27.9,21.2,40.9,122,Mostly Unprosperous,38.8,3.3,48.7,25.5,75.3,41.4
+Bhutan,BTN,AP,South Asia,Lower middle income,86,Mostly Free,56.1,56.9,64.1,47.4,123,Mostly Unprosperous,38.8,3.2,31.4,51.8,59.5,48.1
+Iraq,IRQ,MENA,Middle East & North Africa,Upper middle income,160,Mostly Unfree,29.6,42.4,37.5,8.8,124,Mostly Unprosperous,38.5,5.4,45.8,42.0,55.7,43.8
+Tajikistan,TJK,ECA,Europe & Central Asia,Lower middle income,161,Mostly Unfree,26.8,55.8,8.3,16.3,125,Mostly Unprosperous,38.3,1.0,31.6,45.9,57.3,55.5
+Egypt,EGY,MENA,Middle East & North Africa,Lower middle income,145,Mostly Unfree,37.0,57.9,18.9,34.1,126,Mostly Unprosperous,37.8,3.4,36.6,55.9,60.2,33.1
+Benin,BEN,SSA,Sub-Saharan Africa,Lower middle income,96,Mostly Free,53.8,58.6,56.7,46.2,127,Mostly Unprosperous,37.7,1.3,13.5,99.0,27.3,47.6
+Gambia,GMB,SSA,Sub-Saharan Africa,Low income,104,Mostly Free,51.6,65.4,49.7,39.8,128,Mostly Unprosperous,37.6,0.6,18.9,92.7,28.2,47.6
+Botswana,BWA,SSA,Sub-Saharan Africa,Upper middle income,61,Mostly Free,65.4,73.5,66.0,56.9,129,Mostly Unprosperous,37.5,7.8,20.1,89.1,52.5,17.9
+St Vincent and the Grenadines,VCT,AME,Latin America & Caribbean,Upper middle income,46,Mostly Free,71.9,72.5,82.2,61.0,130,Mostly Unprosperous,37.2,8.6,41.0,no data,62.0,no data
+Papua New Guinea,PNG,AP,East Asia & Pacific,Lower middle income,107,Mostly Free,51.1,53.6,66.7,33.1,131,Mostly Unprosperous,37.1,3.0,15.6,93.6,36.1,no data
+Myanmar,MMR,AP,East Asia & Pacific,Lower middle income,141,Mostly Unfree,39.2,46.4,35.9,35.3,132,Mostly Unprosperous,36.1,1.4,29.9,69.0,44.6,35.9
+Congo Republic,COG,SSA,Sub-Saharan Africa,Lower middle income,151,Mostly Unfree,34.6,44.9,24.4,34.5,133,Mostly Unprosperous,36.1,1.9,14.4,89.9,36.3,53.0
+Cote d'Ivoire,CIV,SSA,Sub-Saharan Africa,Lower middle income,110,Mostly Unfree,49.5,65.9,43.8,38.9,134,Mostly Unprosperous,35.8,2.5,16.9,92.7,14.5,52.4
+Laos,LAO,AP,East Asia & Pacific,Lower middle income,158,Mostly Unfree,30.1,63.3,10.4,16.7,135,Mostly Unprosperous,35.4,2.8,26.0,53.7,47.1,47.2
+Guinea,GIN,SSA,Sub-Saharan Africa,Low income,128,Mostly Unfree,42.1,53.5,39.4,33.5,136,Mostly Unprosperous,34.5,1.0,10.9,87.8,26.8,46.2
+Ethiopia,ETH,SSA,Sub-Saharan Africa,Low income,147,Mostly Unfree,36.3,51.3,25.4,32.3,137,Mostly Unprosperous,34.5,0.8,11.2,84.8,42.8,32.9
+Uganda,UGA,SSA,Sub-Saharan Africa,Low income,124,Mostly Unfree,43.8,64.9,34.5,32.0,138,Mostly Unprosperous,34.5,0.7,17.6,81.9,32.5,39.8
+Djibouti,DJI,SSA,Middle East & North Africa,Lower middle income,148,Mostly Unfree,35.9,63.1,23.4,21.2,139,Mostly Unprosperous,34.1,3.7,18.1,63.5,44.5,40.8
+Mozambique,MOZ,SSA,Sub-Saharan Africa,Low income,126,Mostly Unfree,43.3,57.7,40.0,32.2,140,Mostly Unprosperous,33.9,0.3,16.4,85.9,24.4,42.7
+Cameroon,CMR,SSA,Sub-Saharan Africa,Lower middle income,155,Mostly Unfree,32.2,44.2,21.7,30.8,141,Mostly Unprosperous,33.7,1.6,7.4,91.1,19.3,49.2
+Liberia,LBR,SSA,Sub-Saharan Africa,Low income,105,Mostly Free,51.6,61.8,59.6,33.5,142,Mostly Unprosperous,33.7,0.4,9.4,84.2,34.8,39.7
+Turkmenistan,TKM,ECA,Europe & Central Asia,Upper middle income,173,Unfree,12.0,13.3,2.1,20.6,143,Mostly Unprosperous,33.5,8.0,47.6,16.1,48.0,47.9
+"Congo, Democratic Republic of",COD,SSA,Sub-Saharan Africa,Low income,156,Mostly Unfree,31.0,47.0,23.5,22.6,144,Mostly Unprosperous,33.5,0.4,13.2,81.3,23.8,33.6
+Madagascar,MDG,SSA,Sub-Saharan Africa,Low income,108,Mostly Free,51.0,57.3,57.9,37.9,145,Mostly Unprosperous,33.2,0.3,6.0,83.8,44.3,31.8
+Burkina Faso,BFA,SSA,Sub-Saharan Africa,Low income,99,Mostly Free,52.2,62.0,55.0,39.5,146,Mostly Unprosperous,33.0,0.7,7.8,86.2,26.7,43.4
+Haiti,HTI,AME,Latin America & Caribbean,Lower middle income,136,Mostly Unfree,40.5,56.3,37.6,27.7,147,Mostly Unprosperous,32.6,1.3,13.8,92.9,34.5,20.5
+Niger,NER,SSA,Sub-Saharan Africa,Low income,119,Mostly Unfree,45.7,54.2,46.3,36.6,148,Mostly Unprosperous,32.2,0.4,1.6,81.7,29.4,47.9
+Malawi,MWI,SSA,Sub-Saharan Africa,Low income,95,Mostly Free,54.1,56.2,62.3,43.8,149,Mostly Unprosperous,32.1,0.4,12.0,92.7,35.3,20.3
+Equatorial Guinea,GNQ,SSA,Sub-Saharan Africa,Upper middle income,168,Unfree,19.0,38.5,4.2,14.2,150,Mostly Unprosperous,32.1,6.8,29.5,74.8,17.5,no data
+Zambia,ZMB,SSA,Sub-Saharan Africa,Low income,97,Mostly Free,53.7,68.4,49.6,43.1,151,Mostly Unprosperous,31.8,1.1,13.1,81.4,34.1,29.1
+Syria,SYR,MENA,Middle East & North Africa,Low income,174,Unfree,11.6,28.7,2.1,4.1,152,Mostly Unprosperous,31.3,0.7,49.8,33.3,62.5,10.3
+India,IND,AP,South Asia,Lower middle income,87,Mostly Free,56.1,58.4,67.6,42.2,153,Mostly Unprosperous,31.2,2.1,18.1,58.5,52.7,24.4
+Togo,TGO,SSA,Sub-Saharan Africa,Low income,114,Mostly Unfree,48.7,63.9,40.2,42.1,154,Mostly Unprosperous,31.0,0.8,4.8,94.3,25.0,29.9
+Tanzania,TZA,SSA,Sub-Saharan Africa,Lower middle income,121,Mostly Unfree,45.3,60.6,35.7,39.6,155,Mostly Unprosperous,30.4,1.0,18.2,72.8,39.2,20.7
+Guinea Bissau,GNB,SSA,Sub-Saharan Africa,Low income,150,Mostly Unfree,34.9,40.6,49.0,15.1,156,Mostly Unprosperous,30.4,0.6,6.5,98.1,16.2,no data
+Zimbabwe,ZWE,SSA,Sub-Saharan Africa,Lower middle income,144,Mostly Unfree,37.4,50.8,29.4,32.0,157,Mostly Unprosperous,29.6,1.1,16.1,92.8,26.4,11.7
+Burundi,BDI,SSA,Sub-Saharan Africa,Low income,167,Unfree,21.8,44.4,13.5,7.6,158,Mostly Unprosperous,29.3,0.0,5.2,90.8,26.7,23.7
+Rwanda,RWA,SSA,Sub-Saharan Africa,Low income,103,Mostly Free,51.7,73.3,31.1,50.8,159,Mostly Unprosperous,29.0,0.7,16.9,60.2,50.7,16.7
+Comoros,COM,SSA,Sub-Saharan Africa,Lower middle income,130,Mostly Unfree,41.7,59.0,44.8,21.4,160,Mostly Unprosperous,29.0,1.4,15.3,59.5,35.5,33.3
+Eswatini,SWZ,SSA,Sub-Saharan Africa,Lower middle income,154,Mostly Unfree,32.3,55.1,15.1,26.6,161,Mostly Unprosperous,28.8,3.9,12.1,72.0,22.2,33.6
+Mali,MLI,SSA,Sub-Saharan Africa,Low income,129,Mostly Unfree,41.8,57.3,36.2,31.9,162,Mostly Unprosperous,28.0,0.7,8.2,70.4,19.4,41.4
+Nigeria,NGA,SSA,Sub-Saharan Africa,Lower middle income,127,Mostly Unfree,42.5,50.3,47.6,29.8,163,Mostly Unprosperous,27.6,2.1,4.2,84.8,4.5,42.1
+Pakistan,PAK,AP,South Asia,Lower middle income,134,Mostly Unfree,41.4,53.4,39.8,31.0,164,Mostly Unprosperous,27.5,1.3,15.1,30.8,45.0,45.3
+Sudan,SDN,SSA,Sub-Saharan Africa,Low income,163,Mostly Unfree,25.2,18.9,26.1,30.5,165,Mostly Unprosperous,27.5,0.4,22.5,45.3,38.7,30.5
+Mauritania,MRT,SSA,Sub-Saharan Africa,Lower middle income,142,Mostly Unfree,38.8,50.8,34.7,30.8,166,Mostly Unprosperous,26.3,1.7,13.4,46.6,37.5,32.1
+Angola,AGO,SSA,Sub-Saharan Africa,Lower middle income,131,Mostly Unfree,41.6,54.5,34.6,35.7,167,Mostly Unprosperous,26.3,2.3,11.9,67.9,25.3,24.0
+Sierra Leone,SLE,SSA,Sub-Saharan Africa,Low income,98,Mostly Free,53.0,60.6,60.5,37.9,168,Mostly Unprosperous,26.3,0.3,11.4,90.0,4.5,25.0
+Lesotho,LSO,SSA,Sub-Saharan Africa,Lower middle income,89,Mostly Free,55.0,64.1,65.1,35.8,169,Mostly Unprosperous,25.6,1.1,7.1,98.0,3.4,18.6
+Chad,TCD,SSA,Sub-Saharan Africa,Low income,162,Mostly Unfree,26.5,51.7,17.2,10.7,170,Unprosperous,24.0,0.5,0.0,82.0,3.1,34.6
+Afghanistan,AFG,AP,South Asia,Low income,164,Unfree,24.1,17.1,33.3,21.9,171,Unprosperous,22.2,0.3,27.7,45.6,37.2,0.0
+Central African Republic,CAF,SSA,Sub-Saharan Africa,Low income,166,Unfree,22.9,47.0,11.5,10.1,172,Unprosperous,20.8,0.3,0.0,85.4,0.0,18.0
+Yemen,YEM,MENA,Middle East & North Africa,Low income,169,Unfree,18.9,39.2,9.9,7.6,173,Unprosperous,16.8,1.1,19.9,0.0,41.3,21.4
+Eritrea,ERI,SSA,Sub-Saharan Africa,Low income,172,Unfree,13.2,29.2,1.0,9.5,174,Unprosperous,16.0,0.4,6.3,15.1,42.0,no data

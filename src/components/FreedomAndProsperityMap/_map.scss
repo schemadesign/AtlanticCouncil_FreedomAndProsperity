@@ -1,0 +1,19 @@
+.map {
+    path {
+        stroke: #fff;
+        fill: #F2F2F2;
+        stroke-width: 1px;
+        &[data-freedom="Free"] {
+            fill: var(--free--properous--faded);
+        }
+        &[data-freedom="Mostly Free"] {
+            fill: var(--mostly-free--mostly-prosperous--faded);
+        }
+        &[data-freedom="Mostly Unfree"] {
+            fill: var(--mostly-unfree--mostly-unprosperous--faded);
+        }
+        &[data-freedom="Unfree"] {
+            fill: var(--unfree--unprosperous--faded);
+        }
+    }
+}

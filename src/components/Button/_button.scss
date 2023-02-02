@@ -1,0 +1,22 @@
+.button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0.625rem;
+    text-transform: uppercase;
+    color: var(--neutral---gray--dark);
+    &--freedom, &--prosperity {
+        svg {
+            display: block;
+            margin-right: 0.25rem;
+        }
+        &.button--selected {
+            svg {
+                path {
+                    fill: var(--neutral---gray--dark);
+                    fill-rule: nonzero;
+                }
+            }
+        }
+    }
+}
