@@ -1,0 +1,50 @@
+.freedom-prosperity-map {
+    margin-bottom: 5rem;
+    padding: 0;
+    height: 100vmin;
+
+    svg {
+        &.dragging {
+            path {
+                transition: none;
+            }
+        }
+    }
+
+    path,
+    rect {
+        cursor: pointer;
+    }
+
+    .map__countries {
+        path {
+            stroke: #fff;
+            fill: #F2F2F2;
+            stroke-width: 0.5px;
+        }
+    }
+
+    .map__centroids {
+        rect {
+            stroke: var(--neutral---black);
+            opacity: 1;
+            transition: opacity 150ms, stroke 150ms;
+        }
+    }
+
+    &--freedom-only {
+        .map__centroids {
+            rect {
+                opacity: 0;
+            }
+        }
+    }
+
+    &--prosperity-only {
+        .map__centroids {
+            rect {
+                stroke: var(--neutral---white);
+            }
+        }
+    }
+}

@@ -1,0 +1,40 @@
+import * as d3 from 'd3';
+import geojson from './world.geo.json';
+import centroids from './centroids.geo.json';
+import { ProsperityCategoryLiterals } from '../@enums/ProsperityCategory';
+
+export const colorScale = ['rgba(71, 148, 75, 1)', 'rgba(177, 216, 120, 1)', 'rgba(225, 143, 106, 1)', 'rgba(198, 50, 42, 1)', '#e6e6e6'];
+export const colors = { 'Free': 'rgba(71, 148, 75, 1)', 'Mostly Free': 'rgba(177, 216, 120, 1)', 'Mostly Unfree': 'rgba(225, 143, 106, 1)', 'Unfree': 'rgba(198, 50, 42, 1)' };
+
+export function positionCentroid(parent, selection, d, projection, size = 14) {
+    let coords = [0, 0]
+    let centroid = centroids.features.find(f => f.properties.ISO === d.properties.iso_a2_eh);
+
+    if (centroid) {
+        coords = projection(centroid.geometry.coordinates);
+    } else {
+        coords = getBoundingBoxCenter(parent.select(`path[data-country='${d.properties.adm0_iso}']`));
+    }
+
+    selection.style('transform', `translate(${coords[0] - size / 2}px, ${coords[1] - size / 2}px) rotate(45deg)`)
+        .style('transform-origin', `${size / 2}px ${size / 2}px`)
+        .attr('height', size)
+        .attr('width', size)
+}
+
+export const getBoundingBoxCenter = (selection: d3.Selection<SVGSVGElement, {}, SVGElement, any>): [number, number] => {
+    const element = selection.node();
+    if (element) {
+        const bbox = element.getBBox();
+        return [bbox.x + bbox.width / 2, bbox.y + bbox.height / 2];
+    }
+    return [-100, -100]
+}
+
+export const colorProsperous = d3.scaleOrdinal()
+    .domain([...ProsperityCategoryLiterals, ''])
+    .range(colorScale)
+
+export const getFeatureByISO = (iso: string) => {
+    return (geojson.features).find((feature: GeoGeometryObjects) => feature.properties.adm0_iso === iso) || {}
+}

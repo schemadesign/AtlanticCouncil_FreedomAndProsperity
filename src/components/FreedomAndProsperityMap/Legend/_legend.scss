@@ -1,0 +1,36 @@
+.freedom-prosperity-map__legend {
+    display: flex;
+    flex-direction: row;
+    background-color: var(--neutral---white);
+    position: fixed;
+    bottom: 0;
+    > div {
+        display: flex;
+        flex-direction: row;
+    }
+    &__category {
+        border: 1px solid var(--neutral---gray--dark);
+        &:nth-child(2){
+            border-left: none;
+        }
+    }
+    &__item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        font-size: 0.75rem;
+        color: var(--neutral---gray--dark);
+        padding: 0.625rem 1rem;
+        white-space: nowrap;
+        .icon {
+            margin-right: 0.625rem;
+            height: auto;
+            &--prosperity {
+                flex: 1.25rem 0 0
+            }
+            &--freedom {
+                flex: 1.125rem 0 0;
+            }
+        }
+    }
+}

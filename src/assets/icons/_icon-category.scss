@@ -1,29 +1,56 @@
-.icon--category {
-    &[data-category="Prosperous"],
-    &[data-category="Free"] {
-        --cateogry-color: var(--free--prosperous);
+.icon {
+    --category-color: var(--neutral---gray--dark);
+
+    &,
+    &--category {
+        &[data-category="Prosperous"] {
+            --category-color: var(--prosperous);
+        }
+
+        &[data-category="Free"] {
+            --category-color: var(--free);
+        }
+
+        &[data-category="Mostly Prosperous"] {
+            --category-color: var(--mostly-prosperous);
+        }
+
+        &[data-category="Mostly Free"] {
+            --category-color: var(--mostly-free);
+        }
+
+        &[data-category="Mostly Unprosperous"] {
+            --category-color: var(--mostly-unprosperous);
+        }
+
+        &[data-category="Mostly Unfree"] {
+            --category-color: var(--mostly-unfree);
+        }
+
+        &[data-category="Unprosperous"] {
+            --category-color: var(--unprosperous);
+        }
+
+        &[data-category="Unfree"] {
+            --category-color: var(--unfree);
+        }
+
+        rect {
+            stroke-width: 0.5px;
+        }
+
+        &__background {
+            fill: #F4F6F8;
+            stroke: #F4F6F8;
+        }
     }
-    &[data-category="Mostly Prosperous"],
-    &[data-category="Mostly Free"] {
-        --cateogry-color: var(--mostly-free--mostly-prosperous);
-    }
-    &[data-category="Mostly Unprosperous"],
-    &[data-category="Mostly Unfree"]  {
-        --cateogry-color: var(--mostly-unfree--mostly-unprosperous);
-    }
-    &[data-category="Unprosperous"],
-    &[data-category="Unfree"] {
-        --cateogry-color: var(--unfree--unprosperous);
-    }
-    rect {
-        stroke-width: 0.5px;
-    }
-    &__indicator {
-        fill: var(--cateogry-color);
-        stroke: var(--cateogry-color);
-    }
-    &__background {
-        fill: #F4F6F8;
-        stroke: #F4F6F8;
+
+    &--category__color {
+        fill: var(--category-color);
+        fill-rule: nonzero;
+
+        &:not(.no-stroke) {
+            stroke: var(--category-color);
+        }
     }
 }

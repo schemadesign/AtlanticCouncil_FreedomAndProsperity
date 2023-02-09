@@ -1,0 +1,16 @@
+.accordion {
+    margin: 0 -0.8625rem;
+
+    >div {
+        padding: 1rem 0.8625rem 0 0.8625rem;
+        background: #DFE6F2;
+
+        h6 {
+            margin: 0;
+        }
+
+        .score-bar {
+            background: var(--neutral---white);
+        }
+    }
+}

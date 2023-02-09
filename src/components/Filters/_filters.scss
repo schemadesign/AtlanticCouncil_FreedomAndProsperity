@@ -1,0 +1,13 @@
+.filters {
+    &--prosperity, &--freedom {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        flex-wrap: wrap;
+        padding: 0.625rem 0;
+
+        .button {
+            font-size: 0.75rem;
+        }
+    }
+}

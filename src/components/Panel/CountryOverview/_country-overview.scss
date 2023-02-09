@@ -1,0 +1,30 @@
+.panel__country-overview {
+    .score-bar {
+        &__container {
+            display: flex;
+            align-items: center;
+        }
+        &__label {
+            margin-right: 1rem;
+        }
+    }
+    .column--rank {
+        flex: 100px 0 0;
+    }
+    
+    &__values {
+        margin: 1rem 0 0 0;
+    }
+
+
+    .category {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+        align-items: center;
+        margin-top: 2rem;
+        &__value {
+            margin-left: 1rem;
+        }
+    }
+}

@@ -9,6 +9,14 @@
         svg {
             display: block;
             margin-right: 0.25rem;
+            path {
+                &.no-stroke {
+                    fill-rule: evenodd;
+                }
+                &:not(.no-stroke) {
+                    fill: rgba(255, 255, 255, 0);
+                }
+            }
         }
         &.button--selected {
             svg {
@@ -17,6 +25,21 @@
                     fill-rule: nonzero;
                 }
             }
+        }
+    }
+    &--close {
+        background: var(--neutral---white);
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 100%;
+    }
+
+    &--sort {
+        display: flex;
+        flex-direction: row-reverse;
+
+        svg {
+            margin-left: 0.25rem;
         }
     }
 }

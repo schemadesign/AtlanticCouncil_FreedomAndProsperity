@@ -3,3 +3,23 @@
     padding: 0 1rem;
     margin: 0 auto;
 }
+
+.flex {
+    &-row {
+        display: flex;
+        flex-direction: row;
+    }
+}
+
+.justify {
+    &-space-between {
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+.p {
+    &-0 {
+        padding: 0;
+    }
+}

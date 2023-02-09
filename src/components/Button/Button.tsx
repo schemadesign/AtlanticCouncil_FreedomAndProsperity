@@ -1,7 +1,9 @@
 import { MouseEventHandler } from 'react';
 import { IndexType } from '../../@enums/IndexType';
-import Freedom from './../../assets/icons/freedom';
-import Prosperity from './../../assets/icons/prosperity';
+import Freedom from '../../assets/icons/IconFreedom';
+import Prosperity from '../../assets/icons/IconProsperity';
+import Close from '../../assets/icons/IconClose';
+import Sort from '../../assets/icons/IconSort';
 
 import './_button.scss';
 
@@ -20,22 +22,10 @@ function Button(props: IButton) {
                 return <Freedom />
             case IndexType.PROSPERITY:
                 return <Prosperity />
-    //         case ButtonIcons.ARROW_RIGHT:
-    //             return <ArrowRight />
-    //         case ButtonIcons.CHEVRON_LEFT:
-    //             return <ChevronLeft />
-    //         case ButtonIcons.CHEVRON_RIGHT:
-    //             return <ChevronRight />
-    //         case ButtonIcons.CLOSE:
-    //             return <Close />
-    //         case ButtonIcons.GRID:
-    //             return <Grid />
-    //         case ButtonIcons.NETWORK:
-    //             return <Network />
-    //         case ButtonIcons.RESOURCES:
-    //             return <Resources />
-    //         case ButtonIcons.FILTERS:
-    //             return <Filters />
+            case 'close':
+                return <Close />
+            case 'sort':
+                return <Sort />
             default:
                 return null;
         }
@@ -49,13 +39,6 @@ function Button(props: IButton) {
             <span>
                 {children}
             </span>
-            {/* {variant === 'big-link' ?
-                <span className='icon--arrow'>
-                    <ArrowRight />
-                </span>
-                :
-                null 
-            } */}
         </button>
     )
 }

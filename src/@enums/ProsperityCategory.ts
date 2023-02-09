@@ -4,3 +4,7 @@ export enum ProsperityCategory {
     MOSTLY_UNPROSPEROUS = 'Mostly Unprosperous',
     UNPROSPEROUS = 'Unprosperous',
 }
+
+export type ProsperityCategoryKeys = keyof typeof ProsperityCategory;
+
+export const ProsperityCategoryLiterals = (Object.keys(ProsperityCategory) as Array<ProsperityCategoryKeys>).map((category) => ProsperityCategory[category]);

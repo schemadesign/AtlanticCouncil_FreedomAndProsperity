@@ -19,5 +19,5 @@ type FPData = {
     'Health score 2021': string,
     'Happiness score 2021': string
     // allow dynamic indexing
-    [key: string]: string,
+    [key: string]: string |  number,
 }

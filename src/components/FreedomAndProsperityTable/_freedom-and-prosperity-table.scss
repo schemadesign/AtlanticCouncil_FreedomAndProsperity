@@ -5,6 +5,8 @@
 
     td {
         position: relative;
+        font-weight: 400;
+        font-size: 0.75rem;
 
         >div {
             display: flex;
@@ -17,6 +19,12 @@
             height: 1.625rem;
             width: 1.625rem;
             margin-left: 0.5rem;
+        }
+
+        .icon--category__value, 
+        .score-bar__label {
+            font-weight: 400;
+            font-size: 0.75rem;
         }
     }
 
