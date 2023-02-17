@@ -7,7 +7,7 @@ export const NO_DATA_VALUE = 9999999;
 // derive rankings
 let dataWithRanks = f_p_data;
 ['Income', 'Environment', 'Minority Rights', 'Health', 'Happiness', 'Legal Freedom', 'Political Freedom', 'Economic Freedom'].forEach((category: string) => {
-    dataWithRanks = dataWithRanks.sort((a: FPData, b: FPData) => {
+    dataWithRanks = [...dataWithRanks].sort((a: FPData, b: FPData) => {
         const col = `${category} score 2021`;
         let aVal = a[col];
         let bVal = b[col];
@@ -122,7 +122,7 @@ export const getColumns = (mode: IndexType | null) => {
 }
 
 export const sortedData = (sort: {col: string, direction: number}) => {
-    return dataWithRanks.sort((a: FPData, b: FPData) => {
+    return [...dataWithRanks].sort((a: FPData, b: FPData) => {
         if (sort.col.indexOf('Freedom') === 0) {
             return (parseFloat(b['Freedom rank 2021']) - parseFloat((a['Freedom rank 2021']))) * sort.direction * defaultDirection(sort.col)
         } else if (sort.col.indexOf('Prosperity') === 0) {

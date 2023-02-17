@@ -9,13 +9,13 @@
         svg {
             display: block;
             margin-right: 0.25rem;
-            path {
-                &.no-stroke {
-                    fill-rule: evenodd;
-                }
-                &:not(.no-stroke) {
-                    fill: rgba(255, 255, 255, 0);
-                }
+        }
+        path {
+            &.no-stroke {
+                fill-rule: evenodd;
+            }
+            &:not(.no-stroke) {
+                fill: rgba(255, 255, 255, 0);
             }
         }
         &.button--selected {
@@ -40,6 +40,17 @@
 
         svg {
             margin-left: 0.25rem;
+        }
+
+        &[data-direction="asc"] {
+            svg {
+                transform: rotateZ(180deg) rotateY(180deg);
+            }
+        }
+        &[data-direction="default"] {
+            svg {
+                opacity: 0.3;
+            }
         }
     }
 }

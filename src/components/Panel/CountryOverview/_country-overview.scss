@@ -1,11 +1,13 @@
 .panel__country-overview {
     .score-bar {
+        width: 7rem;
         &__container {
             display: flex;
             align-items: center;
         }
         &__label {
             margin-right: 1rem;
+            width: 3rem;
         }
     }
     .column--rank {
@@ -15,7 +17,6 @@
     &__values {
         margin: 1rem 0 0 0;
     }
-
 
     .category {
         display: flex;

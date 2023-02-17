@@ -1,6 +1,12 @@
 .freedom-and-prosperity-table {
     th {
-        padding: 0;
+        padding: 0;  
+        text-transform: uppercase;
+        color: var(--neutral---gray--dark);
+        text-align: left;
+        .no-sort {
+            padding: 0.625rem;
+        }
     }
 
     td {

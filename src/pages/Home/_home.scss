@@ -1,0 +1,111 @@
+.page--home {
+    height: calc(100vh - 6rem);
+    padding: 0;
+
+    &.section-in-focus {
+        .page--home {
+            &__image,
+            &__logo {
+                &:not(.active) {
+                    visibility: hidden;
+                    opacity: 0;
+                }
+            }
+        }
+    }
+
+    &__image,
+    &__logo {
+        transition: left 500ms, opacity 500ms, visibility 500ms;
+    }
+
+    &__main {
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        position: relative;
+
+        &__content {
+            width: 75%;
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+        }
+
+        &__preview {
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+            align-items: flex-end;
+            border-bottom: 1px solid var(--neutral---gray--medium);
+
+            &--explore {
+                > div:last-child {
+                    padding: 0 7.5rem;
+                }
+                .freedom-and-prosperity-table {
+                    max-width: 47rem;
+                    margin: 0 auto;
+                }
+            }
+
+            >div {
+                display: flex;
+                height: 100%;
+                flex-direction: column;
+                padding: 1.25rem;
+                justify-content: flex-end;
+
+                &:first-child {
+                    width: 33.3%;
+                    border-right: 1px solid var(--neutral---gray--medium);
+
+                    p {
+                        font-weight: 400;
+                        font-size: 1.5rem;
+                        line-height: 130%;
+                        margin: 1rem 0 0 0;
+                    }
+                }
+
+                &:last-child {
+                    width: 66.7%;
+                    padding-bottom: 3.75rem;
+                }
+
+                img {
+                    margin: 0 auto;
+                }
+            }
+        }
+    }
+
+    &__image {
+        z-index: 1;
+        visibility: visible;
+        width: 25%;
+        height: 100%;
+        background-size: cover;
+        background-position: 50% 50%;
+        position: absolute;
+
+        @for $i from 1 through 4 {
+            &:nth-child(#{$i}) {
+                left: #{($i - 1) * 25%};
+            }
+        }
+
+        &.active {
+            left: 0;
+        }
+
+        .button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--neutral---white);
+        }
+    }
+}

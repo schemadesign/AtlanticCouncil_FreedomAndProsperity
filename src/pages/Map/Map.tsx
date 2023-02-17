@@ -5,10 +5,15 @@ import FreedomAndProsperityMap from "../../components/FreedomAndProsperityMap/Ma
 import FreedomAndProsperityMapLegend from "../../components/FreedomAndProsperityMap/Legend/Legend";
 import Panel from "../../components/Panel/Panel";
 
-function Map() {
+import './_map.scss';
+
+interface IHome {
+}
+
+function Map(props: IHome) {
     const [mode, setMode] = useState<null | IndexType>(null);
-    const [ panelOpen, setPanelOpen ] = useState(false);
-    const [ panelData, setPanelData ] = useState<FPData | null>(null);
+    const [panelOpen, setPanelOpen] = useState(false);
+    const [panelData, setPanelData] = useState<FPData | null>(null);
 
     useEffect(() => {
         if (mode && !panelOpen) {
@@ -20,13 +25,16 @@ function Map() {
 
     return (
         <div className="page--map container">
-            <h1>
-                Map
-            </h1>
-            <ControlsSidePanel mode={mode}
-                setMode={(mode: null | IndexType) => setMode(mode)}
+            <div>
+                <h1>
+                    Map
+                </h1>
+                <ControlsSidePanel mode={mode}
+                    setMode={(mode: null | IndexType) => setMode(mode)}
                 />
-            <FreedomAndProsperityMap mode={mode} 
+                <FreedomAndProsperityMapLegend mode={mode} />
+            </div>
+            <FreedomAndProsperityMap mode={mode}
                 setPanelData={(data: FPData) => {
                     setPanelData(data);
 
@@ -34,15 +42,14 @@ function Map() {
                         setPanelOpen(true)
                     }
                 }}
-                />
-            <FreedomAndProsperityMapLegend mode={mode} />
+            />
 
-            <Panel 
+            <Panel
                 mode={mode}
                 setMode={setMode}
                 setOpen={setPanelOpen}
                 setPanelData={setPanelData}
-                open={panelOpen} 
+                open={panelOpen}
                 data={panelData} />
         </div>
     )

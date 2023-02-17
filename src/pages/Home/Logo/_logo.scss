@@ -1,0 +1,48 @@
+.page--home__logo {
+    margin-left: 8%;
+    background: var(--neutral---white);
+    position: absolute;
+    z-index: 100;
+    padding: 1rem;
+    .icon {
+        path {
+            fill: rgba(53, 126, 244, 1);
+            fill-rule: nonzero;
+            &:not(.no-stroke) {
+                stroke: rgba(53, 126, 244, 1);
+            }
+        }
+        &--prosperity {
+            height: 1.25rem;
+            width: 1.25rem;
+        }
+        &--freedom {
+            height: 1.75rem;
+            width: 1.75rem;
+        }
+    }
+    &__title {
+        margin-top: 6rem;
+        &, .button {
+            font-weight: 300;
+            font-size: 1.875rem;
+            line-height: 95%;
+            letter-spacing: -0.05em;
+            color: var(--neutral---black);
+        }
+        div {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            span {
+                margin-right: 0.5rem;;
+            }
+        }
+        .button {
+            padding: 0.125rem;
+            span {
+                border-bottom: 1px solid var(--neutral---black);
+            }
+        }
+    }
+}

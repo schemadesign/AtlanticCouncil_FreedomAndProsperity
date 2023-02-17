@@ -62,8 +62,8 @@ function Panel(props: IPanel) {
                                 <h4>
                                     {data['Region (WB 2022)'] || ''}
                                 </h4>
+                                <MiniMap iso={data.ISO3} />
                             </div>
-                            <MiniMap iso={data.ISO3} />
                             {mode !== IndexType.PROSPERITY ?
                                 <CountryOverview data={data}
                                     type={IndexType.FREEDOM} />

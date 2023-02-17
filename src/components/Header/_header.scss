@@ -1,14 +1,33 @@
-header {
-    margin-bottom: 2rem;
-    .container {
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--neutral---white);
+    width: 100%;
+
+    &--bottom {
+        position: absolute;
+        top: auto;
+        bottom: 0;
+    }
+    > .flex-row {
+        height: 6rem;
         display: flex;
         flex-direction: row;
+        align-items: center;
     }  
 
     .button {
         margin: 0 1rem 0 -0.625rem;
         &--selected {
-            text-decoration: underline;
+            background: var(--neutral---black);
+            color: var(--neutral---white);
+            border-radius: 5px;
         }
+    }
+    &.locked {
+        position: fixed;
+        top: 0;
+        bottom: auto;
     }
 }

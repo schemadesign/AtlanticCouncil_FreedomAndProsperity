@@ -1,0 +1,22 @@
+.mini-map {
+    path,
+    circle {
+        cursor: pointer;
+    }
+
+    .map__countries {
+        path {
+            stroke: #fff;
+            fill: #F2F2F2;
+            stroke-width: 0.5px;
+        }
+    }
+
+    .map__centroids {
+        circle {
+            stroke: var(--neutral---black);
+            opacity: 1;
+            transition: opacity 150ms, stroke 150ms;
+        }
+    }
+}

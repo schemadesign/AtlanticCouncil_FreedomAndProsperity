@@ -10,10 +10,11 @@ function IconProsperity(props: IIcon) {
     const { category } = props;
 
     return (
-        <svg className="icon icon--prosperity" data-category={category} width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path className="icon--category__color" d="M8.15325 15.3539L8.50681 15.7068L8.86001 15.3536L15.3536 8.86001L15.7068 8.50681L15.3539 8.15325L8.86036 1.6468L8.50681 1.29254L8.1529 1.64645L1.64645 8.1529L1.29254 8.50681L1.6468 8.86036L8.15325 15.3539Z" stroke="#666666" />
+        <svg className="icon icon--prosperity" data-category={category}  width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path className="icon--category__color no-stroke" fillRule="evenodd" clipRule="evenodd"
+                d="M6.5 12.1186C9.60309 12.1186 12.1186 9.60309 12.1186 6.5C12.1186 3.39691 9.60309 0.881356 6.5 0.881356C3.39691 0.881356 0.881356 3.39691 0.881356 6.5C0.881356 9.60309 3.39691 12.1186 6.5 12.1186ZM6.5 13C10.0899 13 13 10.0899 13 6.5C13 2.91015 10.0899 0 6.5 0C2.91015 0 0 2.91015 0 6.5C0 10.0899 2.91015 13 6.5 13Z"
+                fill="#666666" />
         </svg>
-
     )
 }
 

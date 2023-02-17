@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import Button from "../Button/Button";
 import './_header.scss';
 
@@ -8,11 +9,12 @@ interface IHeader {
 
 function Header(props: IHeader) {
     const { page, setPage } = props;
+    const node = useRef(null);
 
     return (
-        <header>
-            <div className="container">
-                {['map', 'rankings'].map(p => {
+        <header ref={node} className={`header ${page === 'home' ? 'header--bottom' : ''}`}>
+            <div className='container flex-row'>
+                {['map', 'rankings', 'profiles', 'compare', 'library', 'about'].map(p => {
                     return (
                         <Button key={p}
                             selected={p === page}

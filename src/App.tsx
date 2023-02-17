@@ -1,7 +1,7 @@
 import React, { Suspense, useState } from 'react'
 import Header from './components/Header/Header'
+import Home from './pages/Home/Home';
 const Rankings = React.lazy(() => import('./pages/Rankings/Rankings'))
-const Home = React.lazy(() => import('./pages/Home/Home'))
 const Map = React.lazy(() => import('./pages/Map/Map'))
 
 function App() {
@@ -9,23 +9,22 @@ function App() {
 
     return (
         <>
+            <Home />
             <Header page={page}
                 setPage={setPage} />
-            {page === 'rankings' ?
-                <Suspense fallback={<div></div>}>
-                    <Rankings />
-                </Suspense>
-                : page === 'map' ?
-                <Suspense fallback={<div></div>}>
-                    <Map />
-                </Suspense>
-                : page === 'home' ?
-                <Suspense fallback={<div></div>}>
-                    <Home />
-                </Suspense>
-                :
-                null
-            }
+            <div className='sections'>
+                {page === 'rankings' ?
+                    <Suspense fallback={<div></div>}>
+                        <Rankings />
+                    </Suspense>
+                    : page === 'map' ?
+                        <Suspense fallback={<div></div>}>
+                            <Map />
+                        </Suspense>
+                        :
+                        null
+                }
+            </div>
         </>
     )
 }

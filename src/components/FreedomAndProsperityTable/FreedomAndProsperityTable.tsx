@@ -5,21 +5,21 @@ import IconProsperityCategory from '../../assets/icons/IconProsperityCategory';
 import IconFreedomCategory from '../../assets/icons/IconFreedomCategory';
 import { useState } from 'react';
 import Button from '../Button/Button';
-import { columnNames,  NO_DATA_VALUE,  sortedData } from '../../data/data-util';
+import { columnNames, NO_DATA_VALUE, sortedData } from '../../data/data-util';
 import { ProsperityCategory } from '../../@enums/ProsperityCategory';
 import { FreedomCategory } from '../../@enums/FreedomCategory';
 import { IndexType } from '../../@enums/IndexType';
 import TableCell from '../Table/TableCell';
 
 interface IFreedomAndProsperityTable {
-    mode: IndexType | null,
     columns: Array<string>,
-    handleSelectCountry: (iso: string) => void,
+    handleSelectCountry?: (iso: string) => void,
+    preview?: boolean,
 }
 
 function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
-    const { mode, columns, handleSelectCountry } = props;
-    const [sort, setSort] = useState({ col: columns[0], direction: 1 })
+    const { columns, handleSelectCountry, preview } = props;
+    const [sort, setSort] = useState({ col: columns[0], direction: -1 })
     const [rankOrScoreByColumn, setRankOrScoreByColumn] = useState({
         'split__Income score 2021__ranked-Income': 'score',
         'split__Environment score 2021__ranked-Environment': 'score',
@@ -29,7 +29,11 @@ function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
         'split__Legal Freedom score 2021__ranked-Legal Freedom': 'score',
     })
 
-    const data = sortedData(sort);
+    let data = sortedData(sort);
+
+    if (preview) {
+        data = data.slice(0, window.innerHeight / 68);
+    }
 
     const getCell = (row: FPData, col: string) => {
         if (col.startsWith('split__')) {
@@ -41,7 +45,7 @@ function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
                         <div className={rankOrScoreByColumn[col] === 'score' ? 'split__content--selected' : ''}>
                             {row[split[1]] === 'no data' ? '–' : row[split[1]]}
                         </div>
-                         {/* @ts-ignore */}
+                        {/* @ts-ignore */}
                         <div className={rankOrScoreByColumn[col] === 'rank' ? 'split__content--selected' : ''}>
                             {row[split[2]] === NO_DATA_VALUE ? '—' : row[split[2]]}
                         </div>
@@ -53,7 +57,7 @@ function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
         return (
             <TableCell key={row.Country + col}
                 className={col === 'Country' ? 'p-0' : ''}
-                >
+            >
                 {col === 'Freedom score 2021' || col === 'Prosperity score 2021' ?
                     <ScoreBar key={row.Country + col}
                         value={parseFloat(row[col])}
@@ -67,8 +71,8 @@ function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
                                 <Button onClick={() => handleSelectCountry(row.ISO3)}>
                                     {row[col]}
                                 </Button>
-                            :
-                            row[col]
+                                :
+                                row[col]
 
                 }
             </TableCell>
@@ -79,52 +83,64 @@ function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
         <table className="freedom-and-prosperity-table">
             <thead>
                 <tr>
-                    {columns.map((col: string) => (
-                        <th key={col}>
-                            {col.startsWith('split') ?
-                                <div className='freedom-and-prosperity-table__th--split'>
-                                    <div>
-                                        <Button key={col}
-                                            variant='sort'
-                                            onClick={() => {
-                                                const cols = col.replace('split__', '').split('__');
-                                                let thisCol = cols[0];
-                                                if (rankOrScoreByColumn[col] === 'rank') {
-                                                    thisCol = cols[1]
-                                                } 
-                                                console.log(thisCol, data[0])
-                                                setSort(prev => ({ col: thisCol, direction: prev.col === thisCol ? prev.direction * -1 : 1 }))
-                                            }}>
+                    {columns.map((col: string) => {
+                        const cols = col.replace('split__', '').split('__');
+                        let thisCol = cols[0];
+                        if (rankOrScoreByColumn[col] === 'rank') {
+                            thisCol = cols[1]
+                        }
+
+                        if (preview) {
+                            return (
+                                <th key={col}>
+                                    <div className='no-sort'>
+                                        {columnNames[col]}
+                                    </div>
+                                </th>
+                            )
+                        } return (
+                            <th key={col}>
+                                {col.startsWith('split') ?
+                                    <div className='freedom-and-prosperity-table__th--split'>
+                                        <div>
+                                            <Button key={col}
+                                                variant='sort'
+                                                data-direction={`${thisCol === sort.col ? sort.direction === -1 ? 'asc' : 'desc' : 'default'}`}
+                                                onClick={() => {
+                                                    setSort(prev => ({ col: thisCol, direction: prev.col === thisCol ? prev.direction * -1 : 1 }))
+                                                }}>
+                                                {/* @ts-expect-error */}
+                                                {columnNames[col]}
+                                            </Button>
+                                        </div>
+                                        <div>
                                             {/* @ts-expect-error */}
-                                            {columnNames[col]}
-                                        </Button>
+                                            <Button selected={rankOrScoreByColumn[col] === 'score'}
+                                                onClick={() => setRankOrScoreByColumn(prev => ({ ...prev, [col]: 'score' }))}>
+                                                Score
+                                            </Button>
+                                            &nbsp;&&nbsp;
+                                            {/* @ts-expect-error */}
+                                            <Button selected={rankOrScoreByColumn[col] === 'rank'}
+                                                onClick={() => setRankOrScoreByColumn(prev => ({ ...prev, [col]: 'rank' }))}>
+                                                Rank
+                                            </Button>
+                                        </div>
                                     </div>
-                                    <div>
+                                    :
+                                    <Button key={col}
+                                        variant='sort'
+                                        data-direction={`${col === sort.col ? sort.direction === -1 ? 'asc' : 'desc' : 'default'}`}
+                                        onClick={() => {
+                                            setSort(prev => ({ col: col, direction: prev.col === col ? prev.direction * -1 : 1 }))
+                                        }}>
                                         {/* @ts-expect-error */}
-                                        <Button selected={rankOrScoreByColumn[col] === 'score'}
-                                            onClick={() => setRankOrScoreByColumn(prev => ({...prev, [col]: 'score'}))}>
-                                            Score
-                                        </Button>
-                                        &nbsp;&&nbsp;
-                                        {/* @ts-expect-error */}
-                                        <Button selected={rankOrScoreByColumn[col] === 'rank'}
-                                            onClick={() => setRankOrScoreByColumn(prev => ({...prev, [col]: 'rank'}))}>
-                                            Rank
-                                        </Button>
-                                    </div>
-                                </div>
-                                :
-                                <Button key={col}
-                                    variant='sort'
-                                    onClick={() => {
-                                        setSort(prev => ({ col: col, direction: prev.col === col ? prev.direction * -1 : 1 }))
-                                    }}>
-                                    {/* @ts-expect-error */}
-                                    {columnNames[col]}
-                                </Button>
-                            }
-                        </th>
-                    ))}
+                                        {columnNames[col]}
+                                    </Button>
+                                }
+                            </th>
+                        )
+                    })}
                 </tr>
             </thead>
             <tbody>

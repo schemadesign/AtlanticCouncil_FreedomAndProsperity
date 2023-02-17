@@ -1,18 +1,9 @@
 .freedom-prosperity-map {
-    margin-bottom: 5rem;
-    padding: 0;
-    height: 100vmin;
-
-    svg {
-        &.dragging {
-            path {
-                transition: none;
-            }
-        }
-    }
+    padding: 0 0 5rem 0;
+    height: calc(100vh - 13rem);
 
     path,
-    rect {
+    circle {
         cursor: pointer;
     }
 
@@ -25,7 +16,7 @@
     }
 
     .map__centroids {
-        rect {
+        circle {
             stroke: var(--neutral---black);
             opacity: 1;
             transition: opacity 150ms, stroke 150ms;
@@ -34,7 +25,7 @@
 
     &--freedom-only {
         .map__centroids {
-            rect {
+            circle {
                 opacity: 0;
             }
         }
@@ -42,7 +33,7 @@
 
     &--prosperity-only {
         .map__centroids {
-            rect {
+            circle {
                 stroke: var(--neutral---white);
             }
         }

@@ -8,18 +8,25 @@ import centroids from '../../../data/centroids.geo.json';
 
 import './_map.scss';
 import { getDataByISO, getFreedomCategory, getProsperityCategory } from '../../../data/data-util';
-import { ProsperityCategoryLiterals } from '../../../@enums/ProsperityCategory';
 import { IndexType } from '../../../@enums/IndexType';
 import Tooltip from '../Tooltip/Tooltip';
-import { positionCentroid, colorScale, colors } from '../../../data/d3-util';
+import { positionCentroid, colors, fillByProsperity } from '../../../data/d3-util';
 
 interface IMap {
     mode: IndexType | null,
     setPanelData: (data: FPData) => void,
 }
 
-const MIN_SCALE = 308;
+const height = 1400;
+const width = 2000;
 
+let projection = d3.geoMercator()
+    .center([-40, 80])
+    .rotate([-10.5, 0, 0])
+    .translate([800, 150])
+    .fitSize([width, height], geojson)
+
+// const MIN_SCALE = 308;
 
 function Map(props: IMap) {
     const { mode, setPanelData } = props;
@@ -27,11 +34,6 @@ function Map(props: IMap) {
     const tooltipNode = useRef(null);
     const [tooltip, setTooltip] = useState(null);
 
-    let projection = d3.geoMercator()
-        .scale(MIN_SCALE)
-        .center([-40, 80])
-        .rotate([-10.5, 0, 0])
-        .translate([800, 150])
     // .fitExtent([[0, 0], [900, 500]], geojson)
 
     const sensitivity = 120;
@@ -67,7 +69,7 @@ function Map(props: IMap) {
                     updateCountries(true);
 
                     d3.select(svg.current)
-                        .selectAll('.map__centroids rect')
+                        .selectAll('.map__centroids circle')
                         .each(function (d) {
                             positionCentroid(d3.select(svg.current), d3.select(this), d, projection)
                         })
@@ -90,7 +92,7 @@ function Map(props: IMap) {
                         .attr('d', geoGenerator)
 
                     d3.select(svg.current)
-                        .selectAll('.map__centroids rect')
+                        .selectAll('.map__centroids circle')
                         .each(function (d) {
                             positionCentroid(d3.select(svg.current), d3.select(this), d, projection)
                         })
@@ -171,13 +173,6 @@ function Map(props: IMap) {
     }
 
     const drawMap = () => {
-        const height = 1400;
-        const width = 2000;
-
-        const colorProsperous = d3.scaleOrdinal()
-            .domain([...ProsperityCategoryLiterals, ''])
-            .range(colorScale)
-
         d3.select(svg.current)
             .attr('viewBox', `0 0 ${width} ${height}`)
 
@@ -204,15 +199,16 @@ function Map(props: IMap) {
 
         d3.select(svg.current)
             .select('.map__centroids')
-            .selectAll('rect')
+            .selectAll('circle')
             .data(getFeatures(false).filter(d => getProsperityCategory(d.properties.adm0_iso) !== ''))
-            .join('rect')
+            .join('circle')
             .attr('data-country', d => d.properties.adm0_iso)
+            .style('stroke', mode === IndexType.PROSPERITY ? 'var(--neutral---white)' : '')
             .each(function (d) {
                 positionCentroid(d3.select(svg.current), d3.select(this), d, projection)
             })
             .style('fill', d => {
-                return colorProsperous(getProsperityCategory(d.properties.adm0_iso))
+                return fillByProsperity(getProsperityCategory(d.properties.adm0_iso))
             })
             .on('mouseenter', (e, d) => {
                 setTooltip(getDataByISO(d.properties.adm0_iso));
