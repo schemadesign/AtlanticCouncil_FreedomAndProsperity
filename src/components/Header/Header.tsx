@@ -1,14 +1,17 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import Button from "../Button/Button";
+import Search from "../Search/Search";
+
 import './_header.scss';
 
 interface IHeader {
     page: string,
-    setPage: (page: string) => void
+    setPage: (page: string) => void,
+    openPanel: () => void,
 }
 
 function Header(props: IHeader) {
-    const { page, setPage } = props;
+    const { page, setPage, openPanel } = props;
     const node = useRef(null);
 
     return (
@@ -25,11 +28,14 @@ function Header(props: IHeader) {
                         )
                     })}
                 </div>
+                
+                <div className='flex-row justify-end'>
+                    <Search />
 
-                <input type='text'
-                    className='header__search'
-                    placeholder='Type country or region'
-                    />
+                    <Button variant='open-panel'
+                        onClick={() => openPanel()}>
+                    </Button>
+                </div>
             </div>
         </header>
     )

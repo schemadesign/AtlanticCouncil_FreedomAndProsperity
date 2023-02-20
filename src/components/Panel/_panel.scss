@@ -22,16 +22,30 @@
         right: 0;
     }
 
+    .mode-controls {
+        padding: 0 0.75rem 2rem 1.75rem;
+        border-bottom: 1px solid var(--neutral---gray--dark);
+        .button {
+            background: var(--neutral---white);
+            box-shadow: none;
+            &:first-child {
+                border-top-left-radius: 5px;
+            }
+            &:last-child {
+                border-top-right-radius: 5px;
+            }
+            &:not(.button--selected) {
+                opacity: 0.5;
+            }
+        }
+    }
+
     &__content {
         height: 100%;
         overflow: auto;
         &__header {
             padding-top: 2rem;
             background: var(--neutral---gray--light);
-        }
-        .mode-controls {
-            padding: 0 0.75rem;
-            border-bottom: 1px solid var(--neutral---gray--dark);
         }
         &__inner {
             padding: 0.875rem;
@@ -73,6 +87,7 @@
     }
 
     .freedom-and-prosperity-table {
+        margin-top: 0;
         thead {
             display: none;
         }

@@ -8,7 +8,11 @@
         height: 6rem;
         display: flex;
         justify-content: space-between;
+    }
+
+    .flex-row {
         align-items: center;
+        flex: 1 1 auto;
     }
 
     &--bottom {
@@ -30,14 +34,15 @@
             color: var(--neutral---white);
             border-radius: 5px;
         }
+        &[variant="open-panel"] {
+            background: var(--neutral---black);
+            border-radius: 100%;
+            margin: 0 0 0 1rem;
+        }
     }
     &.locked {
         position: fixed;
         top: 0;
         bottom: auto;
-    }
-
-    &__search {
-        background: var(--neutral---gray--light);
     }
 }

@@ -15,11 +15,12 @@ interface IFreedomAndProsperityTable {
     columns: Array<string>,
     handleSelectCountry?: (iso: string) => void,
     preview?: boolean,
+    defaultSort?: string,
 }
 
 function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
-    const { columns, handleSelectCountry, preview } = props;
-    const [sort, setSort] = useState({ col: columns[0], direction: -1 })
+    const { columns, handleSelectCountry, preview, defaultSort } = props;
+    const [sort, setSort] = useState({ col: defaultSort ? columns.find(col => col === defaultSort) : columns[0], direction: -1 })
     const [rankOrScoreByColumn, setRankOrScoreByColumn] = useState({
         'split__Income score 2021__ranked-Income': 'score',
         'split__Environment score 2021__ranked-Environment': 'score',

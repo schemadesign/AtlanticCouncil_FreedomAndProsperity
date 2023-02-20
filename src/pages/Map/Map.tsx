@@ -8,19 +8,22 @@ import Panel from "../../components/Panel/Panel";
 import './_map.scss';
 
 interface IHome {
+    mode: IndexType,
+    setMode: (mode: IndexType) => void,
+    setPanelData: (data: FPData) => void,
+    setPanelOpen: (state: boolean) => void,
+    panelOpen: boolean,
 }
 
 function Map(props: IHome) {
-    const [mode, setMode] = useState<IndexType>(IndexType.COMBINED);
-    const [panelOpen, setPanelOpen] = useState(false);
-    const [panelData, setPanelData] = useState<FPData | null>(null);
+    const { mode, setMode, setPanelData, setPanelOpen, panelOpen } = props;
 
     return (
         <div className="page--map">
             <div className="page--map__header">
                 <div className="container">
                     <h1>
-                        Freedom and ProsperityMap
+                        Freedom and Prosperity Map
                     </h1>
                 </div>
             </div>
@@ -39,14 +42,6 @@ function Map(props: IHome) {
                 />
                 <FreedomAndProsperityMapLegend mode={mode} />
             </div>
-
-            <Panel
-                mode={mode}
-                setMode={setMode}
-                setOpen={setPanelOpen}
-                setPanelData={setPanelData}
-                open={panelOpen}
-                data={panelData} />
         </div>
     )
 }

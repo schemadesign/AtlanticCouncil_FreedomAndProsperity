@@ -6,6 +6,7 @@ import Close from '../../assets/icons/IconClose';
 import Sort from '../../assets/icons/IconSort';
 
 import './_button.scss';
+import IconOpenPanel from '../../assets/icons/IconOpenPanel';
 
 interface IButton extends React.HTMLAttributes<HTMLButtonElement> {
     onClick: MouseEventHandler<HTMLButtonElement>,
@@ -31,6 +32,8 @@ function Button(props: IButton) {
                 return <Close />
             case 'sort':
                 return <Sort />
+            case 'open-panel':
+                return <IconOpenPanel />
             default:
                 return null;
         }
