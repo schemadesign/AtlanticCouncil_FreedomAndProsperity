@@ -15,13 +15,13 @@ interface IFreedomAndProsperityTable {
     columns: Array<string>,
     handleSelectCountry?: (iso: string) => void,
     preview?: boolean,
-    defaultSort?: {col: string, direction: number},
+    defaultSort?: { col: string, direction: number },
 }
 
 function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
     const { columns, handleSelectCountry, preview, defaultSort } = props;
     const [sort, setSort] = useState(defaultSort ? defaultSort : { col: columns[0], direction: -1 })
-    const [rankOrScoreByColumn, setRankOrScoreByColumn] = useState({
+    const [rankOrScoreByColumn, setRankOrScoreByColumn] = useState<{ [key: string]: string }>({
         'split__Income score 2021__ranked-Income': 'score',
         'split__Environment score 2021__ranked-Environment': 'score',
         'split__Minority Rights score 2021__ranked-Minority Rights': 'score',
@@ -69,7 +69,9 @@ function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
                         : col === 'Freedom category 2021' ?
                             <IconFreedomCategory category={row[col] as FreedomCategory} />
                             : col === 'Country' ?
-                                <Button onClick={() => handleSelectCountry(row.ISO3)}>
+                                <Button onClick={() => {
+                                    handleSelectCountry(row.ISO3)
+                                    }}>
                                     {row[col]}
                                 </Button>
                                 :
@@ -95,6 +97,7 @@ function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
                             return (
                                 <th key={col}>
                                     <div className='no-sort'>
+                                        {/* @ts-expect-error */}
                                         {columnNames[col]}
                                     </div>
                                 </th>
@@ -115,13 +118,11 @@ function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
                                             </Button>
                                         </div>
                                         <div>
-                                            {/* @ts-expect-error */}
                                             <Button selected={rankOrScoreByColumn[col] === 'score'}
                                                 onClick={() => setRankOrScoreByColumn(prev => ({ ...prev, [col]: 'score' }))}>
                                                 Score
                                             </Button>
                                             &nbsp;&&nbsp;
-                                            {/* @ts-expect-error */}
                                             <Button selected={rankOrScoreByColumn[col] === 'rank'}
                                                 onClick={() => setRankOrScoreByColumn(prev => ({ ...prev, [col]: 'rank' }))}>
                                                 Rank
