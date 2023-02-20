@@ -26,3 +26,9 @@
         padding: 0;
     }
 }
+
+.page__header {
+    background: var(--neutral---white);
+    padding-bottom: 2rem;
+    border-bottom: var(--neutral---gray--medium) 1px solid;
+}

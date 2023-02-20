@@ -20,7 +20,7 @@ function Map(props: IHome) {
 
     return (
         <div className="page--map">
-            <div className="page--map__header">
+            <div className="page__header">
                 <div className="container">
                     <h1>
                         Freedom and Prosperity Map

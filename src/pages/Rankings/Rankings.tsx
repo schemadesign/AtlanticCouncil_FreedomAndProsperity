@@ -7,14 +7,20 @@ import ModeControls from "../../components/ModeControls/ModeControls";
 function Rankings() {
     const [mode, setMode] = useState<IndexType>(IndexType.COMBINED);
     return (
-        <div className="page--rankings container">
-            <h1>
-                Rankings
-            </h1>
-            <ModeControls mode={mode}
-                setMode={(mode: IndexType) => setMode(mode)} />
-            <FreedomAndProsperityTable columns={getColumns(mode)}
-                />
+        <div className="page--rankings">
+            <div className="page__header">
+                <div className="container">
+                    <h1>
+                        Rankings
+                    </h1>
+                </div>
+            </div>
+            <div className="container">
+                <ModeControls mode={mode}
+                    setMode={(mode: IndexType) => setMode(mode)} />
+                <FreedomAndProsperityTable columns={getColumns(mode)}
+                    />
+            </div>
         </div>
     )
 }
