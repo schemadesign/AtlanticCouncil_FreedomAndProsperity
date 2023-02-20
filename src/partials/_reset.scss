@@ -78,3 +78,11 @@ table {
         border-bottom: 1px solid var(--neutral---black);
     }
 }
+
+input {
+    &[type="text"] {
+        border-radius: 20px;
+        padding: 0.625rem 1rem;
+        border: none;
+    }
+}

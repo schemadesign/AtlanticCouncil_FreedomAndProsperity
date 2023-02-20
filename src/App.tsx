@@ -1,7 +1,7 @@
 import React, { Suspense, useState } from 'react'
 import Header from './components/Header/Header'
 import Home from './pages/Home/Home';
-const Rankings = React.lazy(() => import('./pages/Rankings/Rankings'))
+import Rankings from './pages/Rankings/Rankings';
 const Map = React.lazy(() => import('./pages/Map/Map'))
 
 function App() {
@@ -14,9 +14,7 @@ function App() {
                 setPage={setPage} />
             <div className='sections'>
                 {page === 'rankings' ?
-                    <Suspense fallback={<div></div>}>
-                        <Rankings />
-                    </Suspense>
+                    <Rankings />
                     : page === 'map' ?
                         <Suspense fallback={<div></div>}>
                             <Map />

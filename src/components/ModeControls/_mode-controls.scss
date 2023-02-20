@@ -1,0 +1,24 @@
+.mode-controls {
+    display: flex;
+    margin-left: -0.625rem;
+
+    .button {
+        background: white;
+        box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.15);
+        border: 1px solid var(--neutral---gray--medium);
+        border-left: none;
+
+        &--selected {
+            background: var(--neutral---gray--light);
+            box-shadow: none;
+        }
+
+        &:first-child {
+            border-bottom-left-radius: 5px;
+            border-left: 1px solid var(--neutral---gray--medium);
+        }
+        &:last-child {
+            border-bottom-right-radius: 5px;
+        }
+    }
+}

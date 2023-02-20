@@ -3,7 +3,7 @@ import { CSSTransition } from 'react-transition-group';
 import { IndexType } from "../../@enums/IndexType";
 import { getDataByISO } from "../../data/data-util";
 import Button from "../Button/Button";
-import ControlsSidePanel from "../ControlsSidePanel/ControlsSidePanel";
+import ModeControls from "../ModeControls/ModeControls";
 import FiltersFreedom from "../Filters/FiltersFreedom";
 import FiltersProsperity from "../Filters/FiltersProsperity";
 import FreedomAndProsperityTable from "../FreedomAndProsperityTable/FreedomAndProsperityTable";
@@ -14,8 +14,8 @@ import './_panel.scss';
 interface IPanel {
     data: FPData | null,
     open: boolean,
-    mode: null | IndexType,
-    setMode: (mode: null | IndexType) => void,
+    mode: IndexType,
+    setMode: (mode: IndexType) => void,
     setOpen: (open: boolean) => void,
     setPanelData: (data: FPData) => void,
 }
@@ -38,7 +38,7 @@ function Panel(props: IPanel) {
             >
                 <div className='panel__content'>
                     <div className='panel__content__header'>
-                        <ControlsSidePanel setMode={setMode}
+                        <ModeControls setMode={setMode}
                             mode={mode} />
                         {mode === IndexType.FREEDOM ?
                             <FiltersFreedom />

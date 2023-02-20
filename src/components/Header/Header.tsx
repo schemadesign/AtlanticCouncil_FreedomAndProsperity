@@ -12,17 +12,24 @@ function Header(props: IHeader) {
     const node = useRef(null);
 
     return (
-        <header ref={node} className={`header ${page === 'home' ? 'header--bottom' : ''}`}>
-            <div className='container flex-row'>
-                {['map', 'rankings', 'profiles', 'compare', 'library', 'about'].map(p => {
-                    return (
-                        <Button key={p}
-                            selected={p === page}
-                            onClick={() => setPage(p)}>
-                            {p}
-                        </Button>
-                    )
-                })}
+        <header ref={node} className={`header`}>
+            <div className='container'>
+                <div className='flex-row'>
+                    {['map', 'rankings', 'profiles', 'compare', 'library', 'about'].map(p => {
+                        return (
+                            <Button key={p}
+                                selected={p === page}
+                                onClick={() => setPage(p)}>
+                                {p}
+                            </Button>
+                        )
+                    })}
+                </div>
+
+                <input type='text'
+                    className='header__search'
+                    placeholder='Type country or region'
+                    />
             </div>
         </header>
     )

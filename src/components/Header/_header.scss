@@ -4,6 +4,12 @@
     z-index: 100;
     background: var(--neutral---white);
     width: 100%;
+    > .container {
+        height: 6rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
     &--bottom {
         position: absolute;
@@ -29,5 +35,9 @@
         position: fixed;
         top: 0;
         bottom: auto;
+    }
+
+    &__search {
+        background: var(--neutral---gray--light);
     }
 }

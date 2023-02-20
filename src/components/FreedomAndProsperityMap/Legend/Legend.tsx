@@ -7,7 +7,7 @@ import Prosperity from "../../../assets/icons/IconProsperity";
 import './_legend.scss';
 
 interface ILegend {
-    mode: IndexType | null
+    mode: IndexType,
 }
 
 

@@ -2,8 +2,8 @@
     display: flex;
     flex-direction: row;
     background-color: var(--neutral---white);
-    position: absolute;
-    top: calc(200vh - 12rem);
+    position: fixed;
+    top: calc(100vh - 3rem);
     > div {
         display: flex;
         flex-direction: row;

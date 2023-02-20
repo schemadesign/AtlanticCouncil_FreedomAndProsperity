@@ -22,6 +22,11 @@ function Button(props: IButton) {
                 return <Freedom />
             case IndexType.PROSPERITY:
                 return <Prosperity />
+            case IndexType.COMBINED:
+                return <span>
+                    {/* <Freedom/>
+                    <Prosperity /> */}
+                </span>
             case 'close':
                 return <Close />
             case 'sort':

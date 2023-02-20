@@ -11,20 +11,14 @@
             margin-right: 0.25rem;
         }
         path {
-            &.no-stroke {
-                fill-rule: evenodd;
-            }
-            &:not(.no-stroke) {
-                fill: rgba(255, 255, 255, 0);
-            }
-        }
-        &.button--selected {
-            svg {
-                path {
-                    fill: var(--neutral---gray--dark);
-                    fill-rule: nonzero;
-                }
-            }
+            // &.no-stroke {
+            //     fill-rule: evenodd;
+            // }
+            // &:not(.no-stroke) {
+            //     fill: rgba(255, 255, 255, 0);
+            // }
+            fill: var(--neutral---gray--dark);
+            fill-rule: nonzero;
         }
     }
     &--close {

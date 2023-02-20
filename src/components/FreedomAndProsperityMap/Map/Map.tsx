@@ -220,7 +220,7 @@ function Map(props: IMap) {
     }
 
     return (
-        <div className={`freedom-prosperity-map container ${mode ? `freedom-prosperity-map--${mode.toLowerCase()}-only` : ''}`}>
+        <div className={`freedom-prosperity-map ${mode ? `freedom-prosperity-map--${mode.toLowerCase()}-only` : ''}`}>
             <svg ref={svg}>
                 <g className='map__paths'>
                     <g className='map__countries'>
