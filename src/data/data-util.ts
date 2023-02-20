@@ -1,3 +1,5 @@
+import { Feature, FeatureCollection } from 'geojson';
+import _ from 'lodash';
 import { IndexType } from '../@enums/IndexType';
 import f_p_data from './F&P 2021-Table 1.csv';
 import geojson from './world.geo.json';
@@ -9,8 +11,8 @@ let dataWithRanks = f_p_data;
 ['Income', 'Environment', 'Minority Rights', 'Health', 'Happiness', 'Legal Freedom', 'Political Freedom', 'Economic Freedom'].forEach((category: string) => {
     dataWithRanks = [...dataWithRanks].sort((a: FPData, b: FPData) => {
         const col = `${category} score 2021`;
-        let aVal = a[col];
-        let bVal = b[col];
+        let aVal = a[col] as string;
+        let bVal = b[col] as string;
 
         if (aVal === 'no data') {
             aVal = '-1';
@@ -20,7 +22,7 @@ let dataWithRanks = f_p_data;
 
         return parseFloat(bVal) - parseFloat(aVal)
     }).map((row: FPData, i: number) => {
-        const rank = parseFloat(row[category + ' score 2021'])
+        const rank = parseFloat(row[category + ' score 2021'] as string)
         return {
             ...row,
             [`ranked-${category}`]: isNaN(rank) ? NO_DATA_VALUE : i + 1,
@@ -29,30 +31,6 @@ let dataWithRanks = f_p_data;
 })
 
 export const totalCountries = dataWithRanks.length;
-
-const columns = [
-    'Country',
-    'Freedom score 2021',
-    'Freedom rank 2021',
-    'Freedom category 2021',
-    'Prosperity score 2021',
-    'Prosperity rank 2021',
-    'Prosperity category 2021',
-    // 'ISO3',
-    // 'Region',
-    // 'Region (WB 2022)',
-    // 'Income group (WB 2022)',
-    // 'Freedom category 2021',
-    // 'Economic Freedom score 2021',
-    // 'Political Freedom score 2021',
-    // 'Legal Freedom score 2021',
-    // 'Prosperity category 2021',
-    // 'Income score 2021',
-    // 'Environment score 2021',
-    // 'Minority Rights score 2021',
-    // 'Health score 2021',
-    // 'Happiness score 2021'
-]
 
 const defaultDirection = (key: string) => {
     if (key === 'Freedom score 2021' ||
@@ -131,7 +109,7 @@ export const sortedData = (sort: {col: string, direction: number}) => {
             return a[sort.col].localeCompare(b[sort.col]) * sort.direction * defaultDirection(sort.col);
         }
         
-        return (parseFloat(b[sort.col]) - parseFloat((a[sort.col]))) * sort.direction * defaultDirection(sort.col)
+        return (parseFloat(b[sort.col] as string) - parseFloat((a[sort.col] as string))) * sort.direction * defaultDirection(sort.col)
     })
 }
 
@@ -158,12 +136,12 @@ export const getDataByISO = (iso: string) => {
         return data;
     } 
 
-    const mapJson = geojson.features.find((feature: any) => feature.properties.adm0_iso === iso);
+    const mapJson = (geojson as FeatureCollection).features.find((feature: Feature) => _.get(feature, 'properties.adm0_iso') === iso);
 
     if (mapJson) {
         return {
-            Country: mapJson.properties.admin,
-            ISO3: mapJson.properties.adm0_iso,
+            Country: _.get(mapJson, 'properties.admin'),
+            ISO3: _.get(mapJson, 'properties.adm0_iso'),
         }
     }
     

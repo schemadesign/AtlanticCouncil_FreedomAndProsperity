@@ -1,21 +1,11 @@
 import { useEffect, useRef } from 'react'
 import * as d3 from 'd3';
-import geojson from '../../data/world.geo.json';
-import { fillByProsperity, colors, getFeatureByISO, positionCentroid } from '../../data/d3-util';
-import { getFreedomCategory, getProsperityCategory } from '../../data/data-util';
+import { colors, getFeatureByISO, positionCentroid } from '../../data/d3-util';
+import { getFreedomCategory } from '../../data/data-util';
 
 import './_mini-map.scss';
 
-interface IMiniMap {
-    iso: string,
-}
-    // .center([-40, 80])
-    // .rotate([-10.5, 0, 0])
-    // .translate([800, 150])
-// .fitExtent([[0, 0], [900, 500]], geojson)
-
-
-function MiniMap(props: IMiniMap) {
+function MiniMap(props) {
     const { iso } = props;
     const svg = useRef(null);
 
@@ -67,9 +57,7 @@ function MiniMap(props: IMiniMap) {
             .each(function (d) {
                 positionCentroid(d3.select(svg.current), d3.select(this), d, projection, 10)
             })
-            .style('fill', d => {
-                return fillByProsperity(getProsperityCategory(d.properties.adm0_iso))
-            })
+            .style('fill', d => fillByProsperity(getProsperityCategory(d.properties.adm0_iso)))
     }
 
     return (

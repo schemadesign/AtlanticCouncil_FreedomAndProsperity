@@ -15,7 +15,7 @@ interface IHome {
 }
 
 function Home(props: IHome) {
-    const [active, setActive] = useState({})
+    const [active, setActive] = useState<string | null>(null)
 
     const sections = [
         {
@@ -84,21 +84,34 @@ function Home(props: IHome) {
         },
     ]
 
+    const activeSection = sections.find(section => section.label === active);
+
     return (
-        <div className={`page--home ${active.label ? 'section-in-focus' : ''}`}>
-            <Logo setActive={(label) => setActive(prev => prev === label ? null : sections.find(section => section.label === label))} />
+        <div className={`page--home ${active ? 'section-in-focus' : ''}`}>
+            <Logo setActive={(label) => setActive((prev: string | null) => {
+                if (prev === label) {
+                    return null
+                } else {
+                    const section = sections.find(section => section.label === label);
+
+                    if (section) {
+                        return section.label
+                    }
+                    return null;
+                }}
+             )} />
             <div className={`page--home__main`}>
                 {sections.map((section) => (
                     <div key={section.label}
-                        className={`page--home__image ${section.label === active.label ? 'active' : ''}`}
+                        className={`page--home__image ${section.label === active ? 'active' : ''}`}
                         style={{ backgroundImage: `url(${section.image})` }}>
-                        <Button onClick={() => setActive(prev => prev.label === section.label ? {} : section)}>
+                        <Button onClick={() => setActive(prev => prev === section.label ? null : section.label)}>
                             {section.label}
                         </Button>
                     </div>
                 ))}
                 <div className={`page--home__main__content`}>
-                    {active.preview}
+                    {activeSection ? activeSection.preview : null}
                 </div>
             </div>
         </div>

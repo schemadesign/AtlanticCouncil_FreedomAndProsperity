@@ -1,6 +1,8 @@
 // declaration.d.ts
 declare module "*.geo.json" {
-    const value: any;
+    const value: {
+        features: Array<any>,
+    };
     export default value;
 }
 declare module "*.json" {

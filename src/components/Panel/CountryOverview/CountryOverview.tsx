@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import _ from 'lodash';
 import { IndexType } from "../../../@enums/IndexType";
 import { totalCountries, getColumns, columnNames, NO_DATA_VALUE } from "../../../data/data-util";
 import Accordion from "../../Accordion/Accordion";
@@ -19,13 +19,13 @@ function CountryOverview(props: ICountryOverview) {
 
     const subindictorsNodes = subindictors.map((indicator: string) => (
         <div key={indicator}>
-            <h6>{columnNames[indicator]}</h6>
+            <h6>{_.get(columnNames, indicator)}</h6>
             <div className='flex-row justify-space-between'>
                 {indicator.replace('split__', '').split('__').map((col: string) => (
                     <div key={col}
                         className={col.includes('ranked') ? 'column--rank' : ''}>
                         {col.includes('score') ?
-                            <ScoreBar value={parseFloat(data[col])} />
+                            <ScoreBar value={parseFloat(data[col] as string)} />
                             :
                             <h3 className="h3--light">
                                 {data[col] === NO_DATA_VALUE ? '—' : data[col]}
@@ -40,7 +40,7 @@ function CountryOverview(props: ICountryOverview) {
     return (     
         <div className='panel__country-overview'>
             <Category type={type}
-                category={data[`${type} category 2021`]} />
+                category={_.get(data, `${type} category 2021`) as string} />
             <div className="panel__country-overview__values flex-row justify-space-between">
                 <div>
                     <h6>

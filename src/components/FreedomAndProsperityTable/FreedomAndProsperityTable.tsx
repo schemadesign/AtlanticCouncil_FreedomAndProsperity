@@ -3,7 +3,7 @@ import './_freedom-and-prosperity-table.scss';
 import ScoreBar from '../ScoreBar/ScoreBar';
 import IconProsperityCategory from '../../assets/icons/IconProsperityCategory';
 import IconFreedomCategory from '../../assets/icons/IconFreedomCategory';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import Button from '../Button/Button';
 import { columnNames, NO_DATA_VALUE, sortedData } from '../../data/data-util';
 import { ProsperityCategory } from '../../@enums/ProsperityCategory';
@@ -55,6 +55,18 @@ function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
             )
         }
 
+        let button: ReactNode | string | null;
+
+        if (handleSelectCountry) {
+            button = <Button onClick={() => {
+                handleSelectCountry(row.ISO3)
+            }}>
+                {row[col]}
+            </Button>
+        } else {
+            button = row[col]
+        }
+
         return (
             <TableCell key={row.Country + col}
                 className={col === 'Country' ? 'p-0' : ''}
@@ -68,15 +80,8 @@ function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
                         <IconProsperityCategory category={row[col] as ProsperityCategory} />
                         : col === 'Freedom category 2021' ?
                             <IconFreedomCategory category={row[col] as FreedomCategory} />
-                            : col === 'Country' ?
-                                <Button onClick={() => {
-                                    handleSelectCountry(row.ISO3)
-                                    }}>
-                                    {row[col]}
-                                </Button>
-                                :
-                                row[col]
-
+                            : 
+                            button
                 }
             </TableCell>
         )
