@@ -81,14 +81,14 @@ function Panel(props: IPanel) {
                         mode === IndexType.PROSPERITY ?
                             <FreedomAndProsperityTable key={mode}
                                 mode={mode}
-                                defaultSort={'Country'}
+                                defaultSort={{col: 'Prosperity rank 2021', direction: 1}}
                                 handleSelectCountry={(iso) => setPanelData(getDataByISO(iso))}
                                 columns={['Prosperity rank 2021', 'Country', 'Prosperity score 2021']}
                             />
                             : mode === IndexType.FREEDOM ?
                                 <FreedomAndProsperityTable key={mode}
                                     mode={mode}
-                                    defaultSort={'Country'}
+                                    defaultSort={{col: 'Freedom rank 2021', direction: 1}}
                                     handleSelectCountry={(iso) => setPanelData(getDataByISO(iso))}
                                     columns={['Freedom rank 2021', 'Country', 'Freedom score 2021']}
                                 />
