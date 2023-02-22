@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import geojson from './world.geo.json';
 import centroids from './centroids.geo.json';
 import { ProsperityCategoryLiterals } from '../@enums/ProsperityCategory';
-import { FeatureCollection } from 'geojson';
+import { Feature, FeatureCollection } from 'geojson';
 
 export const colorScale = ['rgba(71, 148, 75, 1)', 'rgba(177, 216, 120, 1)', 'rgba(225, 143, 106, 1)', 'rgba(198, 50, 42, 1)', '#e6e6e6'];
 export const colors = { 'Free': 'rgba(71, 148, 75, 1)', 'Mostly Free': 'rgba(177, 216, 120, 1)', 'Mostly Unfree': 'rgba(225, 143, 106, 1)', 'Unfree': 'rgba(198, 50, 42, 1)' };
@@ -31,10 +31,10 @@ export const getBoundingBoxCenter = (selection: d3.Selection<SVGSVGElement, {}, 
     return [-100, -100]
 }
 
-export const fillByProsperity = d3.scaleOrdinal()
+export const fillByProsperity: (any) = d3.scaleOrdinal()
     .domain([...ProsperityCategoryLiterals, ''])
     .range(colorScale)
 
-export const getFeatureByISO = (iso: string) => {
-    return (geojson as FeatureCollection).features.find((feature: any) => feature.properties.adm0_iso === iso) || {}
+export const getFeatureByISO = (iso: string): (Feature | null) => {
+    return (geojson as FeatureCollection).features.find((feature: any) => feature.properties.adm0_iso === iso) || null
 }
