@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { formatValue } from '../../data/data-util';
 import './_score-bar.scss';
 
 interface IScoreBar {
@@ -13,7 +14,7 @@ function ScoreBar(props: IScoreBar) {
     }, [props.value])
 
 
-    if (isNaN(value)) {
+    if (isNaN(value) || value < 0) {
         return (
             <div className="score-bar__container">
                 <h5 className="score-bar__label">
@@ -26,7 +27,7 @@ function ScoreBar(props: IScoreBar) {
     return (
         <div className="score-bar__container">
             <h5 className="score-bar__label">
-                {value.toFixed(1)}
+                {formatValue(value, 1)}
             </h5>
             <div className="score-bar">
                 <div className="score-bar__value" style={{ width: `${value}%` }}></div>

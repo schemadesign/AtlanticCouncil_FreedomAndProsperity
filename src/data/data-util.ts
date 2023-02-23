@@ -78,8 +78,6 @@ let dataWithRanks = f_p_data.map((row: any) => {
 //     })
 // })
 
-console.log(dataWithRanks)
-
 export const totalCountries = dataWithRanks.length;
 
 const defaultDirection = (key: string) => {
@@ -198,4 +196,22 @@ export const getDataByISO = (iso: string) => {
     }
     
     return null;
+}
+
+export const getData = (data: FPData, col: string, toFixed = 0): string | number => {
+    if (data[col] < 0 || isNaN(data[col])) {
+        return '—'
+    }
+
+    return formatValue(data[col], toFixed)
+}
+
+export const formatValue = (value: number, toFixed = 0): number => {
+    if (toFixed > 0) {
+        const val = parseFloat(value.toFixed(toFixed));
+
+        return val;
+    }
+
+    return value
 }

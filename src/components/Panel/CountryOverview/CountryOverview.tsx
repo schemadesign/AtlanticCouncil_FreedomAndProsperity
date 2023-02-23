@@ -1,6 +1,6 @@
 import _, { isArray } from 'lodash';
 import { FreedomSubIndicator, IndexType } from "../../../@enums/IndexType";
-import { totalCountries, columnNames, INDICATORS } from "../../../data/data-util";
+import { totalCountries, columnNames, INDICATORS, getData } from "../../../data/data-util";
 import Accordion from "../../Accordion/Accordion";
 import Category from "../../Category/Category";
 import ScoreBar from "../../ScoreBar/ScoreBar";
@@ -10,10 +10,11 @@ import './_country-overview.scss';
 interface ICountryOverview {
     type: IndexType.FREEDOM | IndexType.PROSPERITY,
     data: FPData,
+    filters: Array<string>,
 }
 
 function CountryOverview(props: ICountryOverview) {
-    const { type, data } = props;
+    const { type, data, filters } = props;
 
     const indicators = INDICATORS[type]
 
@@ -27,15 +28,13 @@ function CountryOverview(props: ICountryOverview) {
                     </div>
                     <div className={'column--rank'}>
                         <h3 className="h3--light">
-                            {isNaN(data[subindictor + ' rank']) ? '—' : data[subindictor + ' rank'].toFixed(1)}
+                            {getData(data, subindictor + ' rank', 1)}
                         </h3>
                     </div>
                 </div>
             </div>
         )
     }
-
-    console.log(data, indicators)
 
     return (
         <div className='panel__country-overview'>
@@ -45,7 +44,7 @@ function CountryOverview(props: ICountryOverview) {
                         Score
                     </h6>
                     <h3>
-                        {data[`${type} score`].toFixed(1)}
+                        {getData(data, `${type} score`, 1)}
                     </h3>
                 </div>
                 <div className='column--rank'>
@@ -53,7 +52,7 @@ function CountryOverview(props: ICountryOverview) {
                         Rank
                     </h6>
                     <h3 className='tooltip__rank__value'>
-                        {data[`${type} rank`]}
+                        {getData(data, `${type} rank`)}
                         <sup>/{totalCountries}</sup>
                     </h3>
                 </div>
@@ -62,23 +61,29 @@ function CountryOverview(props: ICountryOverview) {
                 category={_.get(data, `${type} category`) as string} />
             {isArray(indicators) ?
                 indicators.map((subindictor: string) => {
-                    return (
-                        <div key={subindictor}>
-                            {subindictorNode(subindictor)}
-                        </div>
-                    )
+                    if (filters.length === 0 || filters.includes(subindictor)) {
+                        return (
+                            <div key={subindictor}>
+                                {subindictorNode(subindictor)}
+                            </div>
+                        )
+                    }
+                    return null;
                 })
                 :
                 Object.keys(indicators).map((subindictor: string) => {
-                    return (
-                        <Accordion key={subindictor}    
-                            header={subindictorNode(subindictor)}
-                            content={
-                                indicators[subindictor as FreedomSubIndicator].map((d: string) => (
-                                    subindictorNode(d)
-                                ))}
+                    if (filters.length === 0 || filters.includes(subindictor)) {
+                        return (
+                            <Accordion key={subindictor}
+                                header={subindictorNode(subindictor)}
+                                content={
+                                    indicators[subindictor as FreedomSubIndicator].map((d: string) => (
+                                        subindictorNode(d)
+                                    ))}
                             />
-                    )
+                        )
+                    }
+                    return null
                 })
             }
         </div>

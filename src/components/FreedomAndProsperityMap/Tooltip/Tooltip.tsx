@@ -3,7 +3,7 @@ import { IndexType } from '../../../@enums/IndexType';
 import { ProsperityCategory } from '../../../@enums/ProsperityCategory';
 import Freedom from '../../../assets/icons/IconFreedom';
 import Prosperity from '../../../assets/icons/IconProsperity';
-import { totalCountries } from '../../../data/data-util';
+import { getData, totalCountries } from '../../../data/data-util';
 import Category from '../../Category/Category';
 import ScoreBar from '../../ScoreBar/ScoreBar';
 import './_tooltip.scss';
@@ -52,7 +52,7 @@ function Tooltip(props: ITooltip) {
                                     Rank
                                 </h6>
                                 <h5 className='tooltip__rank__value'>
-                                    {data['Freedom rank']}
+                                    {getData(data, 'Freedom rank')}
                                     <sup>/{totalCountries}</sup>
                                 </h5>
                             </div>
@@ -84,7 +84,7 @@ function Tooltip(props: ITooltip) {
                                     Rank
                                 </h6>
                                 <h5 className='tooltip__rank__value'>
-                                    {data['Prosperity rank']}
+                                    {getData(data, 'Prosperity rank')}
                                     <sup>/{totalCountries}</sup>
                                 </h5>
                             </div>

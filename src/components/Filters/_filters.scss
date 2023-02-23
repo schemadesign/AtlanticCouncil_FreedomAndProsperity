@@ -1,13 +1,37 @@
 .filters {
-    &--prosperity, &--freedom {
+
+    &--prosperity,
+    &--freedom {
         display: flex;
         flex-direction: row;
         width: 100%;
         flex-wrap: wrap;
-        padding: 0.625rem 0;
 
         .button {
             font-size: 0.75rem;
+
+            &--prosperity {
+                path {
+                    fill: var(--neutral---gray--dark);
+                    fill-rule: evenodd;
+                }
+            }
+
+            &--freedom {
+                path {
+                    fill: none;
+                    fill-rule: evenodd;
+                }
+            }
+
+            &--selected {
+                svg {
+                    path {
+                        fill: var(--neutral---gray--dark);
+                        fill-rule: nonzero;
+                    }
+                }
+            }
         }
     }
 }

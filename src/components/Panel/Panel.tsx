@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { CSSTransition } from 'react-transition-group';
 import { IndexType } from "../../@enums/IndexType";
 import { getDataByISO } from "../../data/data-util";
@@ -22,7 +22,12 @@ interface IPanel {
 
 function Panel(props: IPanel) {
     const { open, data, mode, setMode, setOpen, setPanelData } = props;
+    const [filters, setFilters] = useState<Array<string>>([]);
     const nodeRef = useRef(null);
+
+    const toggleFilter = (type: string) => {
+        setFilters(prev => prev.includes(type) ? prev.filter(val => val !== type) : [...prev, type])
+    }
 
     return (
         <CSSTransition
@@ -40,13 +45,19 @@ function Panel(props: IPanel) {
                     <div className='panel__content__header'>
                         <ModeControls setMode={setMode}
                             mode={mode} />
-                        {mode === IndexType.FREEDOM ?
-                            <FiltersFreedom />
+                        {mode !== IndexType.PROSPERITY ?
+                            <FiltersFreedom toggleFilter={toggleFilter}
+                                filters={filters}
+                            />
                             :
-                            mode === IndexType.PROSPERITY ?
-                                <FiltersProsperity />
-                                :
-                                <></>
+                            <></>
+                        }
+                        {mode !== IndexType.FREEDOM ?
+                            <FiltersProsperity toggleFilter={toggleFilter}
+                                filters={filters}
+                            />
+                            :
+                            <></>
                         }
                         <Button onClick={() => setOpen(false)}
                             variant={'close'}>
@@ -67,12 +78,14 @@ function Panel(props: IPanel) {
                             <div>
                                 {mode !== IndexType.PROSPERITY ?
                                     <CountryOverview data={data}
+                                        filters={filters}
                                         type={IndexType.FREEDOM} />
                                     :
                                     <></>
                                 }
                                 {mode !== IndexType.FREEDOM ?
                                     <CountryOverview data={data}
+                                        filters={filters}
                                         type={IndexType.PROSPERITY} />
                                     :
                                     <></>
@@ -82,18 +95,22 @@ function Panel(props: IPanel) {
                         :
                         mode === IndexType.PROSPERITY ?
                             <FreedomAndProsperityTable key={mode}
-                                defaultSort={{col: 'Prosperity rank', direction: 1}}
+                                defaultSort={{ col: 'Prosperity rank', direction: -1 }}
                                 handleSelectCountry={(iso) => setPanelData(getDataByISO(iso))}
                                 columns={['Prosperity rank', 'Name', 'Prosperity score']}
                             />
                             : mode === IndexType.FREEDOM ?
                                 <FreedomAndProsperityTable key={mode}
-                                    defaultSort={{col: 'Freedom rank', direction: 1}}
+                                    defaultSort={{ col: 'Freedom rank', direction: -1 }}
                                     handleSelectCountry={(iso) => setPanelData(getDataByISO(iso))}
                                     columns={['Freedom rank', 'Name', 'Freedom score']}
                                 />
                                 :
-                                <></>
+                                <FreedomAndProsperityTable key={mode}
+                                    defaultSort={{ col: 'Freedom rank', direction: -1 }}
+                                    handleSelectCountry={(iso) => setPanelData(getDataByISO(iso))}
+                                    columns={['Freedom rank', 'Name', 'Freedom score', 'Prosperity rank', 'Prosperity score']}
+                                />
                     }
                 </div>
             </div>
