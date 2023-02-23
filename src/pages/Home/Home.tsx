@@ -59,7 +59,7 @@ function Home(props: IHome) {
                     </p>
                 </div>
                 <div>
-                    <FreedomAndProsperityTable columns={['Country', 'Freedom score 2021', 'Freedom rank 2021', 'Freedom category 2021']}
+                    <FreedomAndProsperityTable columns={['Name', 'Freedom score', 'Freedom rank', 'Freedom category']}
                         preview={true}
                     />
                 </div>

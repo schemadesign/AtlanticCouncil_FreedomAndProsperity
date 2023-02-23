@@ -1,16 +1,38 @@
 .accordion {
-    margin: 0 -0.8625rem;
+    h6 {
+        margin: 0;
+    }
 
-    >div {
-        padding: 1rem 0.8625rem 0 0.8625rem;
+    .button--caret {
+        position: absolute;
+        right: 2rem;
+        top: 1rem;
+
+        svg {
+            transition: transform 400ms;
+        }
+    }
+
+    &--open {
+        .button--caret {
+            svg {
+                transform: rotate(-180deg);
+            }
+        }
+    }
+
+    &__header {
         background: #DFE6F2;
-
+        position: relative;
         h6 {
-            margin: 0;
+            font-weight: 700;
         }
 
         .score-bar {
             background: var(--neutral---white);
         }
+    }
+    &__content {
+
     }
 }

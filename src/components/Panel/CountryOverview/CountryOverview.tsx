@@ -1,6 +1,6 @@
-import _ from 'lodash';
-import { IndexType } from "../../../@enums/IndexType";
-import { totalCountries, getColumns, columnNames, NO_DATA_VALUE } from "../../../data/data-util";
+import _, { isArray } from 'lodash';
+import { FreedomSubIndicator, IndexType } from "../../../@enums/IndexType";
+import { totalCountries, columnNames, INDICATORS } from "../../../data/data-util";
 import Accordion from "../../Accordion/Accordion";
 import Category from "../../Category/Category";
 import ScoreBar from "../../ScoreBar/ScoreBar";
@@ -8,46 +8,44 @@ import ScoreBar from "../../ScoreBar/ScoreBar";
 import './_country-overview.scss';
 
 interface ICountryOverview {
-    type: IndexType,
+    type: IndexType.FREEDOM | IndexType.PROSPERITY,
     data: FPData,
 }
 
 function CountryOverview(props: ICountryOverview) {
     const { type, data } = props;
 
-    const subindictors = getColumns(type).filter((col: string) => col.startsWith('split'))
+    const indicators = INDICATORS[type]
 
-    const subindictorsNodes = subindictors.map((indicator: string) => (
-        <div key={indicator}>
-            <h6>{_.get(columnNames, indicator)}</h6>
-            <div className='flex-row justify-space-between'>
-                {indicator.replace('split__', '').split('__').map((col: string) => (
-                    <div key={col}
-                        className={col.includes('ranked') ? 'column--rank' : ''}>
-                        {col.includes('score') ?
-                            <ScoreBar value={parseFloat(data[col] as string)} />
-                            :
-                            <h3 className="h3--light">
-                                {data[col] === NO_DATA_VALUE ? '—' : data[col]}
-                            </h3>
-                        }
+    const subindictorNode = (subindictor: string) => {
+        return (
+            <div className='panel__country-overview__subindicator' key={subindictor}>
+                <h6>{subindictor}</h6>
+                <div className='flex-row justify-space-between'>
+                    <div className={''}>
+                        <ScoreBar value={data[subindictor]} />
                     </div>
-                ))}
+                    <div className={'column--rank'}>
+                        <h3 className="h3--light">
+                            {isNaN(data[subindictor + ' rank']) ? '—' : data[subindictor + ' rank'].toFixed(1)}
+                        </h3>
+                    </div>
+                </div>
             </div>
-        </div>
-    ))
-    
-    return (     
+        )
+    }
+
+    console.log(data, indicators)
+
+    return (
         <div className='panel__country-overview'>
-            <Category type={type}
-                category={_.get(data, `${type} category 2021`) as string} />
             <div className="panel__country-overview__values flex-row justify-space-between">
                 <div>
                     <h6>
                         Score
                     </h6>
                     <h3>
-                        {data[`${type} score 2021`]}
+                        {data[`${type} score`].toFixed(1)}
                     </h3>
                 </div>
                 <div className='column--rank'>
@@ -55,17 +53,33 @@ function CountryOverview(props: ICountryOverview) {
                         Rank
                     </h6>
                     <h3 className='tooltip__rank__value'>
-                        {data[`${type} rank 2021`]}
+                        {data[`${type} rank`]}
                         <sup>/{totalCountries}</sup>
                     </h3>
                 </div>
             </div>
-            {type === IndexType.FREEDOM ?
-                <Accordion>
-                    {subindictorsNodes}
-                </Accordion>
+            <Category type={type}
+                category={_.get(data, `${type} category`) as string} />
+            {isArray(indicators) ?
+                indicators.map((subindictor: string) => {
+                    return (
+                        <div key={subindictor}>
+                            {subindictorNode(subindictor)}
+                        </div>
+                    )
+                })
                 :
-                subindictorsNodes
+                Object.keys(indicators).map((subindictor: string) => {
+                    return (
+                        <Accordion key={subindictor}    
+                            header={subindictorNode(subindictor)}
+                            content={
+                                indicators[subindictor as FreedomSubIndicator].map((d: string) => (
+                                    subindictorNode(d)
+                                ))}
+                            />
+                    )
+                })
             }
         </div>
     );

@@ -24,10 +24,10 @@ function Tooltip(props: ITooltip) {
         <div className='map__tooltip__content'>
             <div className='map__tooltip__title'>
                 <h3>
-                    {data.Country}
+                    {data.Name}
                 </h3>
             </div>
-            {!data['Freedom score 2021'] ?
+            {!data['Freedom score'] ?
                 <div className='map__tooltip__data'>
                     <div className='map__tooltip__col' style={{fontSize: '0.875rem', whiteSpace: 'nowrap'}}>
                         Data unavailable
@@ -45,14 +45,14 @@ function Tooltip(props: ITooltip) {
                                 <h6>
                                     Score
                                 </h6>
-                                <ScoreBar value={parseFloat(data['Freedom score 2021'])} />
+                                <ScoreBar value={data['Freedom score']} />
                             </div>
                             <div>
                                 <h6>
                                     Rank
                                 </h6>
                                 <h5 className='tooltip__rank__value'>
-                                    {data['Freedom rank 2021']}
+                                    {data['Freedom rank']}
                                     <sup>/{totalCountries}</sup>
                                 </h5>
                             </div>
@@ -61,7 +61,7 @@ function Tooltip(props: ITooltip) {
                                     Status
                                 </h6>
                                 <Category type={IndexType.FREEDOM}
-                                    category={data['Freedom category 2021']} />
+                                    category={data['Freedom category']} />
                             </div>
                         </div>
                         :
@@ -77,14 +77,14 @@ function Tooltip(props: ITooltip) {
                                 <h6>
                                     Score
                                 </h6>
-                                <ScoreBar value={parseFloat(data['Prosperity score 2021'])} />
+                                <ScoreBar value={data['Prosperity score']} />
                             </div>
                             <div>
                                 <h6>
                                     Rank
                                 </h6>
                                 <h5 className='tooltip__rank__value'>
-                                    {data['Prosperity rank 2021']}
+                                    {data['Prosperity rank']}
                                     <sup>/{totalCountries}</sup>
                                 </h5>
                             </div>
@@ -93,7 +93,7 @@ function Tooltip(props: ITooltip) {
                                     Status
                                 </h6>
                                 <Category type={IndexType.PROSPERITY}
-                                    category={data['Prosperity category 2021']} />
+                                    category={data['Prosperity category']} />
                             </div>
                         </div>
                         :

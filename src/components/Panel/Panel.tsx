@@ -55,40 +55,42 @@ function Panel(props: IPanel) {
                     </div>
                     {data ?
                         <div className='panel__content__inner'>
-                            <div className='panel__content__country-info'>
+                            <div className='panel__content__country-info panel__content__padded'>
                                 <h2>
-                                    {data.Country}
+                                    {data.Name}
                                 </h2>
-                                <h4>
+                                {/* <h4>
                                     {data['Region (WB 2022)'] || ''}
-                                </h4>
+                                </h4> */}
                                 <MiniMap iso={data.ISO3} />
                             </div>
-                            {mode !== IndexType.PROSPERITY ?
-                                <CountryOverview data={data}
-                                    type={IndexType.FREEDOM} />
-                                :
-                                <></>
-                            }
-                            {mode !== IndexType.FREEDOM ?
-                                <CountryOverview data={data}
-                                    type={IndexType.PROSPERITY} />
-                                :
-                                <></>
-                            }
+                            <div>
+                                {mode !== IndexType.PROSPERITY ?
+                                    <CountryOverview data={data}
+                                        type={IndexType.FREEDOM} />
+                                    :
+                                    <></>
+                                }
+                                {mode !== IndexType.FREEDOM ?
+                                    <CountryOverview data={data}
+                                        type={IndexType.PROSPERITY} />
+                                    :
+                                    <></>
+                                }
+                            </div>
                         </div>
                         :
                         mode === IndexType.PROSPERITY ?
                             <FreedomAndProsperityTable key={mode}
-                                defaultSort={{col: 'Prosperity rank 2021', direction: 1}}
+                                defaultSort={{col: 'Prosperity rank', direction: 1}}
                                 handleSelectCountry={(iso) => setPanelData(getDataByISO(iso))}
-                                columns={['Prosperity rank 2021', 'Country', 'Prosperity score 2021']}
+                                columns={['Prosperity rank', 'Name', 'Prosperity score']}
                             />
                             : mode === IndexType.FREEDOM ?
                                 <FreedomAndProsperityTable key={mode}
-                                    defaultSort={{col: 'Freedom rank 2021', direction: 1}}
+                                    defaultSort={{col: 'Freedom rank', direction: 1}}
                                     handleSelectCountry={(iso) => setPanelData(getDataByISO(iso))}
-                                    columns={['Freedom rank 2021', 'Country', 'Freedom score 2021']}
+                                    columns={['Freedom rank', 'Name', 'Freedom score']}
                                 />
                                 :
                                 <></>

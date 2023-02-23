@@ -7,6 +7,7 @@ import Sort from '../../assets/icons/IconSort';
 
 import './_button.scss';
 import IconOpenPanel from '../../assets/icons/IconOpenPanel';
+import IconCaret from '../../assets/icons/IconCaret';
 
 interface IButton extends React.HTMLAttributes<HTMLButtonElement> {
     onClick: MouseEventHandler<HTMLButtonElement>,
@@ -34,6 +35,8 @@ function Button(props: IButton) {
                 return <Sort />
             case 'open-panel':
                 return <IconOpenPanel />
+            case 'caret':
+                return <IconCaret />
             default:
                 return null;
         }

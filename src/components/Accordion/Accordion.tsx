@@ -1,17 +1,32 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
+import Button from "../Button/Button";
 
 import './_accordion.scss';
 
 interface IAccordion {
-    children: ReactNode,
+    header: ReactNode,
+    content: ReactNode,
 }
 
 function Accordion(props: IAccordion) {
-    const { children } = props;
+    const [open, setOpen] = useState(false);
+    const { header, content } = props;
 
     return (
-        <div className='accordion'>
-            {children}
+        <div className={`accordion ${open ? 'accordion--open' : ''}`}>
+            <div className='accordion__header'>
+                {header}
+                <Button variant='caret'
+                    onClick={() => setOpen(prev => !prev)}
+                    />
+            </div>
+            {open ?
+                <div className='accordion__content'>
+                    {content}
+                </div>
+                :
+                null 
+            }
         </div>
     )
 }

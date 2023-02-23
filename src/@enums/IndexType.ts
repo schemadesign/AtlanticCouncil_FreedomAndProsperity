@@ -3,3 +3,9 @@ export enum IndexType {
     PROSPERITY = 'Prosperity',
     COMBINED = 'Combined'
 }
+
+export enum FreedomSubIndicator {
+    ECONOMIC = 'Economic Freedom',
+    POLITICAL = 'Political Freedom',
+    LEGAL = 'Legal Freedom',
+}

@@ -13,7 +13,6 @@ function ScoreBar(props: IScoreBar) {
     }, [props.value])
 
 
-
     if (isNaN(value)) {
         return (
             <div className="score-bar__container">

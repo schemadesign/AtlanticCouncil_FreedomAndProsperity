@@ -1,4 +1,5 @@
 .panel__country-overview {
+    margin-bottom: 5rem;
     .score-bar {
         width: 7rem;
         &__container {
@@ -12,10 +13,12 @@
     }
     .column--rank {
         flex: 100px 0 0;
+        margin-right: 3rem;
     }
     
     &__values {
-        margin: 1rem 0 0 0;
+        padding: 0 0.875rem 0.875rem 0.875rem;
+        border-top: 1px solid var(--neutral---gray--light);
     }
 
     .category {
@@ -23,9 +26,19 @@
         flex-direction: row-reverse;
         justify-content: flex-end;
         align-items: center;
-        margin-top: 2rem;
+        padding: 0.875rem;
+        border-top: 1px solid var(--neutral---gray--light);
+        border-bottom: 1px solid var(--neutral---gray--light);
         &__value {
             margin-left: 1rem;
+        }
+    }
+
+    &__subindicator {
+        border-bottom: 1px solid var(--neutral---gray--light);
+        padding: 0.5rem 0.875rem 0.125rem 0.875rem;
+        h6 {
+            margin-top: 0;
         }
     }
 }

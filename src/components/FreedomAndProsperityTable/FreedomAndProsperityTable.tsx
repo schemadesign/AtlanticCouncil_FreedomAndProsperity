@@ -5,10 +5,9 @@ import IconProsperityCategory from '../../assets/icons/IconProsperityCategory';
 import IconFreedomCategory from '../../assets/icons/IconFreedomCategory';
 import { ReactNode, useState } from 'react';
 import Button from '../Button/Button';
-import { columnNames, NO_DATA_VALUE, sortedData } from '../../data/data-util';
+import { columnNames, sortedData } from '../../data/data-util';
 import { ProsperityCategory } from '../../@enums/ProsperityCategory';
 import { FreedomCategory } from '../../@enums/FreedomCategory';
-import { IndexType } from '../../@enums/IndexType';
 import TableCell from '../Table/TableCell';
 
 interface IFreedomAndProsperityTable {
@@ -22,12 +21,12 @@ function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
     const { columns, handleSelectCountry, preview, defaultSort } = props;
     const [sort, setSort] = useState(defaultSort ? defaultSort : { col: columns[0], direction: -1 })
     const [rankOrScoreByColumn, setRankOrScoreByColumn] = useState<{ [key: string]: string }>({
-        'split__Income score 2021__ranked-Income': 'score',
-        'split__Environment score 2021__ranked-Environment': 'score',
-        'split__Minority Rights score 2021__ranked-Minority Rights': 'score',
-        'split__Economic Freedom score 2021__ranked-Economic Freedom': 'score',
-        'split__Political Freedom score 2021__ranked-Political Freedom': 'score',
-        'split__Legal Freedom score 2021__ranked-Legal Freedom': 'score',
+        'split__Income__ranked-Income': 'score',
+        'split__Environment__ranked-Environment': 'score',
+        'split__Minority Rights__ranked-Minority Rights': 'score',
+        'split__Economic Freedom__ranked-Economic Freedom': 'score',
+        'split__Political Freedom__ranked-Political Freedom': 'score',
+        'split__Legal Freedom__ranked-Legal Freedom': 'score',
     })
 
     let data = sortedData(sort);
@@ -40,15 +39,15 @@ function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
         if (col.startsWith('split__')) {
             const split = col.split('__');
             return (
-                <TableCell className='split' key={row.Country + col}>
+                <TableCell className='split' key={row.Name + col}>
                     <div className='split__content'>
                         {/* @ts-ignore */}
                         <div className={rankOrScoreByColumn[col] === 'score' ? 'split__content--selected' : ''}>
-                            {row[split[1]] === 'no data' ? '–' : row[split[1]]}
+                            {isNaN(row[split[1]]) ? '–' : row[split[1]].toFixed(1)}
                         </div>
                         {/* @ts-ignore */}
                         <div className={rankOrScoreByColumn[col] === 'rank' ? 'split__content--selected' : ''}>
-                            {row[split[2]] === NO_DATA_VALUE ? '—' : row[split[2]]}
+                            {isNaN(row[split[2]]) ? '—' : row[split[2]]}
                         </div>
                     </div>
                 </TableCell>
@@ -68,17 +67,17 @@ function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
         }
 
         return (
-            <TableCell key={row.Country + col}
+            <TableCell key={row.Name + col}
                 className={col === 'Country' ? 'p-0' : ''}
             >
-                {col === 'Freedom score 2021' || col === 'Prosperity score 2021' ?
-                    <ScoreBar key={row.Country + col}
-                        value={parseFloat(row[col])}
+                {col === 'Freedom score' || col === 'Prosperity score' ?
+                    <ScoreBar key={row.Name + col}
+                        value={row[col]}
                     />
                     :
-                    col === 'Prosperity category 2021' ?
+                    col === 'Prosperity category' ?
                         <IconProsperityCategory category={row[col] as ProsperityCategory} />
-                        : col === 'Freedom category 2021' ?
+                        : col === 'Freedom category' ?
                             <IconFreedomCategory category={row[col] as FreedomCategory} />
                             : 
                             button
@@ -152,7 +151,7 @@ function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
             </thead>
             <tbody>
                 {data.map((row: FPData) => (
-                    <tr key={row.Country}>
+                    <tr key={row.Name}>
                         {columns.map((col: string) => (
                             getCell(row, col)
                         ))}

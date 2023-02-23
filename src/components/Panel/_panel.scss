@@ -1,3 +1,5 @@
+$MAP_HEIGHT: 12rem;
+
 .panel {
     border-left: 1px solid var(--color-border);
     height: 100vh;
@@ -16,10 +18,10 @@
     }
 
     .mini-map {
-        width: 12rem;
+        width: $MAP_HEIGHT;
         position: absolute;
-        top: 0;
-        right: 0;
+        top: 1rem;
+        right: 1rem;
     }
 
     .mode-controls {
@@ -43,15 +45,16 @@
     &__content {
         height: 100%;
         overflow: auto;
+        padding-bottom: 10rem;
         &__header {
             padding-top: 2rem;
             background: var(--neutral---gray--light);
         }
-        &__inner {
+        &__padded {
             padding: 0.875rem;
         }
         &__country-info {
-            min-height: 8rem;
+            min-height: $MAP_HEIGHT;
             position: relative;
         }
     }
