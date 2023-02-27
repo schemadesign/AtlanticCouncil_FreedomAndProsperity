@@ -1,27 +1,23 @@
 import { useRef, useState } from "react";
 import { CSSTransition } from 'react-transition-group';
 import { IndexType } from "../../@enums/IndexType";
-import { getDataByISO } from "../../data/data-util";
-import Button from "../Button/Button";
-import ModeControls from "../ModeControls/ModeControls";
-import FiltersFreedom from "../Filters/FiltersFreedom";
-import FiltersProsperity from "../Filters/FiltersProsperity";
-import FreedomAndProsperityTable from "../FreedomAndProsperityTable/FreedomAndProsperityTable";
-import MiniMap from "../MiniMap/MiniMap";
-import CountryOverview from "./CountryOverview/CountryOverview";
 import './_panel.scss';
+import PanelContentMap from "../../pages/Map/PanelContentMap/PanelContentMap";
+import { Page } from "../../@enums/Page";
+import PanelContentProfiles from "../../pages/Profiles/PanelContentProfiles/PanelContentProfiles";
 
 interface IPanel {
-    data: FPData | null,
+    data: FPData[],
     open: boolean,
     mode: IndexType,
     setMode: (mode: IndexType) => void,
     setOpen: (open: boolean) => void,
-    setPanelData: (data: FPData) => void,
+    setSelected: (data: FPData[]) => void,
+    page: Page,
 }
 
 function Panel(props: IPanel) {
-    const { open, data, mode, setMode, setOpen, setPanelData } = props;
+    const { open, data, mode, setMode, setOpen, setSelected, page } = props;
     const [filters, setFilters] = useState<Array<string>>([]);
     const nodeRef = useRef(null);
 
@@ -41,78 +37,25 @@ function Panel(props: IPanel) {
             <div className={`panel`}
                 ref={nodeRef}
             >
-                <div className='panel__content'>
-                    <div className='panel__content__header'>
-                        <ModeControls setMode={setMode}
-                            mode={mode} />
-                        {mode !== IndexType.PROSPERITY ?
-                            <FiltersFreedom toggleFilter={toggleFilter}
-                                filters={filters}
-                            />
-                            :
-                            <></>
-                        }
-                        {mode !== IndexType.FREEDOM ?
-                            <FiltersProsperity toggleFilter={toggleFilter}
-                                filters={filters}
-                            />
-                            :
-                            <></>
-                        }
-                        <Button onClick={() => setOpen(false)}
-                            variant={'close'}>
-
-                        </Button>
-                    </div>
-                    {data ?
-                        <div className='panel__content__inner'>
-                            <div className='panel__content__country-info panel__content__padded'>
-                                <h2>
-                                    {data.Name}
-                                </h2>
-                                {/* <h4>
-                                    {data['Region (WB 2022)'] || ''}
-                                </h4> */}
-                                <MiniMap iso={data.ISO3} />
-                            </div>
-                            <div>
-                                {mode !== IndexType.PROSPERITY ?
-                                    <CountryOverview data={data}
-                                        filters={filters}
-                                        type={IndexType.FREEDOM} />
-                                    :
-                                    <></>
-                                }
-                                {mode !== IndexType.FREEDOM ?
-                                    <CountryOverview data={data}
-                                        filters={filters}
-                                        type={IndexType.PROSPERITY} />
-                                    :
-                                    <></>
-                                }
-                            </div>
-                        </div>
+                {page === Page.MAP ?
+                    <PanelContentMap data={data ? data[0] : null}
+                        setOpen={setOpen}
+                        mode={mode}
+                        setMode={setMode}
+                        filters={filters}
+                        toggleFilter={toggleFilter}
+                        setSelected={(data: FPData) => setSelected([data])}
+                        />
                         :
-                        mode === IndexType.PROSPERITY ?
-                            <FreedomAndProsperityTable key={mode}
-                                defaultSort={{ col: 'Prosperity rank', direction: -1 }}
-                                handleSelectCountry={(iso) => setPanelData(getDataByISO(iso))}
-                                columns={['Prosperity rank', 'Name', 'Prosperity score']}
-                            />
-                            : mode === IndexType.FREEDOM ?
-                                <FreedomAndProsperityTable key={mode}
-                                    defaultSort={{ col: 'Freedom rank', direction: -1 }}
-                                    handleSelectCountry={(iso) => setPanelData(getDataByISO(iso))}
-                                    columns={['Freedom rank', 'Name', 'Freedom score']}
-                                />
-                                :
-                                <FreedomAndProsperityTable key={mode}
-                                    defaultSort={{ col: 'Freedom rank', direction: -1 }}
-                                    handleSelectCountry={(iso) => setPanelData(getDataByISO(iso))}
-                                    columns={['Freedom rank', 'Name', 'Freedom score', 'Prosperity rank', 'Prosperity score']}
-                                />
-                    }
-                </div>
+                        <></>
+                }
+                {page === Page.PROFILES ?
+                    <PanelContentProfiles data={data}
+                        setOpen={setOpen}
+                        />
+                    :
+                    <></>
+                }
             </div>
         </CSSTransition>
     );

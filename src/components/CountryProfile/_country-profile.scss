@@ -1,0 +1,52 @@
+.country-profile {
+    path {
+        fill: none;
+    }
+    .paths {
+        path {
+            stroke-width: 5;
+        }
+        .path--freedom {
+            stroke: var(--color--chart-1);
+        }
+        .path--prosperity {
+            stroke: var(--color--chart-2);
+        }
+    }
+    .label {
+        text {
+            font-size: 0.625rem;
+            fill: var(--neutral---white);
+        }
+        &--freedom {
+            path {
+                fill: var(--color--chart-1);
+            }
+        }
+        &--prosperity {
+            path {
+                fill: var(--color--chart-2);
+            }
+        }
+    }
+
+    .axis {
+        &.y-axis {
+            path {
+                stroke: none;
+            }
+        }
+        line, path {
+            stroke: var(--neutral---gray--medium);
+        }
+        text {
+            font-size: 0.6875rem;
+        }
+    }
+
+    .hover-points {
+        rect {
+            opacity: 0;
+        }
+    }
+}

@@ -10,13 +10,13 @@ import './_map.scss';
 interface IHome {
     mode: IndexType,
     setMode: (mode: IndexType) => void,
-    setPanelData: (data: FPData) => void,
+    setSelected: (data: FPData[]) => void,
     setPanelOpen: (state: boolean) => void,
     panelOpen: boolean,
 }
 
 function Map(props: IHome) {
-    const { mode, setMode, setPanelData, setPanelOpen, panelOpen } = props;
+    const { mode, setMode, setSelected, setPanelOpen, panelOpen } = props;
 
     return (
         <div className="page--map">
@@ -33,11 +33,8 @@ function Map(props: IHome) {
                 />
                 <FreedomAndProsperityMap mode={mode}
                     setPanelData={(data: FPData) => {
-                        setPanelData(data);
-
-                        if (!panelOpen) {
-                            setPanelOpen(true)
-                        }
+                        setSelected([data]);
+                        setPanelOpen(true);
                     }}
                 />
                 <FreedomAndProsperityMapLegend mode={mode} />

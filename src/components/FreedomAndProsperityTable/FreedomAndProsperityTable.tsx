@@ -19,7 +19,7 @@ interface IFreedomAndProsperityTable {
 
 function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
     const { columns, handleSelectCountry, preview, defaultSort } = props;
-    const [sort, setSort] = useState(defaultSort ? defaultSort : { col: columns[0], direction: -1 })
+    const [sort, setSort] = useState(defaultSort ? defaultSort : { col: columns[0], direction: 1 })
     const [rankOrScoreByColumn, setRankOrScoreByColumn] = useState<{ [key: string]: string }>({
         'split__Income__ranked-Income': 'score',
         'split__Environment__ranked-Environment': 'score',
@@ -76,10 +76,16 @@ function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
                     />
                     :
                     col === 'Prosperity category' ?
-                        <IconProsperityCategory category={row[col] as ProsperityCategory} />
+                        <div className='flex-row justify-space-between'>
+                            {row[col]}
+                            <IconProsperityCategory category={row[col] as ProsperityCategory} />
+                        </div>
                         : col === 'Freedom category' ?
-                            <IconFreedomCategory category={row[col] as FreedomCategory} />
-                            : 
+                            <div className='flex-row justify-space-between'>
+                                {row[col]}
+                                <IconFreedomCategory category={row[col] as FreedomCategory} />
+                            </div>
+                            :
                             button
                 }
             </TableCell>

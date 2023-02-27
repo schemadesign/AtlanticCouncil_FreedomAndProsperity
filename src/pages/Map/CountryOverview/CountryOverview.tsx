@@ -1,9 +1,9 @@
 import _, { isArray } from 'lodash';
 import { FreedomSubIndicator, IndexType } from "../../../@enums/IndexType";
 import { totalCountries, columnNames, INDICATORS, getData } from "../../../data/data-util";
-import Accordion from "../../Accordion/Accordion";
-import Category from "../../Category/Category";
-import ScoreBar from "../../ScoreBar/ScoreBar";
+import Accordion from "../../../components/Accordion/Accordion";
+import Category from "../../../components/Category/Category";
+import ScoreBar from "../../../components/ScoreBar/ScoreBar";
 
 import './_country-overview.scss';
 

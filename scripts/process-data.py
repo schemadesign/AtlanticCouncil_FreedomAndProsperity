@@ -8,7 +8,7 @@ def process_data():
     header_rows = ''
     count = 0
 
-    open(MANIFEST, 'w').writelines('ISO3\n')
+    open(MANIFEST, 'w').writelines('ISO3,Name\n')
 
     with open(INPUT) as f:
         for line in f.readlines():
@@ -19,7 +19,7 @@ def process_data():
                 if (values[1] != iso):
                     iso = values[1]
                     filename = OUTPUT_DIR + 'by-country/' + str(iso) + '.csv';
-                    open(MANIFEST, 'a').writelines(iso + '\n')
+                    open(MANIFEST, 'a').writelines(iso + ',' + values[0] + '\n')
                     open(filename, 'w').writelines(header_rows)
                 open(filename, 'a').writelines(line)
                 
