@@ -20,7 +20,6 @@ function Search(props: ISearch) {
                 className='search'
                 options={sortedData({col: 'Name', direction: 1})}
                 placeholder='Type country or region'
-                selected={selected}
                 />
             <img src={SearchIcon} />
         </div>

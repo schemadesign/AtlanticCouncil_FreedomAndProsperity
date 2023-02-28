@@ -38,6 +38,12 @@ function App() {
         }
     }, [selected])
 
+    const handleSetSelected = (newSelection: FPData[]) => {
+        if (newSelection.length > 0) {
+            setSelected(newSelection)
+        }
+    }
+
     return (
         <>
             <Home />
@@ -46,7 +52,7 @@ function App() {
             >
                 <div className='flex-row justify-end'>
                     <Search selected={selected}
-                        setSelected={setSelected} />
+                        setSelected={handleSetSelected} />
 
                     <Button variant='open-panel'
                         onClick={() => {

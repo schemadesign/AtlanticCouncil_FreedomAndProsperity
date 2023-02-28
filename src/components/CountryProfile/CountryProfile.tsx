@@ -56,7 +56,7 @@ function CountryProfile(props: ICountryProfile) {
     const svg = useRef(null);
 
     const padding = {
-        t: 20,
+        t: 30,
         b: 50,
         l: 50,
         r: 150,
@@ -97,7 +97,7 @@ function CountryProfile(props: ICountryProfile) {
     const drawChart = (data: Array<FPData>) => {
         const height = window.innerHeight - 200;
         const width = window.innerWidth < 1440 ? window.innerWidth - (panelOpen ? 480 : 0)
-            : 1440 - (panelOpen ? 480 - (window.innerWidth - 1440)/2 : 0)
+            : 1440 - (panelOpen ? 480 - (window.innerWidth - 1440) / 2 : 0)
 
         const chart = d3.select(svg.current);
 
@@ -131,12 +131,18 @@ function CountryProfile(props: ICountryProfile) {
             labelPositions.forEach((label, i) => {
                 if (selectedChartIndicators().findIndex(d => d.key === label.key) > -1) {
                     labelPositions.forEach((other, j) => {
-                        if (i > j && label.y !== 0) {
-                            if (Math.abs(label.y - other.y) < 24) {
-                                label.y += 1
-                                other.y -= 2
+                        if (selectedChartIndicators().findIndex(d => d.key === other.key) > -1) {
+                            if (i > j && label.y !== 0) {
+                                const diff = 24;
+                                if (label.y - other.y < diff) {
+                                    if (y(data[0][label.key]) > height / 2) {
+                                        label.y += 1
+                                    } else {
+                                        other.y -= 1
+                                    }
 
-                                overlap = true;
+                                    overlap = true;
+                                }
                             }
                         }
                     })
@@ -175,8 +181,12 @@ function CountryProfile(props: ICountryProfile) {
         chart.selectAll('.x-axis .domain')
             .remove()
 
+        const yAxisTicks = y.ticks()
+            .filter(tick => Number.isInteger(tick));
+
         const y_axis = d3.axisLeft(y)
-            .tickFormat(d => d)
+            .tickValues(yAxisTicks)
+            .tickFormat(d3.format('d'))
             .tickSize(-width + padding.l + padding.r)
 
         chart.select('.y-axis')
