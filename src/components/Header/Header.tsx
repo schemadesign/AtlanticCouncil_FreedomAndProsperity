@@ -1,7 +1,5 @@
 import { useRef } from "react";
 import { Page } from "../../@enums/Page";
-import Button from "../Button/Button";
-import Search from "../Search/Search";
 
 import './_header.scss';
 
@@ -21,11 +19,12 @@ function Header(props: IHeader) {
                 <div className='flex-row'>
                     {[Page.MAP, Page.RANKINGS, Page.PROFILES, Page.COMPARE, Page.ABOUT, Page.LIBRARY].map(p => {
                         return (
-                            <Button key={p}
-                                selected={p === page}
+                            <a href={`#${p}`} 
+                                key={p}
+                                className={`button ${p === page ? 'button--selected' : ''}`}
                                 onClick={() => setPage(p)}>
-                                {p}
-                            </Button>
+                                {p.replace('-', ' ')}
+                            </a>
                         )
                     })}
                 </div>

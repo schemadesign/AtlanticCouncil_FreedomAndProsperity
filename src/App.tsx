@@ -11,10 +11,32 @@ import Rankings from './pages/Rankings/Rankings';
 const Map = React.lazy(() => import('./pages/Map/Map'))
 
 function App() {
-    const [page, setPage] = useState<Page>(Page.MAP);
+    const getInitialPage = () => {
+        const hash = window.location.hash.replace('#', '');
+
+        for (let i in Page) {
+            if (Page[i as keyof typeof Page] === hash) {
+                return Page[i as keyof typeof Page];
+            }
+        }
+
+        return Page.MAP
+    }
+
+    const [page, setPage] = useState<Page>(getInitialPage());
     const [mode, setMode] = useState<IndexType>(IndexType.COMBINED);
     const [panelOpen, setPanelOpen] = useState(false);
     const [selected, setSelected] = useState<Array<FPData>>([]);
+    const [selectedIndicators, setSelectedIndicators] = useState<Array<string>>([IndexType.PROSPERITY, IndexType.FREEDOM])
+
+
+    useEffect(() => {
+        if (page === Page.MAP) {
+            if (selected.length > 0) {
+                setPanelOpen(true)
+            }
+        }
+    }, [selected])
 
     return (
         <>
@@ -37,20 +59,18 @@ function App() {
                 {page === 'rankings' ?
                     <Rankings />
                     : page === Page.MAP ?
-                        <Suspense fallback={<div></div>}>
+                        <Suspense fallback={<div id="map"></div>}>
                             <Map mode={mode}
                                 setMode={setMode}
-                                panelOpen={panelOpen}
                                 setSelected={setSelected}
                                 setPanelOpen={setPanelOpen}
                             />
                         </Suspense>
                         : page === Page.PROFILES ?
-                            <Suspense fallback={<div></div>}>
-                                <Profiles selectedCountry={selected}
-                                    panelOpen={panelOpen}
-                                    />
-                            </Suspense>
+                            <Profiles selectedCountry={selected}
+                                panelOpen={panelOpen}
+                                selectedIndicators={selectedIndicators}
+                            />
                             :
                             null
                 }
@@ -61,6 +81,8 @@ function App() {
                     setMode={setMode}
                     setOpen={setPanelOpen}
                     setSelected={setSelected}
+                    selectedIndicators={selectedIndicators}
+                    setSelectedIndicators={setSelectedIndicators}
                     open={panelOpen}
                     data={selected} />
             </div>

@@ -13,11 +13,13 @@ interface IPanel {
     setMode: (mode: IndexType) => void,
     setOpen: (open: boolean) => void,
     setSelected: (data: FPData[]) => void,
+    selectedIndicators: Array<string>,
+    setSelectedIndicators: (indicators: Array<string>) => void,
     page: Page,
 }
 
 function Panel(props: IPanel) {
-    const { open, data, mode, setMode, setOpen, setSelected, page } = props;
+    const { open, data, mode, setMode, setOpen, setSelected, page, selectedIndicators, setSelectedIndicators } = props;
     const [filters, setFilters] = useState<Array<string>>([]);
     const nodeRef = useRef(null);
 
@@ -45,14 +47,16 @@ function Panel(props: IPanel) {
                         filters={filters}
                         toggleFilter={toggleFilter}
                         setSelected={(data: FPData) => setSelected([data])}
-                        />
-                        :
-                        <></>
+                    />
+                    :
+                    <></>
                 }
                 {page === Page.PROFILES ?
                     <PanelContentProfiles data={data}
                         setOpen={setOpen}
-                        />
+                        selectedIndicators={selectedIndicators}
+                        setSelectedIndicators={setSelectedIndicators}
+                    />
                     :
                     <></>
                 }

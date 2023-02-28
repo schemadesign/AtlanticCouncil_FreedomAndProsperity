@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { IndexType } from "../../@enums/IndexType";
 import ModeControls from "../../components/ModeControls/ModeControls";
 import FreedomAndProsperityMap from "../../components/FreedomAndProsperityMap/Map/Map";
@@ -6,20 +5,20 @@ import FreedomAndProsperityMapLegend from "../../components/FreedomAndProsperity
 import Panel from "../../components/Panel/Panel";
 
 import './_map.scss';
+import { Page } from "../../@enums/Page";
 
 interface IHome {
     mode: IndexType,
     setMode: (mode: IndexType) => void,
     setSelected: (data: FPData[]) => void,
     setPanelOpen: (state: boolean) => void,
-    panelOpen: boolean,
 }
 
 function Map(props: IHome) {
-    const { mode, setMode, setSelected, setPanelOpen, panelOpen } = props;
+    const { mode, setMode, setSelected, setPanelOpen } = props;
 
     return (
-        <div className="page--map">
+        <div className="page page--map" id={Page.MAP}>
             <div className="page__header">
                 <div className="container">
                     <h1>

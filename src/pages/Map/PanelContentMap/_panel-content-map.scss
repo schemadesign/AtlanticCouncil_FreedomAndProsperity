@@ -9,25 +9,29 @@ $MAP_HEIGHT: 12rem;
                 display: none;
             }
         }
-    }
 
-    &__country-info {
-        min-height: $MAP_HEIGHT;
-        position: relative;
+        .panel__content__country-info {
+            min-height: $MAP_HEIGHT;
+            position: relative;
+        }
     }
 
     .mode-controls {
         padding: 0 0.75rem 2rem 1.75rem;
         border-bottom: 1px solid var(--neutral---gray--dark);
+
         .button {
             background: var(--neutral---white);
             box-shadow: none;
+
             &:first-child {
                 border-top-left-radius: 5px;
             }
+
             &:last-child {
                 border-top-right-radius: 5px;
             }
+
             &:not(.button--selected) {
                 opacity: 0.5;
             }

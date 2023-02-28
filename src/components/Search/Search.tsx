@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { sortedData } from '../../data/data-util';
 import SearchIcon from './../../assets/images/Search.svg';
@@ -11,8 +10,6 @@ interface ISearch {
 
 function Search(props: ISearch) {
     const { selected, setSelected } = props;
-
-    console.log(selected)
 
     return (
         <div className='search'>

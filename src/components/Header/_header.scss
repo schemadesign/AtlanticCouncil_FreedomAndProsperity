@@ -29,6 +29,7 @@
 
     .button {
         margin: 0 1rem 0 -0.625rem;
+        text-decoration: none;
         &--selected {
             background: var(--neutral---black);
             color: var(--neutral---white);

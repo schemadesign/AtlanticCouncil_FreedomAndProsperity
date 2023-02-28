@@ -2,31 +2,22 @@
     path {
         fill: none;
     }
-    .paths {
-        path {
-            stroke-width: 5;
-        }
-        .path--freedom {
-            stroke: var(--color--chart-1);
-        }
-        .path--prosperity {
-            stroke: var(--color--chart-2);
-        }
+
+    .country-path {
+        stroke-width: 5;
+        stroke-linecap: round;
+        stroke: #000;
     }
+
     .label {
         text {
             font-size: 0.625rem;
             fill: var(--neutral---white);
         }
-        &--freedom {
-            path {
-                fill: var(--color--chart-1);
-            }
-        }
-        &--prosperity {
-            path {
-                fill: var(--color--chart-2);
-            }
+
+        &-connector {
+            stroke-width: 1;
+            stroke: #181818;
         }
     }
 
@@ -36,9 +27,12 @@
                 stroke: none;
             }
         }
-        line, path {
+
+        line,
+        path {
             stroke: var(--neutral---gray--medium);
         }
+
         text {
             font-size: 0.6875rem;
         }

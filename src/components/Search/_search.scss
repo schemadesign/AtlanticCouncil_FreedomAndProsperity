@@ -20,8 +20,19 @@
 
     .dropdown-menu {
         background: var(--neutral---white);
+        border: 1px solid var(--neutral---gray--light);
         a {
             display: block;
+            padding: 0.25rem;
+            text-decoration: none;
+            color: var(--neutral---gray--dark);
+            &:hover {
+                background-color: var(--neutral---gray--light);
+            }
+        }
+
+        mark {
+            background: var(--neutral---gray--light);
         }
     }
 }

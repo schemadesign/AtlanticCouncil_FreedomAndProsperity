@@ -7,7 +7,7 @@ import ModeControls from "../../components/ModeControls/ModeControls";
 function Rankings() {
     const [mode, setMode] = useState<IndexType>(IndexType.COMBINED);
     return (
-        <div className="page--rankings">
+        <div className="page page--rankings">
             <div className="page__header">
                 <div className="container">
                     <h1>

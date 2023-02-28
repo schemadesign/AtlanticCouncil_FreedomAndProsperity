@@ -9,6 +9,10 @@ body {
     font-size: 16px;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 button {
     cursor: pointer;
     padding: 0;
@@ -43,18 +47,18 @@ input,
 optgroup,
 select,
 textarea {
-  color: inherit;
-  font: inherit;
-  margin: 0;
+    color: inherit;
+    font: inherit;
+    margin: 0;
 }
 
 button {
-  overflow: visible;
+    overflow: visible;
 }
 
 button,
 select {
-  text-transform: none;
+    text-transform: none;
 }
 
 table {
@@ -62,19 +66,34 @@ table {
     border-collapse: collapse;
     font-size: 0.75rem;
     width: 100%;
+
     th {
         vertical-align: top;
     }
-    td, th {
+
+    td,
+    th {
         padding: 0.5rem;
+
         &:not(:last-child) {
             border-right: 1px solid var(--neutral---gray--light);
         }
     }
+
     tbody tr {
         border-bottom: 1px solid var(--neutral---gray--light);
     }
+
     thead th {
         border-bottom: 1px solid var(--neutral---black);
+    }
+}
+
+/**
+ * Disable smooth scrolling when users have prefers-reduced-motion enabled
+ */
+@media screen and (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
     }
 }

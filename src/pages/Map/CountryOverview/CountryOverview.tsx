@@ -1,11 +1,12 @@
 import _, { isArray } from 'lodash';
 import { FreedomSubIndicator, IndexType } from "../../../@enums/IndexType";
-import { totalCountries, columnNames, INDICATORS, getData } from "../../../data/data-util";
+import { INDICATORS, getData } from "../../../data/data-util";
 import Accordion from "../../../components/Accordion/Accordion";
 import Category from "../../../components/Category/Category";
 import ScoreBar from "../../../components/ScoreBar/ScoreBar";
 
 import './_country-overview.scss';
+import PanelOverviewValues from '../../../components/Panel/PanelOverviewValues/PanelOverviewValues';
 
 interface ICountryOverview {
     type: IndexType.FREEDOM | IndexType.PROSPERITY,
@@ -38,25 +39,9 @@ function CountryOverview(props: ICountryOverview) {
 
     return (
         <div className='panel__country-overview'>
-            <div className="panel__country-overview__values flex-row justify-space-between">
-                <div>
-                    <h6>
-                        Score
-                    </h6>
-                    <h3>
-                        {getData(data, `${type} score`, 1)}
-                    </h3>
-                </div>
-                <div className='column--rank'>
-                    <h6>
-                        Rank
-                    </h6>
-                    <h3 className='tooltip__rank__value'>
-                        {getData(data, `${type} rank`)}
-                        <sup>/{totalCountries}</sup>
-                    </h3>
-                </div>
-            </div>
+           <PanelOverviewValues type={type}
+                data={data}
+                />
             <Category type={type}
                 category={_.get(data, `${type} category`) as string} />
             {isArray(indicators) ?
