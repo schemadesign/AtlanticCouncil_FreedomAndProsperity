@@ -40,8 +40,7 @@ function PanelContentProfiles(props: IPanelContentProfiles) {
 
     if (country) {
         inner = (
-
-            <div className='panel__content__inner'>
+            <>
                 <div className='panel__content__country-info panel__content__padded'>
                     <h2>
                         {country.Name}
@@ -65,6 +64,21 @@ function PanelContentProfiles(props: IPanelContentProfiles) {
                             category={_.get(country, `${IndexType.PROSPERITY} category`) as string} />
                     </div>
                 </div>
+            </>
+        )
+    }
+
+    return (
+        <div className='panel__content panel__content--profiles'>
+            <div className='panel__content__header'>
+                <Button onClick={() => setOpen(false)}
+                    variant={'close'}>
+
+                </Button>
+            </div>
+            <div className='panel__content__inner'>
+                {inner}
+
                 <div className='d-flex flex-row panel__content--profiles__checkboxes'>
                     {Object.keys(INDICATORS).sort().map((type: string) => {
                         const subIndicators = INDICATORS[type as keyof typeof INDICATORS];
@@ -126,19 +140,14 @@ function PanelContentProfiles(props: IPanelContentProfiles) {
                         )
                     })}
                 </div>
-            </div>
-        )
-    }
 
-    return (
-        <div className='panel__content panel__content--profiles'>
-            <div className='panel__content__header'>
-                <Button onClick={() => setOpen(false)}
-                    variant={'close'}>
-
-                </Button>
+                <div className="flex-row">
+                    <Button className="panel__content--profiles__clear-filters"
+                        onClick={() => setSelectedIndicators([])}>
+                        Clear all
+                    </Button>
+                </div>
             </div>
-            {inner}
         </div>
     )
 }

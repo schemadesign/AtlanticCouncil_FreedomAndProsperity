@@ -26,6 +26,9 @@
                     border-right: 1px solid var(--neutral---gray--light);
                 }
             }
+            &:last-of-type {
+                border-bottom: 1px solid var(--neutral---gray--light);
+            }
 
         }
     }
@@ -41,7 +44,6 @@
     }
 
     &__checkboxes {
-        border-bottom: 1px solid var(--neutral---gray--light);
         &__subsection {
             margin: 1rem 0;
         }
@@ -52,6 +54,16 @@
                 font-weight: 600;
                 color: var(--neutral---gray--dark);
             }
+        }
+    }
+
+    &__clear-filters {
+        border: 0.5px solid var(--neutral---gray--medium);
+        text-transform: none;
+        border-radius: 5px;
+        margin: 1.125rem 0.75rem;
+        &:hover {
+            background: var(--neutral---gray--light);
         }
     }
 }

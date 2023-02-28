@@ -125,7 +125,9 @@ function CountryProfile(props: ICountryProfile) {
             }
         }).sort((a, b) => a.y - b.y)
 
+        // if label is overlapping another, shift up or down
         let overlap = false;
+        const diff = 24;
         do {
             overlap = false;
             labelPositions.forEach((label, i) => {
@@ -133,7 +135,6 @@ function CountryProfile(props: ICountryProfile) {
                     labelPositions.forEach((other, j) => {
                         if (selectedChartIndicators().findIndex(d => d.key === other.key) > -1) {
                             if (i > j && label.y !== 0) {
-                                const diff = 24;
                                 if (label.y - other.y < diff) {
                                     if (y(data[0][label.key]) > height / 2) {
                                         label.y += 1
@@ -148,7 +149,25 @@ function CountryProfile(props: ICountryProfile) {
                     })
                 }
             })
+
         } while (overlap)
+
+        // if any label is above chart, shift labels down as needed 
+        let shift = false;
+        do {
+            shift = false;
+            labelPositions.forEach((label, i) => {
+                if (label.y < padding.t/2) {
+                    shift = true;
+                    labelPositions.forEach((other, i) => {
+                        if (Math.abs(other.y - label.y) < diff) {
+                            label.y += 1;
+                            // other.y += 1;
+                        }
+                    })
+                }
+            })
+        } while (shift)
 
         const getLabelY = (key: string) => {
             return labelPositions.find(d => d.key === key).y
@@ -197,6 +216,13 @@ function CountryProfile(props: ICountryProfile) {
 
         chart.selectAll('.y-axis .tick text')
             .style('transform', 'translate(-10px, 0)')
+
+        chart.select('.x-axis .axis__label')
+            .attr('x', width / 2)
+            .attr('y', 50)
+
+        chart.select('.y-axis .axis__label')
+            .style('transform', `translate(-40px, ${height/2 - padding.t + 5}px) rotate(-90deg)`)
 
         const line = d3.line()
             .x(d => x(d['Index Year']))
@@ -338,8 +364,14 @@ function CountryProfile(props: ICountryProfile) {
         <div className="container country-profile">
             <svg ref={svg}>
                 <g className='axis x-axis'>
+                    <text className='axis__label'>
+                        Year
+                    </text>
                 </g>
                 <g className='axis y-axis'>
+                    <text className='axis__label'>
+                        Score
+                    </text>
                 </g>
                 <g className='paths'>
                 </g>

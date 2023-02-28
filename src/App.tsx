@@ -38,7 +38,14 @@ function App() {
         }
     }, [selected])
 
+    useEffect(() => {
+        if (page === Page.PROFILES) {
+            setSelectedIndicators(([IndexType.PROSPERITY, IndexType.FREEDOM]));
+        }
+    }, [page])
+
     const handleSetSelected = (newSelection: FPData[]) => {
+        // prevent reseting selected country
         if (newSelection.length > 0) {
             setSelected(newSelection)
         }

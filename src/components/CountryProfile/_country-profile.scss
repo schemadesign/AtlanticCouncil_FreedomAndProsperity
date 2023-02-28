@@ -3,6 +3,10 @@
         fill: none;
     }
 
+    text {
+        fill: var(--neutral---text);
+    }
+
     .country-path {
         stroke-width: 5;
         stroke-linecap: round;
