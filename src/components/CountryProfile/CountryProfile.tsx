@@ -90,16 +90,16 @@ function CountryProfile(props: ICountryProfile) {
         }
     }
 
-    const selectedChartIndicators = () => possibleIndicators.filter((type) => {
-        return selectedIndicators.includes(type.indicator)
-    })
-
     const drawChart = (data: Array<FPData>) => {
         const height = window.innerHeight - 200;
         const width = window.innerWidth < 1440 ? window.innerWidth - (panelOpen ? 480 : 0)
             : 1440 - (panelOpen ? 480 - (window.innerWidth - 1440) / 2 : 0)
 
         const chart = d3.select(svg.current);
+
+        const selectedChartIndicators = () => possibleIndicators.filter((type) => {
+            return selectedIndicators.includes(type.indicator)
+        })
 
         let allApplicableScores = []
         selectedChartIndicators().forEach((indicator: string) => {
