@@ -5,6 +5,12 @@ import { ProsperityCategoryLiterals } from '../@enums/ProsperityCategory';
 import { Feature, FeatureCollection } from 'geojson';
 
 export const TRANSITION_TIMING = 500;
+export const PADDING = {
+    t: 30,
+    b: 50,
+    l: 50,
+    r: 150,
+}
 
 export const colorScale = ['rgba(71, 148, 75, 1)', 'rgba(177, 216, 120, 1)', 'rgba(225, 143, 106, 1)', 'rgba(198, 50, 42, 1)', '#e6e6e6'];
 export const colors = { 'Free': 'rgba(71, 148, 75, 1)', 'Mostly Free': 'rgba(177, 216, 120, 1)', 'Mostly Unfree': 'rgba(225, 143, 106, 1)', 'Unfree': 'rgba(198, 50, 42, 1)' };

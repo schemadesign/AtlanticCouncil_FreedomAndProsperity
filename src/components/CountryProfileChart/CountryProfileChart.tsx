@@ -1,13 +1,13 @@
 // @ts-nocheck
 
 import * as d3 from 'd3';
-import _, { over } from 'lodash';
+import _ from 'lodash';
 import { useEffect, useRef, useState } from "react"
 import { FreedomSubIndicator, IndexType } from '../../@enums/IndexType';
-import { drawPath, TRANSITION_TIMING } from '../../data/d3-util';
+import { TRANSITION_TIMING, PADDING } from '../../data/d3-util';
 import { formatData } from '../../data/data-util';
 
-import './_country-profile.scss';
+import './_country-profile-chart.scss';
 
 interface ICountryProfile {
     selectedCountry: FPData[],
@@ -54,13 +54,6 @@ function CountryProfile(props: ICountryProfile) {
     const { panelOpen, selectedCountry, selectedIndicators } = props;
     const [init, setInit] = useState(false);
     const svg = useRef(null);
-
-    const padding = {
-        t: 30,
-        b: 50,
-        l: 50,
-        r: 150,
-    }
 
     const selectedISO = _.get(selectedCountry, '[0].ISO3', null);
 
@@ -109,14 +102,14 @@ function CountryProfile(props: ICountryProfile) {
 
         const x = d3.scaleLinear()
             .domain(data.length > 0 ? d3.extent(data.map(row => row['Index Year'])) as Iterable<number> : [1995, 2022])
-            .range([padding.l, width - padding.r])
+            .range([PADDING.l, width - PADDING.r])
 
         const yDomain = data.length > 0 && allApplicableScores.length > 0 ? d3.extent(allApplicableScores) as Iterable<number> : [0, 100]
 
         const y = d3.scaleLinear()
             .domain(yDomain)
             .nice()
-            .range([height - padding.b, padding.t])
+            .range([height - PADDING.b, PADDING.t])
 
         const labelPositions = possibleIndicators.map((d) => {
             return {
@@ -157,7 +150,7 @@ function CountryProfile(props: ICountryProfile) {
         do {
             shift = false;
             labelPositions.forEach((label, i) => {
-                if (label.y < padding.t/2) {
+                if (label.y < PADDING.t/2) {
                     shift = true;
                     labelPositions.forEach((other, i) => {
                         if (Math.abs(other.y - label.y) < diff) {
@@ -189,7 +182,7 @@ function CountryProfile(props: ICountryProfile) {
             .tickSize(0)
 
         chart.select('.x-axis')
-            .attr(`transform`, `translate(0, ${height - padding.b})`)
+            .attr(`transform`, `translate(0, ${height - PADDING.b})`)
             .transition()
             .duration(TRANSITION_TIMING)
             .call(x_axis);
@@ -206,10 +199,10 @@ function CountryProfile(props: ICountryProfile) {
         const y_axis = d3.axisLeft(y)
             .tickValues(yAxisTicks)
             .tickFormat(d3.format('d'))
-            .tickSize(-width + padding.l + padding.r)
+            .tickSize(-width + PADDING.l + PADDING.r)
 
         chart.select('.y-axis')
-            .attr(`transform`, `translate(${padding.l},0)`)
+            .attr(`transform`, `translate(${PADDING.l},0)`)
             .transition()
             .duration(TRANSITION_TIMING)
             .call(y_axis);
@@ -222,7 +215,7 @@ function CountryProfile(props: ICountryProfile) {
             .attr('y', 50)
 
         chart.select('.y-axis .axis__label')
-            .style('transform', `translate(-40px, ${height/2 - padding.t + 5}px) rotate(-90deg)`)
+            .style('transform', `translate(-40px, ${height/2 - PADDING.t + 5}px) rotate(-90deg)`)
 
         const line = d3.line()
             .x(d => x(d['Index Year']))
@@ -361,7 +354,7 @@ function CountryProfile(props: ICountryProfile) {
     }
 
     return (
-        <div className="container country-profile">
+        <div className="container country-profile-chart">
             <svg ref={svg}>
                 <g className='axis x-axis'>
                     <text className='axis__label'>

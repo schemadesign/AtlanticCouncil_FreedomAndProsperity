@@ -1,31 +1,31 @@
 import { Page } from '../../@enums/Page';
-import CountryProfileChart from '../../components/CountryProfileChart/CountryProfileChart';
+import CompareChart from '../../components/CompareChart/CompareChart';
 
-interface IProfiles {
+interface ICompare {
     selectedCountry: FPData[],
     panelOpen: boolean,
     selectedIndicators: Array<string>,
 }
 
-function Profiles(props: IProfiles) {
+function Compare(props: ICompare) {
     const { selectedCountry, panelOpen, selectedIndicators } = props;
 
     return (
-        <div className="page page--profiles" id={Page.PROFILES}>
+        <div className="page page--compare" id={Page.COMPARE}>
             <div className="page__header">
                 <div className="container">
                     <h1>
-                        Profiles
+                        Comparison Tool
                     </h1>
-                    
                 </div>
             </div>
-            <CountryProfileChart selectedCountry={selectedCountry} 
-                selectedIndicators={selectedIndicators}
+            <CompareChart
                 panelOpen={panelOpen}
-                />
+                selectedCountry={selectedCountry}
+                selectedIndicators={selectedIndicators}
+            />
         </div>
     )
 }
 
-export default Profiles
+export default Compare

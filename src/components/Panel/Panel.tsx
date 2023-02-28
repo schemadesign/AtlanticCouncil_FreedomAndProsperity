@@ -1,10 +1,11 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { CSSTransition } from 'react-transition-group';
 import { IndexType } from "../../@enums/IndexType";
 import './_panel.scss';
 import PanelContentMap from "../../pages/Map/PanelContentMap/PanelContentMap";
 import { Page } from "../../@enums/Page";
 import PanelContentProfiles from "../../pages/Profiles/PanelContentProfiles/PanelContentProfiles";
+import PanelContentCompare from "../../pages/Compare/PanelContentCompare/PanelContentCompare";
 
 interface IPanel {
     data: FPData[],
@@ -20,11 +21,51 @@ interface IPanel {
 
 function Panel(props: IPanel) {
     const { open, data, mode, setMode, setOpen, setSelected, page, selectedIndicators, setSelectedIndicators } = props;
-    const [filters, setFilters] = useState<Array<string>>([]);
     const nodeRef = useRef(null);
 
-    const toggleFilter = (type: string) => {
-        setFilters(prev => prev.includes(type) ? prev.filter(val => val !== type) : [...prev, type])
+    const toggleFilter = (type: string | null) => {
+        if (!type) {
+            setSelectedIndicators([])
+        } else {
+            const newVal = selectedIndicators.includes(type) ? selectedIndicators.filter(val => val !== type) : [...selectedIndicators, type]
+            setSelectedIndicators(newVal)
+        }
+    }
+
+
+    const inner = () => {
+        switch (page) {
+            case Page.MAP:
+                return (
+                    <PanelContentMap data={data ? data[0] : null}
+                        setOpen={setOpen}
+                        mode={mode}
+                        setMode={setMode}
+                        filters={selectedIndicators}
+                        toggleFilter={toggleFilter}
+                        setSelected={(data: FPData) => setSelected([data])}
+                    />
+                )
+            case Page.PROFILES:
+                return (
+                    <PanelContentProfiles data={data}
+                        setOpen={setOpen}
+                        selectedIndicators={selectedIndicators}
+                        toggleFilter={toggleFilter}
+                    />
+                )
+            case Page.COMPARE:
+                return (
+                    <PanelContentCompare setOpen={setOpen}
+                        mode={mode}
+                        setMode={setMode}
+                        selectedIndicators={selectedIndicators}
+                        toggleFilter={toggleFilter}
+                    />
+                )
+            default:
+                return <></>
+        }
     }
 
     return (
@@ -39,27 +80,7 @@ function Panel(props: IPanel) {
             <div className={`panel`}
                 ref={nodeRef}
             >
-                {page === Page.MAP ?
-                    <PanelContentMap data={data ? data[0] : null}
-                        setOpen={setOpen}
-                        mode={mode}
-                        setMode={setMode}
-                        filters={filters}
-                        toggleFilter={toggleFilter}
-                        setSelected={(data: FPData) => setSelected([data])}
-                    />
-                    :
-                    <></>
-                }
-                {page === Page.PROFILES ?
-                    <PanelContentProfiles data={data}
-                        setOpen={setOpen}
-                        selectedIndicators={selectedIndicators}
-                        setSelectedIndicators={setSelectedIndicators}
-                    />
-                    :
-                    <></>
-                }
+                {inner()}
             </div>
         </CSSTransition>
     );

@@ -13,20 +13,12 @@ interface IPanelContentProfiles {
     data: FPData[],
     setOpen: (open: boolean) => void,
     selectedIndicators: Array<string>,
-    setSelectedIndicators: (indicators: Array<string>) => void,
+    toggleFilter: (indicator: string | null) => void,
 }
 
 function PanelContentProfiles(props: IPanelContentProfiles) {
-    const { setOpen, data, selectedIndicators, setSelectedIndicators } = props;
+    const { setOpen, data, selectedIndicators, toggleFilter } = props;
     const country = data.length > 0 ? data[0] as FPData : null;
-
-    const toggleSelectedIndicator = (indicator: string) => {
-        if (selectedIndicators.includes(indicator)) {
-            setSelectedIndicators(selectedIndicators.filter(d => d !== indicator))
-        } else {
-            setSelectedIndicators([...selectedIndicators, indicator])
-        }
-    }
 
     const isDisabled = (key: string) => {
         if (country) {
@@ -86,7 +78,7 @@ function PanelContentProfiles(props: IPanelContentProfiles) {
                             <div key={type}>
                                 <div>
                                     <Checkbox value={type}
-                                        handleClick={() => toggleSelectedIndicator(type)}
+                                        handleClick={() => toggleFilter(type)}
                                         checked={selectedIndicators.includes(type)}
                                     />
                                 </div>
@@ -100,7 +92,7 @@ function PanelContentProfiles(props: IPanelContentProfiles) {
                                                         value={subIndicator}
                                                         disabled={isDisabled(subIndicator)}
                                                         checked={selectedIndicators.includes(subIndicator)}
-                                                        handleClick={() => toggleSelectedIndicator(subIndicator)}
+                                                        handleClick={() => toggleFilter(subIndicator)}
                                                     />
                                                 </div>
                                             )
@@ -114,7 +106,7 @@ function PanelContentProfiles(props: IPanelContentProfiles) {
                                             >
                                                 <Checkbox value={subIndicator}
                                                     disabled={isDisabled(subIndicator)}
-                                                    handleClick={() => toggleSelectedIndicator(subIndicator)}
+                                                    handleClick={() => toggleFilter(subIndicator)}
                                                     checked={selectedIndicators.includes(subIndicator)}
                                                 />
                                                 <div key={subIndicator}
@@ -125,7 +117,7 @@ function PanelContentProfiles(props: IPanelContentProfiles) {
                                                             <div key={subsub}>
                                                                 <Checkbox value={subsub}
                                                                     disabled={isDisabled(subsub)}
-                                                                    handleClick={() => toggleSelectedIndicator(subsub)}
+                                                                    handleClick={() => toggleFilter(subsub)}
                                                                     checked={selectedIndicators.includes(subsub)}
                                                                 />
                                                             </div>
@@ -143,7 +135,7 @@ function PanelContentProfiles(props: IPanelContentProfiles) {
 
                 <div className="flex-row">
                     <Button className="panel__content--profiles__clear-filters"
-                        onClick={() => setSelectedIndicators([])}>
+                        onClick={() => toggleFilter(null)}>
                         Clear all
                     </Button>
                 </div>

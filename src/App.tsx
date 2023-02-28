@@ -5,6 +5,7 @@ import Button from './components/Button/Button';
 import Header from './components/Header/Header'
 import Panel from './components/Panel/Panel';
 import Search from './components/Search/Search';
+import Compare from './pages/Compare/Compare';
 import Home from './pages/Home/Home';
 import Profiles from './pages/Profiles/Profiles';
 import Rankings from './pages/Rankings/Rankings';
@@ -29,11 +30,15 @@ function App() {
     const [selected, setSelected] = useState<Array<FPData>>([]);
     const [selectedIndicators, setSelectedIndicators] = useState<Array<string>>([IndexType.PROSPERITY, IndexType.FREEDOM])
 
-
     useEffect(() => {
         if (page === Page.MAP) {
             if (selected.length > 0) {
                 setPanelOpen(true)
+            }
+        }
+        if (page === Page.PROFILES) {
+            if (selectedIndicators.length === 0) {
+                setSelectedIndicators(([IndexType.PROSPERITY, IndexType.FREEDOM]));
             }
         }
     }, [selected])
@@ -41,6 +46,14 @@ function App() {
     useEffect(() => {
         if (page === Page.PROFILES) {
             setSelectedIndicators(([IndexType.PROSPERITY, IndexType.FREEDOM]));
+        } else {
+            setSelectedIndicators([])
+        }
+        if (page === Page.MAP || page === Page.COMPARE) {
+            setMode(IndexType.COMBINED)
+        }
+        if (page === Page.RANKINGS) {
+            setPanelOpen(false)
         }
     }, [page])
 
@@ -48,6 +61,40 @@ function App() {
         // prevent reseting selected country
         if (newSelection.length > 0) {
             setSelected(newSelection)
+        }
+    }
+
+    const getPage = () => {
+        switch (page) {
+            case Page.RANKINGS:
+                return <Rankings />
+            case Page.MAP:
+                return (
+                    <Suspense fallback={<div id="map"></div>}>
+                        <Map mode={mode}
+                            setMode={setMode}
+                            setSelected={setSelected}
+                            setPanelOpen={setPanelOpen}
+                        />
+                    </Suspense>
+                )
+            case Page.PROFILES:
+                return (
+                    <Profiles selectedCountry={selected}
+                        panelOpen={panelOpen}
+                        selectedIndicators={selectedIndicators}
+                    />
+                )
+            case Page.COMPARE:
+                return (
+                    <Compare 
+                        selectedCountry={selected}
+                        panelOpen={panelOpen}
+                        selectedIndicators={selectedIndicators}
+                        />
+                )
+            default:
+                return <></>
         }
     }
 
@@ -62,6 +109,7 @@ function App() {
                         setSelected={handleSetSelected} />
 
                     <Button variant='open-panel'
+                        style={{visibility: page === Page.RANKINGS ? 'hidden' : 'visible'}}
                         onClick={() => {
                             setPanelOpen(true);
                         }}>
@@ -69,24 +117,7 @@ function App() {
                 </div>
             </Header>
             <div className='sections'>
-                {page === 'rankings' ?
-                    <Rankings />
-                    : page === Page.MAP ?
-                        <Suspense fallback={<div id="map"></div>}>
-                            <Map mode={mode}
-                                setMode={setMode}
-                                setSelected={setSelected}
-                                setPanelOpen={setPanelOpen}
-                            />
-                        </Suspense>
-                        : page === Page.PROFILES ?
-                            <Profiles selectedCountry={selected}
-                                panelOpen={panelOpen}
-                                selectedIndicators={selectedIndicators}
-                            />
-                            :
-                            null
-                }
+                {getPage()}
 
                 <Panel
                     mode={mode}
