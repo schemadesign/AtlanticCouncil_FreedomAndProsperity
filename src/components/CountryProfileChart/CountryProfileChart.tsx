@@ -1,9 +1,11 @@
 // @ts-nocheck
 import * as d3 from 'd3';
-import _ from 'lodash';
+import _, { update } from 'lodash';
 import { useEffect, useRef, useState } from "react"
+import { IndexType } from '../../@enums/IndexType';
 import { TRANSITION_TIMING, PADDING, getHeight, getWidth, getLabelPositions } from '../../data/d3-util';
 import { formatData, FLATTENED_INDICATORS, getSelectedFlattenedIndicators, getYDomain } from '../../data/data-util';
+import Tooltip from '../FreedomAndProsperityMap/Tooltip/Tooltip';
 
 import './_country-profile-chart.scss';
 
@@ -17,18 +19,21 @@ function CountryProfile(props: ICountryProfile) {
     const { panelOpen, selectedCountry, selectedIndicators } = props;
     const [init, setInit] = useState(false);
     const [data, setData] = useState([])
+    const [hoverData, setHoverData] = useState(null)
+    const [hoverIndicator, setHoverIndicator] = useState([])
     const svg = useRef(null);
+    const tooltipNode = useRef(null);
 
     const selectedISO = () => _.get(selectedCountry, '[0].ISO3', null);
 
-    useEffect(() => {
-        window.addEventListener("resize", drawChart);
+    // useEffect(() => {
+    //     window.addEventListener("resize", drawChart);
 
-        drawChart()
+    //     drawChart()
 
-        // remove on unmount
-        return () => window.removeEventListener("resize", drawChart);
-    }, [])
+    //     // remove on unmount
+    //     return () => window.removeEventListener("resize", drawChart);
+    // }, [])
 
     useEffect(() => {
         const iso = selectedISO();
@@ -39,12 +44,14 @@ function CountryProfile(props: ICountryProfile) {
             }).catch((reason) => {
                 console.error(reason)
             })
-        } 
+        }
     }, [selectedCountry])
 
     useEffect(() => {
         drawChart()
     }, [data, panelOpen, selectedIndicators])
+
+    const selectedChartIndicators = () => getSelectedFlattenedIndicators(selectedIndicators);
 
     const drawChart = () => {
         const { panelOpen, selectedIndicators } = props;
@@ -53,7 +60,6 @@ function CountryProfile(props: ICountryProfile) {
 
         const chart = d3.select(svg.current);
 
-        const selectedChartIndicators = getSelectedFlattenedIndicators(selectedIndicators);
         const yDomain = getYDomain(selectedIndicators, data);
 
         const x = d3.scaleLinear()
@@ -129,7 +135,7 @@ function CountryProfile(props: ICountryProfile) {
         const line = d3.line()
             .x(d => x(d['Index Year']))
             .y(d => y(d['field']))
-            .curve(d3.curveCardinal.tension(0.5));
+            .curve(d3.curveCardinal.tension(0.85));
 
         const labelConnector = (d) => {
             if (data.length > 0) {
@@ -176,7 +182,7 @@ function CountryProfile(props: ICountryProfile) {
                             labelContainer.attr('d', `M8,-12 h${dim.width} a10,10 0 0 1 10,10 v4 a10,10 0 0 1 -10,10 h-${dim.width} a10,10 0 0 1 -10,-10 v-4 a10,10 0 0 1 10,-10 z`)
                         }
                     })
-                , update => update.style('opacity', d => selectedChartIndicators.findIndex(x => x.key === d.key) > -1 ? 1 : 0)
+                , update => update.style('opacity', d => selectedChartIndicators().findIndex(x => x.key === d.key) > -1 ? 1 : 0)
             )
 
         if (data.length > 0) {
@@ -240,34 +246,100 @@ function CountryProfile(props: ICountryProfile) {
                 .attr('d', null)
         }
 
+        const positionHoverPoint = (d: FPData, key: string) => `translate(${x(d['Index Year'])}px, ${y(d[key])}px)`
 
-        // const positionHoverPoint = (d: FPData, key: string) => `translate(${x(d['Index Year']) - 25}px, ${y(d[key]) - 40}px)`
+        const handleTooltipHover = (e, d, indicator) => {
+            chart.selectAll('.hover-points-g > g')
+                .filter(g => g['Index Year'] === d['Index Year'])
+                .selectAll('circle')
+                .transition()
+                .duration(TRANSITION_TIMING / 2)
+                .attr('r', 6)
 
-        // chart.select('.hover-points--freedom')
-        //     .selectAll('rect')
-        //     .data(data)
-        //     .join(
-        //         enter => enter.append('rect')
-        //             .style('transform', (d: FPData) => positionHoverPoint(d, 'Prosperity score')),
-        //         update => update.style('transform', (d: FPData) => positionHoverPoint(d, 'Prosperity score'))
-        //     )
+            setHoverData(d)
+            setHoverIndicator([indicator])
 
-        // chart.select('.hover-points--prosperity')
-        //     .selectAll('rect')
-        //     .data(data)
-        //     .join(
-        //         enter => enter.append('rect')
-        //             .style('transform', (d: FPData) => positionHoverPoint(d, 'Freedom score')),
-        //         update => update.style('transform', (d: FPData) => positionHoverPoint(d, 'Freedom score'))
-        //     )
+            const tooltipWidth = 180; 
+            const tooltipHeight = 150;
+            let tooltipX = x(d['Index Year']) + 30;
+            let tooltipY = y(d[indicator.key]) + 20;
+            
+            if (tooltipX > width - tooltipWidth) {
+                tooltipX -= tooltipWidth
+            }
 
-        // chart.selectAll('.hover-points')
-        //     .selectAll('rect')
-        //     .attr('width', 50)
-        //     .attr('height', 80)
-        //     .on('mouseenter', (e, d) => {
-        //         console.log(d)
-        //     })
+            if (tooltipY > height/2) {
+                tooltipY -= tooltipHeight;
+            }
+
+            tooltipNode.current.style.left = tooltipX + 'px';
+            tooltipNode.current.style.top = tooltipY + 'px';
+        }
+
+        const hoverPointSize = () => {
+            return width / data.length
+        }
+
+        const styleHoverPoint = (selection, indicator) => {
+            selection.style('fill', 'rgba(0,0,0,0)')
+                .attr('width', hoverPointSize())
+                .attr('height', 30)
+                .attr('y', hoverPointSize() * -0.5)
+                .attr('x', 30 * -0.5)
+                .on('mouseover', function (e, d) {
+                    handleTooltipHover(e, d, indicator)
+                })
+                .on('mouseleave', () => {
+                    setHoverData(null);
+                    chart.selectAll('.hover-points-g')
+                        .selectAll('circle')
+                        .transition()
+                        .duration(TRANSITION_TIMING / 2)
+                        .attr('r', 0)
+                })
+        }
+
+        chart.select('.hover-points')
+            .selectAll('.hover-points-g')
+            .data(selectedChartIndicators())
+            .join(
+                enter => enter.append('g')
+                    .attr('class', 'hover-points-g'),
+                update => update,
+                exit => exit.remove(),
+            )
+            .each(function (indicator) {
+                d3.select(this)
+                    .selectAll('g')
+                    .data(data)
+                    .join(
+                        enter => enter
+                            .append('g')
+                            .style('transform', (d: FPData) => positionHoverPoint(d, indicator.key))
+                            .each(function (d, i) {
+                                // stagger entry to prevent hover before first draw
+                                setTimeout(() => {
+                                    const rect = d3.select(this)
+                                        .append('rect')
+                                    styleHoverPoint(rect, indicator)
+                                }, ((TRANSITION_TIMING * 3) / data.length) * (data.length - i))
+
+                                d3.select(this)
+                                    .append('circle')
+                                    .style('fill', indicator.color)
+                                    .style('pointer-events', 'none')
+                            }),
+                        update => update.style('transform', (d: FPData) => positionHoverPoint(d, indicator.key))
+                            .each(function (d) {
+                                styleHoverPoint(d3.select(this).select('rect'), indicator)
+
+                                d3.select(this)
+                                    .select('circle')
+                                    .style('fill', indicator.color)
+                            }),
+                        exit => exit.remove(),
+                    )
+            })
 
     }
 
@@ -287,10 +359,16 @@ function CountryProfile(props: ICountryProfile) {
                 <g className='paths'>
                 </g>
                 <g className='hover-points'>
-                    <g className='hover-points hover-points--freedom'></g>
-                    <g className='hover-points hover-points--prosperity'></g>
                 </g>
             </svg>
+            <div ref={tooltipNode} className='tooltip__container'>
+                <Tooltip
+                    data={hoverData}
+                    indicators={hoverIndicator}
+                    mode={IndexType.COMBINED}
+                    countryProfile={true}
+                />
+            </div>
         </div>
     )
 }

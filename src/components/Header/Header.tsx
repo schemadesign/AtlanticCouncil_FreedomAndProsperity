@@ -4,7 +4,7 @@ import { Page } from "../../@enums/Page";
 import './_header.scss';
 
 interface IHeader {
-    page: Page,
+    page: Page | null,
     setPage: (page: Page) => void,
     children: React.ReactNode,
 }

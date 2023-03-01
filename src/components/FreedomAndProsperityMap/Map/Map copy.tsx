@@ -286,7 +286,7 @@ function Map(props: IMap) {
                     </g>
                 </g>
             </svg>
-            <div ref={tooltipNode} className='map__tooltip'>
+            <div ref={tooltipNode} className='tooltip__container'>
                 <Tooltip mode={mode} 
                     data={tooltip} />
             </div>
@@ -532,7 +532,7 @@ function Map(props: IMap) {
                     </g>
                 </g>
             </svg> */}
-            <div ref={tooltipNode} className='map__tooltip'>
+            <div ref={tooltipNode} className='tooltip__container'>
                 <Tooltip mode={mode}
                     data={tooltip} />
             </div>

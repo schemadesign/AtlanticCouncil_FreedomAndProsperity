@@ -1,105 +1,44 @@
-import { FreedomCategory } from '../../../@enums/FreedomCategory';
 import { IndexType } from '../../../@enums/IndexType';
-import { ProsperityCategory } from '../../../@enums/ProsperityCategory';
-import Freedom from '../../../assets/icons/IconFreedom';
-import Prosperity from '../../../assets/icons/IconProsperity';
-import { getData, totalCountries } from '../../../data/data-util';
-import Category from '../../Category/Category';
-import ScoreBar from '../../ScoreBar/ScoreBar';
+import MapTooltip from './MapTooltip/MapTooltip';
+import ProfileTooltip from './ProfileTooltip/ProfileTooltip';
 import './_tooltip.scss';
 
 interface ITooltip {
     data: null | FPData,
     mode: IndexType,
+    countryProfile?: boolean,
+    indicators?: Array<any>
 }
 
 function Tooltip(props: ITooltip) {
-    let { data, mode } = props;
+    let { data, mode, countryProfile, indicators } = props;
 
     if (!data) {
-        return;
+        return <></>;
     }
 
     return (
-        <div className='map__tooltip__content'>
-            <div className='map__tooltip__title'>
+        <div className='tooltip tooltip__content'>
+            <div className='tooltip__title'>
                 <h3>
                     {data.Name}
                 </h3>
+                {countryProfile ? 
+                    <h3>
+                        {data['Index Year']}
+                    </h3>
+                    :
+                    <></>
+                }
             </div>
-            {!data['Freedom score'] ?
-                <div className='map__tooltip__data'>
-                    <div className='map__tooltip__col' style={{fontSize: '0.875rem', whiteSpace: 'nowrap'}}>
-                        Data unavailable
-                    </div>
-                </div>
+            {countryProfile && indicators ?
+                <ProfileTooltip data={data}
+                    indicators={indicators}
+                    />
                 :
-                <div className='map__tooltip__data'>
-                    {mode !== IndexType.PROSPERITY ?
-                        <div className='map__tooltip__col'>
-                            <h4>
-                                <Freedom />
-                                {IndexType.FREEDOM}
-                            </h4>
-                            <div>
-                                <h6>
-                                    Score
-                                </h6>
-                                <ScoreBar value={data['Freedom score']} />
-                            </div>
-                            <div>
-                                <h6>
-                                    Rank
-                                </h6>
-                                <h5 className='tooltip__rank__value'>
-                                    {getData(data, 'Freedom rank')}
-                                    <sup>/{totalCountries}</sup>
-                                </h5>
-                            </div>
-                            <div className='tooltip__status'>
-                                <h6>
-                                    Status
-                                </h6>
-                                <Category type={IndexType.FREEDOM}
-                                    category={data['Freedom category']} />
-                            </div>
-                        </div>
-                        :
-                        null 
-                    }
-                    {mode !== IndexType.FREEDOM ?
-                        <div className='map__tooltip__col'>
-                            <h4>
-                                <Prosperity />
-                                {IndexType.PROSPERITY}
-                            </h4>
-                            <div>
-                                <h6>
-                                    Score
-                                </h6>
-                                <ScoreBar value={data['Prosperity score']} />
-                            </div>
-                            <div>
-                                <h6>
-                                    Rank
-                                </h6>
-                                <h5 className='tooltip__rank__value'>
-                                    {getData(data, 'Prosperity rank')}
-                                    <sup>/{totalCountries}</sup>
-                                </h5>
-                            </div>
-                            <div className='tooltip__status'>
-                                <h6>
-                                    Status
-                                </h6>
-                                <Category type={IndexType.PROSPERITY}
-                                    category={data['Prosperity category']} />
-                            </div>
-                        </div>
-                        :
-                        null 
-                    }
-                </div>
+                <MapTooltip data={data}
+                    mode={mode}
+                    />
             }
         </div>
     )

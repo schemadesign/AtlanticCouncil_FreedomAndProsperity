@@ -39,6 +39,10 @@ export const NESTED_INDICATORS = {
     }
 }
 
+export const formatLabel = (label: string) => {
+    return label.replaceAll('_', ' ').replaceAll('+', ' and ')
+}
+
 export let FLATTENED_INDICATORS: Array<any> = [];
 
 Object.keys(NESTED_INDICATORS).forEach((topLevel: string) => {
@@ -90,7 +94,7 @@ Object.keys(NESTED_INDICATORS).forEach((topLevel: string) => {
 FLATTENED_INDICATORS = FLATTENED_INDICATORS.map(d => (
     {
         ...d,
-        label: d.indicator.replaceAll('+', ' and ').replaceAll('_', ' ')
+        label: formatLabel(d.indicator),
     }
 ))
 

@@ -137,7 +137,11 @@ function Map(props: IMap) {
         y += 20 + document.documentElement.scrollTop
 
         if (y + tooltipNode.current.offsetHeight > document.documentElement.offsetHeight - 60) {
-            y = document.documentElement.offsetHeight - tooltipNode.current.offsetHeight - 60
+            y = document.documentElement.offsetHeight - (tooltipNode.current.offsetHeight * 2)
+        }
+
+        if (x + tooltipNode.current.offsetWidth > document.documentElement.offsetWidth - 60) {
+            x = document.documentElement.offsetWidth - (tooltipNode.current.offsetWidth * 2) - 10
         }
 
         tooltipNode.current.style.left = x + 'px';
@@ -231,7 +235,7 @@ function Map(props: IMap) {
                     </g>
                 </g>
             </svg>
-            <div ref={tooltipNode} className='map__tooltip'>
+            <div ref={tooltipNode} className='tooltip__container'>
                 <Tooltip mode={mode}
                     data={tooltip} />
             </div>

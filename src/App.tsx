@@ -8,7 +8,7 @@ import Search from './components/Search/Search';
 import Compare from './pages/Compare/Compare';
 import Home from './pages/Home/Home';
 import Profiles from './pages/Profiles/Profiles';
-import Rankings from './pages/Rankings/Rankings';
+const Rankings = React.lazy(() => import('./pages/Rankings/Rankings'))
 const Map = React.lazy(() => import('./pages/Map/Map'))
 
 function App() {
@@ -21,10 +21,10 @@ function App() {
             }
         }
 
-        return Page.MAP
+        return null;
     }
 
-    const [page, setPage] = useState<Page>(getInitialPage());
+    const [page, setPage] = useState<Page | null>(getInitialPage());
     const [mode, setMode] = useState<IndexType>(IndexType.COMBINED);
     const [panelOpen, setPanelOpen] = useState(false);
     const [selected, setSelected] = useState<Array<FPData>>([]);
@@ -62,10 +62,15 @@ function App() {
     const getPage = () => {
         switch (page) {
             case Page.RANKINGS:
-                return <Rankings />
-            case Page.MAP:
                 return (
-                    <Suspense fallback={<div id="map"></div>}>
+                    <Suspense fallback={<div className='page .page--rankings' id={Page.RANKINGS}></div>}>
+                        <Rankings />
+                    </Suspense>
+                )
+            case Page.MAP:
+            case null:
+                return (
+                    <Suspense fallback={<div className='page .page--map' id={Page.MAP}></div>}>
                         <Map mode={mode}
                             setMode={setMode}
                             setSelected={setSelected}
@@ -82,11 +87,11 @@ function App() {
                 )
             case Page.COMPARE:
                 return (
-                    <Compare 
+                    <Compare
                         selectedCountry={selected}
                         panelOpen={panelOpen}
                         selectedIndicators={selectedIndicators}
-                        />
+                    />
                 )
             default:
                 return <></>
@@ -104,7 +109,7 @@ function App() {
                         setSelected={(newSelection: Array<FPData>) => setSelected(newSelection)} />
 
                     <Button variant='open-panel'
-                        style={{visibility: page === Page.RANKINGS ? 'hidden' : 'visible'}}
+                        style={{ visibility: page === Page.RANKINGS ? 'hidden' : 'visible' }}
                         onClick={() => {
                             setPanelOpen(true);
                         }}>
@@ -116,7 +121,7 @@ function App() {
 
                 <Panel
                     mode={mode}
-                    page={page}
+                    page={page ? page : Page.MAP}
                     setMode={setMode}
                     setOpen={setPanelOpen}
                     setSelected={setSelected}

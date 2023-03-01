@@ -6,7 +6,7 @@ import Button from "../../../components/Button/Button";
 import Category from "../../../components/Category/Category";
 import Checkbox from "../../../components/Checkbox/Checkbox";
 import PanelOverviewValues from "../../../components/Panel/PanelOverviewValues/PanelOverviewValues";
-import { NESTED_INDICATORS } from "../../../data/data-util";
+import { formatLabel, NESTED_INDICATORS } from "../../../data/data-util";
 
 import './_panel-content-profiles.scss';
 
@@ -86,7 +86,7 @@ function PanelContentProfiles(props: IPanelContentProfiles) {
                             <div key={type}>
                                 <div>
                                     <Checkbox value={type}
-                                        label={type.replaceAll('_', ' ').replaceAll('+', ' and ')}
+                                        label={formatLabel(type)}
                                         handleClick={() => toggleFilter(type)}
                                         checked={selectedIndicators.includes(type)}
                                     />
@@ -99,7 +99,7 @@ function PanelContentProfiles(props: IPanelContentProfiles) {
                                                 <div key={subindicator}>
                                                     <Checkbox
                                                         value={subindicator}
-                                                        label={subindicator.replaceAll('_', ' ').replaceAll('+', ' and ')}
+                                                        label={formatLabel(subindicator)}
                                                         disabled={isDisabled(subindicator)}
                                                         checked={selectedIndicators.includes(subindicator)}
                                                         handleClick={() => toggleFilter(subindicator)}
@@ -116,7 +116,7 @@ function PanelContentProfiles(props: IPanelContentProfiles) {
                                             >
                                                 <Checkbox value={subindicator}
                                                     disabled={isDisabled(subindicator)}
-                                                    label={subindicator.replaceAll('_', ' ').replaceAll('+', ' and ')}
+                                                    label={formatLabel(subindicator)}
                                                     handleClick={() => toggleFilter(subindicator)}
                                                     checked={selectedIndicators.includes(subindicator)}
                                                 />
@@ -127,7 +127,7 @@ function PanelContentProfiles(props: IPanelContentProfiles) {
                                                         return (
                                                             <div key={subsub}>
                                                                 <Checkbox value={subsub}
-                                                                    label={subsub.replaceAll('_', ' ').replaceAll('+', ' and ')}
+                                                                    label={formatLabel(subsub)}
                                                                     disabled={isDisabled(subsub)}
                                                                     handleClick={() => toggleFilter(subsub)}
                                                                     checked={selectedIndicators.includes(subsub)}

@@ -4,6 +4,7 @@ import './_score-bar.scss';
 
 interface IScoreBar {
     value: number,
+    color?: string,
 }
 
 function ScoreBar(props: IScoreBar) {
@@ -30,7 +31,7 @@ function ScoreBar(props: IScoreBar) {
                 {formatValue(value, 1)}
             </h5>
             <div className="score-bar">
-                <div className="score-bar__value" style={{ width: `${value}%` }}></div>
+                <div className="score-bar__value" style={{ width: `${value}%`, background: props.color ? props.color : '' }}></div>
             </div>
         </div>
     )
