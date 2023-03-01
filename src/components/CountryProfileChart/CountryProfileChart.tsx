@@ -133,7 +133,7 @@ function CountryProfile(props: ICountryProfile) {
 
         const labelConnector = (d) => {
             if (data.length > 0) {
-                return `M${getLabelX()},${getLabelY(d.key)} L${x(data[0]['Index Year']) + 5},${getLabelY(d.key)} L${x(data[0]['Index Year']) + 5},${y(data[0][d.key])}`
+                return `M${getLabelX()},${getLabelY(d.key)} L${x(data[0]['Index Year']) + (d.subindicator ? 5 : 2)},${getLabelY(d.key)} L${x(data[0]['Index Year']) + (d.subindicator ? 5 : 2)},${y(data[0][d.key])}`
             }
             return '';
         }
