@@ -1,12 +1,13 @@
+import * as d3 from 'd3';
 import { Feature, FeatureCollection } from 'geojson';
-import _ from 'lodash';
+import _, { isArray } from 'lodash';
 import { FreedomCategory } from '../@enums/FreedomCategory';
-import { FreedomSubIndicator, IndexType } from '../@enums/IndexType';
+import { FreedomSubIndicator, IndexType, Indicator } from '../@enums/IndexType';
 import { ProsperityCategory } from '../@enums/ProsperityCategory';
-import f_p_data from './processed/all-2022.csv';
+import f_p_data from './processed/latest_all_countries.csv';
 import geojson from './world.geo.json';
 
-export const INDICATORS = {
+export const NESTED_INDICATORS = {
     [IndexType.PROSPERITY]: [
         'Income',
         'Health',
@@ -14,8 +15,7 @@ export const INDICATORS = {
         'Environment',
         'Minority Rights',
         'Education',
-        'Productivity',
-        'Crime',
+        'Informality',
     ],
     [IndexType.FREEDOM]: {
         [FreedomSubIndicator.ECONOMIC]: [
@@ -26,19 +26,73 @@ export const INDICATORS = {
         ],
         [FreedomSubIndicator.POLITICAL]: [
             'Elections',
-            'Civil Liberties',
+            'Civil_liberties',
             'Political Rights',
-            'Legislative Constraints on the Executive',
-            'Bureaucracy',
-            'Corruption',
+            'Legislative_constraints_on_the_executive',
+            'Bureaucracy+Corruption',
             'Security',
         ],
         [FreedomSubIndicator.LEGAL]: [
-            'Clarity of the Law',
-            'Judicial Independence and Effectiveness',
+            'Clarity_of_the_law',
+            'Judicial_independence_and_effectiveness',
         ],
     }
 }
+
+export let FLATTENED_INDICATORS: Array<any> = [];
+
+Object.keys(NESTED_INDICATORS).forEach((topLevel: string) => {
+    FLATTENED_INDICATORS.push(
+        { 
+            key: Indicator[topLevel.toUpperCase() as keyof typeof Indicator], 
+            indicator: topLevel, 
+            color: `var(--color--chart--${topLevel.toLowerCase()})` 
+        }
+    )
+
+    const subindicators = NESTED_INDICATORS[topLevel as keyof typeof NESTED_INDICATORS];
+
+    if (isArray(subindicators)) {
+        subindicators.map((subindicator: string) => {
+            FLATTENED_INDICATORS.push(
+                { 
+                    key: subindicator, 
+                    subindicator: true, 
+                    indicator: subindicator,
+                    color: `var(--color--chart--${topLevel.toLowerCase()})` 
+                }
+            )
+        })
+    } else {
+        Object.keys(subindicators).forEach((subindicator: string) => {
+            FLATTENED_INDICATORS.push(
+                { 
+                    key: subindicator, 
+                    indicator: subindicator,
+                    color: `var(--color--chart--${subindicator.toLowerCase().replaceAll(' ', '-')})` 
+                }
+            )
+
+            subindicators[subindicator as keyof typeof subindicators].forEach((subsub: string) => {
+                FLATTENED_INDICATORS.push(
+                    { 
+                        key: subsub, 
+                        subindicator: true, 
+                        indicator: subsub,
+                        color: `var(--color--chart--${subindicator.toLowerCase().replaceAll(' ', '-')})` 
+                    }
+                )
+            })
+        })
+    }
+})
+
+FLATTENED_INDICATORS = FLATTENED_INDICATORS.map(d => (
+    {
+        ...d,
+        label: d.indicator.replaceAll('+', ' and ').replaceAll('_', ' ')
+    }
+))
 
 export const formatData = (data: Array<FPData>): Array<FPData> => {
     return data.map((row: any) => {
@@ -59,29 +113,7 @@ export const formatData = (data: Array<FPData>): Array<FPData> => {
         return row;
     })
 }
-
-// derive rankings
 let dataWithRanks = formatData(f_p_data);
-// ['Womens Economic Freedom','Investment Freedom','Property Rights','Trade Freedom','Economic Freedom','Elections','Civil Liberties','Political Rights','Legislative Constraints on the Executive','Political Freedom','Bureaucracy','Corruption','Security','Clarity of the Law','Judicial Independence and Effectiveness','Legal Freedom','Freedom score','Freedom rank','Income','Health','Inequality','Environment','Minority Rights','Education','Productivity','Crime','Prosperity','Prosperity rank'].forEach((col: string) => {
-//     dataWithRanks = [...dataWithRanks].sort((a: FPData, b: FPData) => {
-//         let aVal = a[col] as string;
-//         let bVal = b[col] as string;
-
-//         if (aVal === 'no data') {
-//             aVal = '-1';
-//         } else if (bVal === 'no data') {
-//             bVal = '-1';
-//         }
-
-//         return parseFloat(bVal) - parseFloat(aVal)
-//     }).map((row: FPData, i: number) => {
-//         const rank = parseFloat(row[col] as string)
-//         return {
-//             ...row,
-//             [`ranked-${col}`]: isNaN(rank) ? NO_DATA_VALUE : i + 1,
-//         }
-//     })
-// })
 
 export const totalCountries = dataWithRanks.length;
 
@@ -219,4 +251,49 @@ export const formatValue = (value: number, toFixed = 0): number => {
     }
 
     return value
+}
+
+export const getSelectedFlattenedIndicators = (indicators: Array<string>) => {
+    return FLATTENED_INDICATORS.filter((type) => {
+        return indicators.includes(type.indicator)
+    })
+}
+
+/*
+*   get range of y axis
+*/
+export const getYDomain = (indicators: Array<string>, data: FPData[]): Array<number> => {
+    const scores = getAllApplicableScores(indicators, data)
+    let yDomain = data.length > 0 && scores.length > 0 ? d3.extent(scores) as Array<number> : [0, 100]
+
+    try {
+        if (yDomain[1] - yDomain[0] < 8) {
+            yDomain[1] = Math.min(100, yDomain[1] + 4);
+            yDomain[0] = Math.max(0, yDomain[0] - 4)
+        }
+    } catch {
+        yDomain = [0, 100]
+    }
+
+    return yDomain;
+}
+
+/*
+*   scores of all visible lines; used for scaling y axis
+*/
+const getAllApplicableScores = (indicators: Array<string>, data: FPData[]): Array<number> => {
+    let allApplicableScores: Array<number> = [];
+    const chartIndicators = getSelectedFlattenedIndicators(indicators);
+
+    chartIndicators.forEach((indicator: { key: string }) => {
+        const extent: Array<number | undefined> = d3.extent(data.map(row => row[indicator.key]));
+
+        extent.forEach((val: number | undefined) => {
+            if (val && val > -1) {
+                allApplicableScores.push(val)
+            }
+        })
+    })
+
+    return allApplicableScores
 }

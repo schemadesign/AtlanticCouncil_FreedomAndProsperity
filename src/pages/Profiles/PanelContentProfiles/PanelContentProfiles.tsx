@@ -1,11 +1,12 @@
 import _ from "lodash";
 import { isArray } from "lodash";
+import { useEffect, useState } from "react";
 import { IndexType } from "../../../@enums/IndexType";
 import Button from "../../../components/Button/Button";
 import Category from "../../../components/Category/Category";
 import Checkbox from "../../../components/Checkbox/Checkbox";
 import PanelOverviewValues from "../../../components/Panel/PanelOverviewValues/PanelOverviewValues";
-import { INDICATORS } from "../../../data/data-util";
+import { NESTED_INDICATORS } from "../../../data/data-util";
 
 import './_panel-content-profiles.scss';
 
@@ -17,8 +18,15 @@ interface IPanelContentProfiles {
 }
 
 function PanelContentProfiles(props: IPanelContentProfiles) {
+    const [ country, setCountry ] = useState<FPData | null>(null)
     const { setOpen, data, selectedIndicators, toggleFilter } = props;
-    const country = data.length > 0 ? data[0] as FPData : null;
+
+    useEffect(() => {
+        // prevent reseting panel when searching for new country
+        if (data.length > 0) {
+            setCountry(data[0] as FPData)
+        }
+    }, [data])
 
     const isDisabled = (key: string) => {
         if (country) {
@@ -72,50 +80,54 @@ function PanelContentProfiles(props: IPanelContentProfiles) {
                 {inner}
 
                 <div className='d-flex flex-row panel__content--profiles__checkboxes'>
-                    {Object.keys(INDICATORS).sort().map((type: string) => {
-                        const subIndicators = INDICATORS[type as keyof typeof INDICATORS];
+                    {Object.keys(NESTED_INDICATORS).sort().map((type: string) => {
+                        const subindicators = NESTED_INDICATORS[type as keyof typeof NESTED_INDICATORS];
                         return (
                             <div key={type}>
                                 <div>
                                     <Checkbox value={type}
+                                        label={type.replaceAll('_', ' ').replaceAll('+', ' and ')}
                                         handleClick={() => toggleFilter(type)}
                                         checked={selectedIndicators.includes(type)}
                                     />
                                 </div>
-                                {isArray(subIndicators) ?
+                                {isArray(subindicators) ?
                                     <div className='panel__content--profiles__checkboxes__subsubsection'
                                     >
-                                        {subIndicators.map((subIndicator: string) => {
+                                        {subindicators.map((subindicator: string) => {
                                             return (
-                                                <div key={subIndicator}>
+                                                <div key={subindicator}>
                                                     <Checkbox
-                                                        value={subIndicator}
-                                                        disabled={isDisabled(subIndicator)}
-                                                        checked={selectedIndicators.includes(subIndicator)}
-                                                        handleClick={() => toggleFilter(subIndicator)}
+                                                        value={subindicator}
+                                                        label={subindicator.replaceAll('_', ' ').replaceAll('+', ' and ')}
+                                                        disabled={isDisabled(subindicator)}
+                                                        checked={selectedIndicators.includes(subindicator)}
+                                                        handleClick={() => toggleFilter(subindicator)}
                                                     />
                                                 </div>
                                             )
                                         })}
                                     </div>
                                     :
-                                    (Object.keys(subIndicators)).map((subIndicator: string) => {
+                                    (Object.keys(subindicators)).map((subindicator: string) => {
                                         return (
-                                            <div key={subIndicator}
+                                            <div key={subindicator}
                                                 className='panel__content--profiles__checkboxes__subsection'
                                             >
-                                                <Checkbox value={subIndicator}
-                                                    disabled={isDisabled(subIndicator)}
-                                                    handleClick={() => toggleFilter(subIndicator)}
-                                                    checked={selectedIndicators.includes(subIndicator)}
+                                                <Checkbox value={subindicator}
+                                                    disabled={isDisabled(subindicator)}
+                                                    label={subindicator.replaceAll('_', ' ').replaceAll('+', ' and ')}
+                                                    handleClick={() => toggleFilter(subindicator)}
+                                                    checked={selectedIndicators.includes(subindicator)}
                                                 />
-                                                <div key={subIndicator}
+                                                <div key={subindicator}
                                                     className='panel__content--profiles__checkboxes__subsubsection'
                                                 >
-                                                    {subIndicators[subIndicator as keyof typeof subIndicators].map((subsub: string) => {
+                                                    {subindicators[subindicator as keyof typeof subindicators].map((subsub: string) => {
                                                         return (
                                                             <div key={subsub}>
                                                                 <Checkbox value={subsub}
+                                                                    label={subsub.replaceAll('_', ' ').replaceAll('+', ' and ')}
                                                                     disabled={isDisabled(subsub)}
                                                                     handleClick={() => toggleFilter(subsub)}
                                                                     checked={selectedIndicators.includes(subsub)}

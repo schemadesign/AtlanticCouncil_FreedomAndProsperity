@@ -1,11 +1,9 @@
 // @ts-nocheck
-
 import * as d3 from 'd3';
 import _ from 'lodash';
 import { useEffect, useRef, useState } from "react"
-import { FreedomSubIndicator, IndexType } from '../../@enums/IndexType';
-import { TRANSITION_TIMING, PADDING } from '../../data/d3-util';
-import { formatData } from '../../data/data-util';
+import { TRANSITION_TIMING, PADDING, getHeight, getWidth, getLabelPositions } from '../../data/d3-util';
+import { formatData, FLATTENED_INDICATORS, getSelectedFlattenedIndicators, getYDomain } from '../../data/data-util';
 
 import './_country-profile-chart.scss';
 
@@ -15,155 +13,62 @@ interface ICountryProfile {
     selectedIndicators: Array<string>,
 }
 
-const possibleIndicators = [
-    { key: 'Freedom score', indicator: IndexType.FREEDOM, color: 'var(--color--chart-1)' },
-    { key: 'Prosperity score', indicator: IndexType.PROSPERITY, color: 'var(--color--chart-2)' },
-    { key: 'Income', color: 'var(--color--chart-2)', style: 'dashed' },
-    { key: 'Health', color: 'var(--color--chart-2)', style: 'dashed' },
-    { key: 'Inequality', color: 'var(--color--chart-2)', style: 'dashed' },
-    { key: 'Environment', color: 'var(--color--chart-2)', style: 'dashed' },
-    { key: 'Productivity', color: 'var(--color--chart-2)', style: 'dashed' },
-    { key: 'Crime', color: 'var(--color--chart-2)', style: 'dashed' },
-    { key: 'Education', color: 'var(--color--chart-2)', style: 'dashed' },
-    { key: 'Minority Rights', color: 'var(--color--chart-2)', style: 'dashed' },
-    { key: FreedomSubIndicator.ECONOMIC, color: 'var(--color--chart--economic-freedom)' },
-    { key: 'Womens Economic Freedom', color: 'var(--color--chart--economic-freedom)', style: 'dashed' },
-    { key: 'Investment Freedom', color: 'var(--color--chart--economic-freedom)', style: 'dashed' },
-    { key: 'Property Rights', color: 'var(--color--chart--economic-freedom)', style: 'dashed' },
-    { key: 'Trade Freedom', color: 'var(--color--chart--economic-freedom)', style: 'dashed' },
-    { key: FreedomSubIndicator.POLITICAL, color: 'var(--color--chart--political-freedom)' },
-    { key: 'Elections', color: 'var(--color--chart--political-freedom)', style: 'dashed' },
-    { key: 'Civil Liberties', color: 'var(--color--chart--political-freedom)', style: 'dashed' },
-    { key: 'Political Rights', color: 'var(--color--chart--political-freedom)', style: 'dashed' },
-    { key: 'Legislative Constraints on the Executive', color: 'var(--color--chart--political-freedom)', style: 'dashed' },
-    { key: 'Bureaucracy', color: 'var(--color--chart--political-freedom)', style: 'dashed' },
-    { key: 'Corruption', color: 'var(--color--chart--political-freedom)', style: 'dashed' },
-    { key: 'Security', color: 'var(--color--chart--political-freedom)', style: 'dashed' },
-    { key: FreedomSubIndicator.LEGAL, color: 'var(--color--chart--legal-freedom)' },
-    { key: 'Clarity of the Law', color: 'var(--color--chart--legal-freedom)', style: 'dashed' },
-    { key: 'Judicial Independence and Effectiveness', color: 'var(--color--chart--legal-freedom)', style: 'dashed' },
-].map((d) => (
-    {
-        ...d,
-        indicator: d.indicator ? d.indicator : d.key,
-        label: d.label ? d.label : d.key,
-    }
-))
-
 function CountryProfile(props: ICountryProfile) {
     const { panelOpen, selectedCountry, selectedIndicators } = props;
     const [init, setInit] = useState(false);
+    const [data, setData] = useState([])
     const svg = useRef(null);
 
-    const selectedISO = _.get(selectedCountry, '[0].ISO3', null);
+    const selectedISO = () => _.get(selectedCountry, '[0].ISO3', null);
 
     useEffect(() => {
-        window.addEventListener("resize", () => handleDrawChart());
+        window.addEventListener("resize", drawChart);
 
-        handleDrawChart()
+        drawChart()
 
         // remove on unmount
-        return () => window.removeEventListener("resize", () => handleDrawChart());
+        return () => window.removeEventListener("resize", drawChart);
     }, [])
 
     useEffect(() => {
-        handleDrawChart()
-    }, [selectedISO, panelOpen, selectedIndicators])
-
-    const handleDrawChart = () => {
-        if (selectedISO) {
-            import(`./../../data/processed/by-country/${selectedISO}.csv`).then(res => {
+        const iso = selectedISO();
+        if (iso) {
+            import(`./../../data/processed/by-country/${iso}.csv`).then(res => {
                 const data = formatData(res.default);
-                drawChart(data)
+                setData(data);
             }).catch((reason) => {
                 console.error(reason)
             })
-        } else {
-            drawChart([])
-        }
-    }
+        } 
+    }, [selectedCountry])
 
-    const drawChart = (data: Array<FPData>) => {
-        const height = window.innerHeight - 200;
-        const width = window.innerWidth < 1440 ? window.innerWidth - (panelOpen ? 480 : 0)
-            : 1440 - (panelOpen ? 480 - (window.innerWidth - 1440) / 2 : 0)
+    useEffect(() => {
+        drawChart()
+    }, [data, panelOpen, selectedIndicators])
+
+    const drawChart = () => {
+        const { panelOpen, selectedIndicators } = props;
+        const height = getHeight()
+        const width = getWidth(panelOpen)
 
         const chart = d3.select(svg.current);
 
-        const selectedChartIndicators = () => possibleIndicators.filter((type) => {
-            return selectedIndicators.includes(type.indicator)
-        })
-
-        let allApplicableScores = []
-        selectedChartIndicators().forEach((indicator: string) => {
-            const range = d3.extent(data.map(row => row[indicator.key])).filter(d => d > -1);
-            allApplicableScores.push(range[0], range[1])
-        })
+        const selectedChartIndicators = getSelectedFlattenedIndicators(selectedIndicators);
+        const yDomain = getYDomain(selectedIndicators, data);
 
         const x = d3.scaleLinear()
             .domain(data.length > 0 ? d3.extent(data.map(row => row['Index Year'])) as Iterable<number> : [1995, 2022])
             .range([PADDING.l, width - PADDING.r])
-
-        const yDomain = data.length > 0 && allApplicableScores.length > 0 ? d3.extent(allApplicableScores) as Iterable<number> : [0, 100]
 
         const y = d3.scaleLinear()
             .domain(yDomain)
             .nice()
             .range([height - PADDING.b, PADDING.t])
 
-        const labelPositions = possibleIndicators.map((d) => {
-            return {
-                key: d.key,
-                y: data.length > 0 ? y(data[0][d.key]) : 0,
-            }
-        }).sort((a, b) => a.y - b.y)
-
-        // if label is overlapping another, shift up or down
-        let overlap = false;
-        const diff = 24;
-        do {
-            overlap = false;
-            labelPositions.forEach((label, i) => {
-                if (selectedChartIndicators().findIndex(d => d.key === label.key) > -1) {
-                    labelPositions.forEach((other, j) => {
-                        if (selectedChartIndicators().findIndex(d => d.key === other.key) > -1) {
-                            if (i > j && label.y !== 0) {
-                                if (label.y - other.y < diff) {
-                                    if (y(data[0][label.key]) > height / 2) {
-                                        label.y += 1
-                                    } else {
-                                        other.y -= 1
-                                    }
-
-                                    overlap = true;
-                                }
-                            }
-                        }
-                    })
-                }
-            })
-
-        } while (overlap)
-
-        // if any label is above chart, shift labels down as needed 
-        let shift = false;
-        do {
-            shift = false;
-            labelPositions.forEach((label, i) => {
-                if (label.y < PADDING.t/2) {
-                    shift = true;
-                    labelPositions.forEach((other, i) => {
-                        if (Math.abs(other.y - label.y) < diff) {
-                            label.y += 1;
-                            // other.y += 1;
-                        }
-                    })
-                }
-            })
-        } while (shift)
+        const labelPositions = getLabelPositions(selectedIndicators, data, y);
 
         const getLabelY = (key: string) => {
-            return labelPositions.find(d => d.key === key).y
+            return labelPositions.find(d => d.key === key)?.y
         }
 
         const getLabelX = () => {
@@ -208,14 +113,18 @@ function CountryProfile(props: ICountryProfile) {
             .call(y_axis);
 
         chart.selectAll('.y-axis .tick text')
+            .transition()
+            .duration(init ? TRANSITION_TIMING : 0)
             .style('transform', 'translate(-10px, 0)')
 
         chart.select('.x-axis .axis__label')
+            .transition()
+            .duration(init ? TRANSITION_TIMING : 0)
             .attr('x', width / 2)
             .attr('y', 50)
 
         chart.select('.y-axis .axis__label')
-            .style('transform', `translate(-40px, ${height/2 - PADDING.t + 5}px) rotate(-90deg)`)
+            .style('transform', `translate(-40px, ${height / 2 - PADDING.t + 5}px) rotate(-90deg)`)
 
         const line = d3.line()
             .x(d => x(d['Index Year']))
@@ -231,7 +140,7 @@ function CountryProfile(props: ICountryProfile) {
 
         chart.select('.paths')
             .selectAll('.path-g')
-            .data(possibleIndicators)
+            .data(FLATTENED_INDICATORS)
             .join(
                 enter => enter.append('g')
                     .attr('class', 'path-g')
@@ -246,8 +155,8 @@ function CountryProfile(props: ICountryProfile) {
                         const path = g.append('path')
                             .attr('class', 'country-path')
                             .style('stroke', d.color)
-                            .style('stroke-dasharray', d.style === 'dashed' ? '5 3' : '')
-                            .style('stroke-width', d.style === 'dashed' ? 1.5 : 5)
+                            .style('stroke-dasharray', d.subindicator ? '5 3' : '')
+                            .style('stroke-width', d.subindicator ? 1.5 : 5)
 
                         const label = g.append('g')
                             .attr('class', 'label')
@@ -259,15 +168,15 @@ function CountryProfile(props: ICountryProfile) {
                         const text = label.append('text')
                             .attr('transform', 'translate(8,3)')
                             .text(d.label)
-                            .style('fill', d.style === 'dashed' ? d.color : '#fff')
-                            .style('font-weight', d.style === 'dashed' ? 800 : 400)
+                            .style('fill', d.subindicator ? d.color : '#fff')
+                            .style('font-weight', d.subindicator ? 800 : 400)
 
-                        if (d.style !== 'dashed') {
+                        if (!d.subindicator) {
                             const dim = text.node().getBBox();
                             labelContainer.attr('d', `M8,-12 h${dim.width} a10,10 0 0 1 10,10 v4 a10,10 0 0 1 -10,10 h-${dim.width} a10,10 0 0 1 -10,-10 v-4 a10,10 0 0 1 10,-10 z`)
                         }
                     })
-                , update => update.style('opacity', d => selectedChartIndicators().findIndex(x => x.key === d.key) > -1 ? 1 : 0)
+                , update => update.style('opacity', d => selectedChartIndicators.findIndex(x => x.key === d.key) > -1 ? 1 : 0)
             )
 
         if (data.length > 0) {
@@ -320,6 +229,15 @@ function CountryProfile(props: ICountryProfile) {
                     .attr('d', labelConnector)
                     .style('opacity', 1)
             }
+        } else {
+            chart.selectAll('.country-path')
+                .attr('d', null)
+
+            chart.selectAll('.label')
+                .style('opacity', 0)
+
+            chart.selectAll('.label-connector')
+                .attr('d', null)
         }
 
 

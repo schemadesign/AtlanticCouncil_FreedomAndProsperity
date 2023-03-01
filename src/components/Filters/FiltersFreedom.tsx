@@ -1,5 +1,5 @@
 import { IndexType } from "../../@enums/IndexType";
-import { INDICATORS } from "../../data/data-util";
+import { NESTED_INDICATORS } from "../../data/data-util";
 import Button from "../Button/Button";
 
 import './_filters.scss';
@@ -14,7 +14,7 @@ function FiltersFreedom(props: IFiltersFreedom) {
 
     return (
         <div className="filters--freedom">
-            {Object.keys(INDICATORS[IndexType.FREEDOM]).map((type: string) => (
+            {Object.keys(NESTED_INDICATORS[IndexType.FREEDOM]).map((type: string) => (
                 <Button key={type}
                     variant={IndexType.FREEDOM}
                     selected={filters.includes(type)}

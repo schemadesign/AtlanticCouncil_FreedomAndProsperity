@@ -1,6 +1,6 @@
 import _, { isArray } from 'lodash';
 import { FreedomSubIndicator, IndexType } from "../../../@enums/IndexType";
-import { INDICATORS, getData } from "../../../data/data-util";
+import { NESTED_INDICATORS, getData } from "../../../data/data-util";
 import Accordion from "../../../components/Accordion/Accordion";
 import Category from "../../../components/Category/Category";
 import ScoreBar from "../../../components/ScoreBar/ScoreBar";
@@ -17,7 +17,7 @@ interface ICountryOverview {
 function CountryOverview(props: ICountryOverview) {
     const { type, data, filters } = props;
 
-    const indicators = INDICATORS[type]
+    const indicators = NESTED_INDICATORS[type]
 
     const subindictorNode = (subindictor: string) => {
         return (

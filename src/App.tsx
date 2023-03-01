@@ -46,6 +46,8 @@ function App() {
     useEffect(() => {
         if (page === Page.PROFILES) {
             setSelectedIndicators(([IndexType.PROSPERITY, IndexType.FREEDOM]));
+        } else if (page === Page.COMPARE) {
+            setSelectedIndicators([IndexType.FREEDOM])
         } else {
             setSelectedIndicators([])
         }
@@ -56,13 +58,6 @@ function App() {
             setPanelOpen(false)
         }
     }, [page])
-
-    const handleSetSelected = (newSelection: FPData[]) => {
-        // prevent reseting selected country
-        if (newSelection.length > 0) {
-            setSelected(newSelection)
-        }
-    }
 
     const getPage = () => {
         switch (page) {
@@ -106,7 +101,7 @@ function App() {
             >
                 <div className='flex-row justify-end'>
                     <Search selected={selected}
-                        setSelected={handleSetSelected} />
+                        setSelected={(newSelection: Array<FPData>) => setSelected(newSelection)} />
 
                     <Button variant='open-panel'
                         style={{visibility: page === Page.RANKINGS ? 'hidden' : 'visible'}}

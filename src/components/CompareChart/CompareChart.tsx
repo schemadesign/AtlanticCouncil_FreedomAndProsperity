@@ -1,12 +1,10 @@
 // @ts-nocheck
-
 import * as d3 from 'd3';
 import _ from 'lodash';
 import { useEffect, useRef, useState } from "react"
-import { FreedomSubIndicator, IndexType } from '../../@enums/IndexType';
-import { TRANSITION_TIMING, PADDING } from '../../data/d3-util';
-import { formatData } from '../../data/data-util';
-import manifest from './../../data/processed/manifest.csv';
+import { TRANSITION_TIMING, PADDING, getHeight, getWidth, getLabelPositions } from '../../data/d3-util';
+import { formatData, FLATTENED_INDICATORS, getSelectedFlattenedIndicators, getYDomain } from '../../data/data-util';
+import manifest from './../../data/processed/manifest_by_country.csv';
 
 interface ICompareChart {
     selectedCountry: FPData[],
@@ -14,11 +12,10 @@ interface ICompareChart {
     selectedIndicators: Array<string>,
 }
 
-function CompareChart(props: ICompareChart) {
-    const { panelOpen, selectedCountry, selectedIndicators } = props;
+function    CompareChart(props: ICompareChart) {
+    const { panelOpen, selectedIndicators } = props;
     const [init, setInit] = useState(false);
     const svg = useRef(null);
-    const selectedISO = _.get(selectedCountry, '[0].ISO3', null);
 
     useEffect(() => {
         window.addEventListener("resize", () => handleDrawChart());
@@ -31,10 +28,18 @@ function CompareChart(props: ICompareChart) {
 
     useEffect(() => {
         handleDrawChart()
-    }, [selectedISO, panelOpen, selectedIndicators])
+    }, [panelOpen, selectedIndicators])
 
     const handleDrawChart = () => {
-        // console.log(manifest)
+        // console.log(manifest, getSelectedFlattenedIndicators(selectedIndicators))
+        // getSelectedFlattenedIndicators(selectedIndicators).forEach((indicator) => {
+        //     import(`./../../data/processed/by-indicator/${indicator.key}.csv`).then(res => {
+        //         const data = res.default;
+        //         console.log(data)
+        //     }).catch((reason) => {
+        //         console.error(reason)
+        //     })
+        // })
         // if (selectedISO) {
         //     import(`./../../data/processed/by-country/${selectedISO}.csv`).then(res => {
         //         const data = formatData(res.default);
@@ -48,86 +53,27 @@ function CompareChart(props: ICompareChart) {
     }
 
     const drawChart = (data: Array<FPData>) => {
-        const height = window.innerHeight - 200;
-        const width = window.innerWidth < 1440 ? window.innerWidth - (panelOpen ? 480 : 0)
-            : 1440 - (panelOpen ? 480 - (window.innerWidth - 1440) / 2 : 0)
+        const height = getHeight()
+        const width = getWidth(panelOpen)
 
         const chart = d3.select(svg.current);
 
-        const selectedChartIndicators = () => possibleIndicators.filter((type) => {
-            return selectedIndicators.includes(type.indicator)
-        })
-
-        let allApplicableScores = []
-        selectedChartIndicators().forEach((indicator: string) => {
-            const range = d3.extent(data.map(row => row[indicator.key])).filter(d => d > -1);
-            allApplicableScores.push(range[0], range[1])
-        })
+        const selectedChartIndicators = getSelectedFlattenedIndicators(selectedIndicators);
+        const yDomain = getYDomain(selectedIndicators, data);
 
         const x = d3.scaleLinear()
             .domain(data.length > 0 ? d3.extent(data.map(row => row['Index Year'])) as Iterable<number> : [1995, 2022])
             .range([PADDING.l, width - PADDING.r])
-
-        const yDomain = data.length > 0 && allApplicableScores.length > 0 ? d3.extent(allApplicableScores) as Iterable<number> : [0, 100]
 
         const y = d3.scaleLinear()
             .domain(yDomain)
             .nice()
             .range([height - PADDING.b, PADDING.t])
 
-        const labelPositions = possibleIndicators.map((d) => {
-            return {
-                key: d.key,
-                y: data.length > 0 ? y(data[0][d.key]) : 0,
-            }
-        }).sort((a, b) => a.y - b.y)
-
-        // if label is overlapping another, shift up or down
-        let overlap = false;
-        const diff = 24;
-        do {
-            overlap = false;
-            labelPositions.forEach((label, i) => {
-                if (selectedChartIndicators().findIndex(d => d.key === label.key) > -1) {
-                    labelPositions.forEach((other, j) => {
-                        if (selectedChartIndicators().findIndex(d => d.key === other.key) > -1) {
-                            if (i > j && label.y !== 0) {
-                                if (label.y - other.y < diff) {
-                                    if (y(data[0][label.key]) > height / 2) {
-                                        label.y += 1
-                                    } else {
-                                        other.y -= 1
-                                    }
-
-                                    overlap = true;
-                                }
-                            }
-                        }
-                    })
-                }
-            })
-
-        } while (overlap)
-
-        // if any label is above chart, shift labels down as needed 
-        let shift = false;
-        do {
-            shift = false;
-            labelPositions.forEach((label, i) => {
-                if (label.y < PADDING.t/2) {
-                    shift = true;
-                    labelPositions.forEach((other, i) => {
-                        if (Math.abs(other.y - label.y) < diff) {
-                            label.y += 1;
-                            // other.y += 1;
-                        }
-                    })
-                }
-            })
-        } while (shift)
+        const labelPositions = getLabelPositions(selectedIndicators, data, y);
 
         const getLabelY = (key: string) => {
-            return labelPositions.find(d => d.key === key).y
+            return labelPositions.find(d => d.key === key)?.y
         }
 
         const getLabelX = () => {
@@ -195,7 +141,7 @@ function CompareChart(props: ICompareChart) {
 
         chart.select('.paths')
             .selectAll('.path-g')
-            .data(possibleIndicators)
+            .data(FLATTENED_INDICATORS)
             .join(
                 enter => enter.append('g')
                     .attr('class', 'path-g')
@@ -210,8 +156,8 @@ function CompareChart(props: ICompareChart) {
                         const path = g.append('path')
                             .attr('class', 'country-path')
                             .style('stroke', d.color)
-                            .style('stroke-dasharray', d.style === 'dashed' ? '5 3' : '')
-                            .style('stroke-width', d.style === 'dashed' ? 1.5 : 5)
+                            .style('stroke-dasharray', d.subindicator ? '5 3' : '')
+                            .style('stroke-width', d.subindicator ? 1.5 : 5)
 
                         const label = g.append('g')
                             .attr('class', 'label')
@@ -223,15 +169,15 @@ function CompareChart(props: ICompareChart) {
                         const text = label.append('text')
                             .attr('transform', 'translate(8,3)')
                             .text(d.label)
-                            .style('fill', d.style === 'dashed' ? d.color : '#fff')
-                            .style('font-weight', d.style === 'dashed' ? 800 : 400)
+                            .style('fill', d.subindicator ? d.color : '#fff')
+                            .style('font-weight', d.subindicator ? 800 : 400)
 
-                        if (d.style !== 'dashed') {
+                        if (!d.subindicator) {
                             const dim = text.node().getBBox();
                             labelContainer.attr('d', `M8,-12 h${dim.width} a10,10 0 0 1 10,10 v4 a10,10 0 0 1 -10,10 h-${dim.width} a10,10 0 0 1 -10,-10 v-4 a10,10 0 0 1 10,-10 z`)
                         }
                     })
-                , update => update.style('opacity', d => selectedChartIndicators().findIndex(x => x.key === d.key) > -1 ? 1 : 0)
+                , update => update.style('opacity', d => selectedChartIndicators.findIndex(x => x.key === d.key) > -1 ? 1 : 0)
             )
 
         if (data.length > 0) {
@@ -318,7 +264,7 @@ function CompareChart(props: ICompareChart) {
     }
 
     return (
-        <div className="container country-profile">
+        <div className="container country-profile-chart">
             <svg ref={svg}>
                 <g className='axis x-axis'>
                     <text className='axis__label'>
