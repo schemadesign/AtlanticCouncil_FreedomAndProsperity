@@ -46,8 +46,6 @@ function App() {
     useEffect(() => {
         if (page === Page.PROFILES) {
             setSelectedIndicators(([IndexType.PROSPERITY, IndexType.FREEDOM]));
-        } else if (page === Page.COMPARE) {
-            setSelectedIndicators([IndexType.FREEDOM])
         } else {
             setSelectedIndicators([])
         }
@@ -80,7 +78,7 @@ function App() {
                 )
             case Page.PROFILES:
                 return (
-                    <Profiles selectedCountry={selected}
+                    <Profiles selectedCountries={selected}
                         panelOpen={panelOpen}
                         selectedIndicators={selectedIndicators}
                     />
@@ -88,7 +86,7 @@ function App() {
             case Page.COMPARE:
                 return (
                     <Compare
-                        selectedCountry={selected}
+                        selectedCountries={selected}
                         panelOpen={panelOpen}
                         selectedIndicators={selectedIndicators}
                     />

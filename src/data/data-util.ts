@@ -4,6 +4,7 @@ import _, { isArray } from 'lodash';
 import { FreedomCategory } from '../@enums/FreedomCategory';
 import { FreedomSubIndicator, IndexType, Indicator } from '../@enums/IndexType';
 import { ProsperityCategory } from '../@enums/ProsperityCategory';
+import { IChartIndicattor } from '../@types/chart';
 import f_p_data from './processed/latest_all_countries.csv';
 import geojson from './world.geo.json';
 
@@ -43,14 +44,14 @@ export const formatLabel = (label: string) => {
     return label.replaceAll('_', ' ').replaceAll('+', ' and ')
 }
 
-export let FLATTENED_INDICATORS: Array<any> = [];
+export let FLATTENED_INDICATORS: Array<IChartIndicattor> = [];
 
 Object.keys(NESTED_INDICATORS).forEach((topLevel: string) => {
     FLATTENED_INDICATORS.push(
-        { 
-            key: Indicator[topLevel.toUpperCase() as keyof typeof Indicator], 
-            indicator: topLevel, 
-            color: `var(--color--chart--${topLevel.toLowerCase()})` 
+        {
+            key: Indicator[topLevel.toUpperCase() as keyof typeof Indicator],
+            indicator: topLevel,
+            color: `var(--color--chart--${topLevel.toLowerCase()})`
         }
     )
 
@@ -59,31 +60,31 @@ Object.keys(NESTED_INDICATORS).forEach((topLevel: string) => {
     if (isArray(subindicators)) {
         subindicators.map((subindicator: string) => {
             FLATTENED_INDICATORS.push(
-                { 
-                    key: subindicator, 
-                    subindicator: true, 
+                {
+                    key: subindicator,
+                    subindicator: true,
                     indicator: subindicator,
-                    color: `var(--color--chart--${topLevel.toLowerCase()})` 
+                    color: `var(--color--chart--${topLevel.toLowerCase()})`
                 }
             )
         })
     } else {
         Object.keys(subindicators).forEach((subindicator: string) => {
             FLATTENED_INDICATORS.push(
-                { 
-                    key: subindicator, 
+                {
+                    key: subindicator,
                     indicator: subindicator,
-                    color: `var(--color--chart--${subindicator.toLowerCase().replaceAll(' ', '-')})` 
+                    color: `var(--color--chart--${subindicator.toLowerCase().replaceAll(' ', '-')})`
                 }
             )
 
             subindicators[subindicator as keyof typeof subindicators].forEach((subsub: string) => {
                 FLATTENED_INDICATORS.push(
-                    { 
-                        key: subsub, 
-                        subindicator: true, 
+                    {
+                        key: subsub,
+                        subindicator: true,
                         indicator: subsub,
-                        color: `var(--color--chart--${subindicator.toLowerCase().replaceAll(' ', '-')})` 
+                        color: `var(--color--chart--${subindicator.toLowerCase().replaceAll(' ', '-')})`
                     }
                 )
             })
@@ -98,21 +99,25 @@ FLATTENED_INDICATORS = FLATTENED_INDICATORS.map(d => (
     }
 ))
 
-export const formatData = (data: Array<FPData>): Array<FPData> => {
+export const formatData = (data: Array<FPData>, includeCategories = true): Array<FPData> => {
     return data.map((row: any) => {
         Object.keys(row).forEach((col: string) => {
             if (col !== 'Name' && col !== 'ISO3') {
-                row[col] = parseFloat(row[col]) || -1
+                const val = parseFloat(row[col]);
+                row[col] = isNaN(val) ? -1 : val
             }
         })
-        row['Prosperity category'] = row['Prosperity score'] < 25 ? ProsperityCategory.UNPROSPEROUS
-            : row['Prosperity score'] < 50 ? ProsperityCategory.MOSTLY_UNPROSPEROUS
-                : row['Prosperity score'] < 75 ? ProsperityCategory.MOSTLY_PROSPEROUS
-                    : ProsperityCategory.PROSPEROUS
-        row['Freedom category'] = row['Freedom score'] < 25 ? FreedomCategory.UNFREE
-            : row['Freedom score'] < 50 ? FreedomCategory.MOSTLY_UNFREE
-                : row['Freedom score'] < 75 ? FreedomCategory.MOSTLY_FREE
-                    : FreedomCategory.FREE
+
+        if (includeCategories) {
+            row['Prosperity category'] = row['Prosperity score'] < 25 ? ProsperityCategory.UNPROSPEROUS
+                : row['Prosperity score'] < 50 ? ProsperityCategory.MOSTLY_UNPROSPEROUS
+                    : row['Prosperity score'] < 75 ? ProsperityCategory.MOSTLY_PROSPEROUS
+                        : ProsperityCategory.PROSPEROUS
+            row['Freedom category'] = row['Freedom score'] < 25 ? FreedomCategory.UNFREE
+                : row['Freedom score'] < 50 ? FreedomCategory.MOSTLY_UNFREE
+                    : row['Freedom score'] < 75 ? FreedomCategory.MOSTLY_FREE
+                        : FreedomCategory.FREE
+        }
 
         return row;
     })
@@ -204,11 +209,11 @@ export const sortedData = (sort: { col: string, direction: number }) => {
     })
 }
 
-export const getFreedomCategory = (iso: string): string => {
+export const getFreedomCategory = (iso: string): FreedomCategory => {
     try {
-        return f_p_data.find((e: FPData) => e.ISO3 === iso)['Freedom category']
+        return f_p_data.find((e: FPData) => e.ISO3 === iso)['Freedom category'] as FreedomCategory
     } catch {
-        return '';
+        return FreedomCategory.UNASSIGNED
     }
 }
 
@@ -290,10 +295,10 @@ const getAllApplicableScores = (indicators: Array<string>, data: FPData[]): Arra
     const chartIndicators = getSelectedFlattenedIndicators(indicators);
 
     chartIndicators.forEach((indicator: { key: string }) => {
-        const extent: Array<number | undefined> = d3.extent(data.map(row => row[indicator.key]));
+        const extent: Array<number> = d3.extent(data.map(row => row[indicator.key])) as Array<number>;
 
-        extent.forEach((val: number | undefined) => {
-            if (val && val > -1) {
+        extent.forEach((val: number) => {
+            if (val > -1) {
                 allApplicableScores.push(val)
             }
         })

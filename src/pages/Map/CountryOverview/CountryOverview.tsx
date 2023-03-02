@@ -1,6 +1,6 @@
 import _, { isArray } from 'lodash';
 import { FreedomSubIndicator, IndexType } from "../../../@enums/IndexType";
-import { NESTED_INDICATORS, getData } from "../../../data/data-util";
+import { NESTED_INDICATORS, getData, formatLabel } from "../../../data/data-util";
 import Accordion from "../../../components/Accordion/Accordion";
 import Category from "../../../components/Category/Category";
 import ScoreBar from "../../../components/ScoreBar/ScoreBar";
@@ -22,7 +22,7 @@ function CountryOverview(props: ICountryOverview) {
     const subindictorNode = (subindictor: string) => {
         return (
             <div className='panel__country-overview__subindicator' key={subindictor}>
-                <h6>{subindictor}</h6>
+                <h6>{ formatLabel(subindictor) }</h6>
                 <div className='flex-row justify-space-between'>
                     <div className={''}>
                         <ScoreBar value={data[subindictor]} />

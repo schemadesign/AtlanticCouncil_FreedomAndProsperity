@@ -2,7 +2,6 @@ import { IndexType } from "../../@enums/IndexType";
 import ModeControls from "../../components/ModeControls/ModeControls";
 import FreedomAndProsperityMap from "../../components/FreedomAndProsperityMap/Map/Map";
 import FreedomAndProsperityMapLegend from "../../components/FreedomAndProsperityMap/Legend/Legend";
-import Panel from "../../components/Panel/Panel";
 
 import './_map.scss';
 import { Page } from "../../@enums/Page";

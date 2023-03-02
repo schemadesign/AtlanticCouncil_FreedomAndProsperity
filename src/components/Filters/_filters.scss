@@ -10,28 +10,6 @@
         .button {
             font-size: 0.75rem;
 
-            &--prosperity {
-                path {
-                    fill: var(--neutral---gray--dark);
-                    fill-rule: evenodd;
-                }
-            }
-
-            &--freedom {
-                path {
-                    fill: none;
-                    fill-rule: evenodd;
-                }
-            }
-
-            &--selected {
-                svg {
-                    path {
-                        fill: var(--neutral---gray--dark);
-                        fill-rule: nonzero;
-                    }
-                }
-            }
         }
     }
 }

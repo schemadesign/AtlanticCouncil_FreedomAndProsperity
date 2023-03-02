@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import * as d3 from 'd3';
-import { fillByProsperity, colors, getFeatureByISO, positionCentroid } from '../../data/d3-util';
+import { fillByProsperity, colors, getFeatureByISO, positionCentroid } from '../../data/d3-map-util';
 import { getFreedomCategory, getProsperityCategory } from '../../data/data-util';
 
 import './_mini-map.scss';

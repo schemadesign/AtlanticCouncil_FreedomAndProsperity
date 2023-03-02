@@ -1,7 +1,7 @@
 .tooltip {
     &__container {
         position: absolute;
-        transition: left 200ms, top 200ms;
+        // transition: left 200ms, top 200ms;
         color: var(--neutral---gray--dark);
         pointer-events: none;
     }

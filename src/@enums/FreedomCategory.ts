@@ -3,6 +3,7 @@ export enum FreedomCategory {
     MOSTLY_FREE = 'Mostly Free',
     MOSTLY_UNFREE = 'Mostly Unfree',
     UNFREE = 'Unfree',
+    UNASSIGNED = '',
 }
 
 export type FreedomCategoryKeys = keyof typeof FreedomCategory;

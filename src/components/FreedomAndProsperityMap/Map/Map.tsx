@@ -3,17 +3,16 @@ import { useEffect, useRef, useState } from 'react'
 import * as d3 from 'd3';
 // import geojsonLow from '../../../data/world-100.geo.json';
 import geojson from '../../../data/world.geo.json';
-import geojsonLow from '../../../data/world-low.geo.json';
-import centroids from '../../../data/centroids.geo.json';
 
 import './_map.scss';
 import { getDataByISO, getFreedomCategory, getProsperityCategory } from '../../../data/data-util';
 import { IndexType } from '../../../@enums/IndexType';
 import Tooltip from '../Tooltip/Tooltip';
-import { positionCentroid, colors, fillByProsperity } from '../../../data/d3-util';
+import { positionCentroid, colors, fillByProsperity } from '../../../data/d3-map-util';
+import { FreedomCategory } from '../../../@enums/FreedomCategory';
 
 interface IMap {
-    mode: IndexType | null,
+    mode: IndexType,
     setPanelData: (data: FPData) => void,
 }
 
@@ -118,7 +117,7 @@ function Map(props: IMap) {
             .transition()
             .duration(init ? 0 : 150)
             .style('fill', d => {
-                const category = getFreedomCategory(d.properties.adm0_iso);
+                const category: FreedomCategory = getFreedomCategory(d.properties.adm0_iso);
                 if (!category) {
                     return '#F2F2F2'
                 }
@@ -136,16 +135,18 @@ function Map(props: IMap) {
         x += 20
         y += 20 + document.documentElement.scrollTop
 
-        if (y + tooltipNode.current.offsetHeight > document.documentElement.offsetHeight - 60) {
-            y = document.documentElement.offsetHeight - (tooltipNode.current.offsetHeight * 2)
-        }
+        if (tooltipNode.current) {
+            if (y + tooltipNode.current.offsetHeight > document.documentElement.offsetHeight - 60) {
+                y = document.documentElement.offsetHeight - (tooltipNode.current.offsetHeight * 2)
+            }
 
-        if (x + tooltipNode.current.offsetWidth > document.documentElement.offsetWidth - 60) {
-            x = document.documentElement.offsetWidth - (tooltipNode.current.offsetWidth * 2) - 10
-        }
+            if (x + tooltipNode.current.offsetWidth > document.documentElement.offsetWidth - 60) {
+                x = document.documentElement.offsetWidth - (tooltipNode.current.offsetWidth * 2) - 10
+            }
 
-        tooltipNode.current.style.left = x + 'px';
-        tooltipNode.current.style.top = y + 'px';
+            tooltipNode.current.style.left = x + 'px';
+            tooltipNode.current.style.top = y + 'px';
+        }
     }
 
     const updateCountries = (lowRes = false) => {

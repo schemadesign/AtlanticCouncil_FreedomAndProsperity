@@ -2,13 +2,13 @@ import { Page } from '../../@enums/Page';
 import CompareChart from '../../components/CompareChart/CompareChart';
 
 interface ICompare {
-    selectedCountry: FPData[],
+    selectedCountries: FPData[],
     panelOpen: boolean,
     selectedIndicators: Array<string>,
 }
 
 function Compare(props: ICompare) {
-    const { selectedCountry, panelOpen, selectedIndicators } = props;
+    const { selectedCountries, panelOpen, selectedIndicators } = props;
 
     return (
         <div className="page page--compare" id={Page.COMPARE}>
@@ -21,7 +21,7 @@ function Compare(props: ICompare) {
             </div>
             <CompareChart
                 panelOpen={panelOpen}
-                selectedCountry={selectedCountry}
+                selectedCountries={selectedCountries}
                 selectedIndicators={selectedIndicators}
             />
         </div>

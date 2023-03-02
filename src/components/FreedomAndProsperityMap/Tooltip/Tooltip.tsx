@@ -6,12 +6,12 @@ import './_tooltip.scss';
 interface ITooltip {
     data: null | FPData,
     mode: IndexType,
-    countryProfile?: boolean,
+    countryProfileChart?: boolean,
     indicators?: Array<any>
 }
 
 function Tooltip(props: ITooltip) {
-    let { data, mode, countryProfile, indicators } = props;
+    let { data, mode, countryProfileChart, indicators } = props;
 
     if (!data) {
         return <></>;
@@ -23,7 +23,7 @@ function Tooltip(props: ITooltip) {
                 <h3>
                     {data.Name}
                 </h3>
-                {countryProfile ? 
+                {countryProfileChart ? 
                     <h3>
                         {data['Index Year']}
                     </h3>
@@ -31,7 +31,7 @@ function Tooltip(props: ITooltip) {
                     <></>
                 }
             </div>
-            {countryProfile && indicators ?
+            {countryProfileChart && indicators ?
                 <ProfileTooltip data={data}
                     indicators={indicators}
                     />

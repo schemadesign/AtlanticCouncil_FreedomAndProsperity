@@ -1,68 +1,155 @@
-// @ts-nocheck
 import * as d3 from 'd3';
 import _ from 'lodash';
 import { useEffect, useRef, useState } from "react"
-import { TRANSITION_TIMING, PADDING, getHeight, getWidth, getLabelPositions } from '../../data/d3-util';
-import { formatData, FLATTENED_INDICATORS, getSelectedFlattenedIndicators, getYDomain } from '../../data/data-util';
-import manifest from './../../data/processed/manifest_by_country.csv';
+import { IndexType } from '../../@enums/IndexType';
+import { ChartLabelPosition } from '../../@types/chart';
+import { TRANSITION_TIMING, PADDING, getHeight, getWidth, lineGenerator, setUpChart, getLabelX, getLabelY, handleCollisionDetection, labelConnectorPathGenerator } from '../../data/d3-chart-util';
+import { formatData, getSelectedFlattenedIndicators, getYDomain } from '../../data/data-util';
+import Tooltip from '../FreedomAndProsperityMap/Tooltip/Tooltip';
 
 interface ICompareChart {
-    selectedCountry: FPData[],
+    selectedCountries: FPData[],
     panelOpen: boolean,
     selectedIndicators: Array<string>,
 }
 
-function    CompareChart(props: ICompareChart) {
-    const { panelOpen, selectedIndicators } = props;
-    const [init, setInit] = useState(false);
+interface ICompareChartDatasets {
+    [key: string]: Array<FPData>,
+}
+
+function CompareChart(props: ICompareChart) {
+    const { panelOpen, selectedCountries, selectedIndicators } = props;
+    const [data, setData] = useState<ICompareChartDatasets>({})
+    const [hoverData, setHoverData] = useState(null)
+    const [hoverIndicator, setHoverIndicator] = useState([])
+    const [assignedColors, setAssignedColors] = useState({})
     const svg = useRef(null);
+    const tooltipNode = useRef(null);
 
-    useEffect(() => {
-        window.addEventListener("resize", () => handleDrawChart());
+    const onlyIndicator = selectedIndicators[0] || '';
 
-        handleDrawChart()
+    // useEffect(() => {
+    //     window.addEventListener("resize", drawChart);
 
-        // remove on unmount
-        return () => window.removeEventListener("resize", () => handleDrawChart());
-    }, [])
+    //     drawChart()
 
-    useEffect(() => {
-        handleDrawChart()
-    }, [panelOpen, selectedIndicators])
+    //     // remove on unmount
+    //     return () => window.removeEventListener("resize", drawChart);
+    // }, [])
 
-    const handleDrawChart = () => {
-        // console.log(manifest, getSelectedFlattenedIndicators(selectedIndicators))
-        // getSelectedFlattenedIndicators(selectedIndicators).forEach((indicator) => {
-        //     import(`./../../data/processed/by-indicator/${indicator.key}.csv`).then(res => {
-        //         const data = res.default;
-        //         console.log(data)
-        //     }).catch((reason) => {
-        //         console.error(reason)
-        //     })
-        // })
-        // if (selectedISO) {
-        //     import(`./../../data/processed/by-country/${selectedISO}.csv`).then(res => {
-        //         const data = formatData(res.default);
-        //         drawChart(data)
-        //     }).catch((reason) => {
-        //         console.error(reason)
-        //     })
-        // } else {
-        //     drawChart([])
-        // }
+    function getData() {
+        let files: Array<string> = [];
+
+        setAssignedColors((prev: ICompareChartDatasets) => {
+            const updated: ICompareChartDatasets = {};
+            selectedCountries.forEach(country => {
+                if (prev[country.ISO3]) {
+                    updated[country.ISO3] = prev[country.ISO3]
+                }
+            })
+
+            return updated;
+        })
+
+        // delete removed countries
+        setData(prev => {
+            let updated: ICompareChartDatasets = {}
+
+            selectedCountries.forEach((country) => {
+                if (prev[country.ISO3]) {
+                    updated[country.ISO3] = prev[country.ISO3]
+                }
+            })
+            
+            return updated
+        })
+
+        selectedCountries.forEach((country: FPData) => {
+            if (!data[country.ISO3]) {
+                setAssignedColors(prev => {
+                    const colors = [1, 2, 3, 4, 5].filter(d => (
+                        !Object.values(prev).includes(d)
+                    ))
+
+                    return {
+                        ...prev,
+                        [country.ISO3]: colors[0] || ((Object.keys(prev).length) % 5 + 1) // `var(--color--chart--${(Object.keys(prev).length + 1) % 5})`
+                    }
+                })
+                files.push(`./../../data/processed/by-country/${country.ISO3}.csv`)
+            }
+        })
+
+        files.map((file: string) =>
+            import(file).then(res => {
+                setData((prev: ICompareChartDatasets) => {
+                    const formatted = formatData(res.default, true);
+                    let updated: ICompareChartDatasets = {}
+
+                    selectedCountries.forEach((country) => {
+                        if (prev[country.ISO3]) {
+                            updated[country.ISO3] = prev[country.ISO3]
+                        }
+                    })
+                    
+                    return {
+                        ...updated,
+                        [formatted[0].ISO3]: formatted,
+                    }
+                })
+            }).catch((reason) => {
+                console.error(reason)
+            })
+        )
     }
 
-    const drawChart = (data: Array<FPData>) => {
+    useEffect(() => {
+        getData()
+    }, [selectedCountries])
+
+    useEffect(() => {
+        drawChart()
+    }, [data, panelOpen, selectedIndicators])
+
+    const getLabelPositions = (onlyIndicator: string, data: Array<Array<FPData>>, y: (val: number) => number): Array<ChartLabelPosition> => {
+        let labelPositions = data.map((countryDataset: Array<FPData>) => {
+            const yVal = data.length > 0 ? y(countryDataset[0][onlyIndicator]) : -20;
+            return {
+                key: countryDataset[0].ISO3,
+                label: countryDataset[0].Name,
+                y: yVal,
+                initialY: yVal,
+            }
+        })
+
+        return handleCollisionDetection(labelPositions)
+    }
+
+    console.log(selectedIndicators)
+
+    const getColorFromIndex = (i: number) => {
+        return `var(--color--chart--${i})`
+    }
+
+    const drawChart = () => {
+        const { panelOpen, selectedIndicators } = props;
         const height = getHeight()
         const width = getWidth(panelOpen)
 
         const chart = d3.select(svg.current);
 
-        const selectedChartIndicators = getSelectedFlattenedIndicators(selectedIndicators);
-        const yDomain = getYDomain(selectedIndicators, data);
+        let yVals: Array<number> = [];
+        let xVals: Array<number> = [];
+        Object.values(data).map((dataset: Array<FPData>) => {
+            yVals = [...yVals, ...getYDomain(selectedIndicators, dataset)]
+            xVals = [...xVals, ...d3.extent(dataset.map(row => row['Index Year'])) as Iterable<number>]
+        })
+
+        const yDomain = [d3.min(yVals) || 0, d3.max(yVals) || 100]
+        const xDomain = [d3.min(xVals) || 1995, d3.max(xVals) || 2022]
 
         const x = d3.scaleLinear()
-            .domain(data.length > 0 ? d3.extent(data.map(row => row['Index Year'])) as Iterable<number> : [1995, 2022])
+            .domain(xDomain)
             .range([PADDING.l, width - PADDING.r])
 
         const y = d3.scaleLinear()
@@ -70,196 +157,124 @@ function    CompareChart(props: ICompareChart) {
             .nice()
             .range([height - PADDING.b, PADDING.t])
 
-        const labelPositions = getLabelPositions(selectedIndicators, data, y);
+        setUpChart(chart, height, width, x, y, true);
 
-        const getLabelY = (key: string) => {
-            return labelPositions.find(d => d.key === key)?.y
-        }
+        const line = lineGenerator(x, y)
 
-        const getLabelX = () => {
-            if (data[0]) {
-                return x(data[0]['Index Year']) + 20
-            }
-
-            return 20;
-        }
-
-        chart.attr('viewBox', `0 0 ${width} ${height}`)
-            .style('max-height', height)
-
-        const x_axis = d3.axisBottom(x)
-            .tickFormat(d => d)
-            .tickSize(0)
-
-        chart.select('.x-axis')
-            .attr(`transform`, `translate(0, ${height - PADDING.b})`)
-            .transition()
-            .duration(TRANSITION_TIMING)
-            .call(x_axis);
-
-        chart.selectAll('.x-axis .tick text')
-            .style('transform', 'translate(0, 14px)')
-
-        chart.selectAll('.x-axis .domain')
-            .remove()
-
-        const yAxisTicks = y.ticks()
-            .filter(tick => Number.isInteger(tick));
-
-        const y_axis = d3.axisLeft(y)
-            .tickValues(yAxisTicks)
-            .tickFormat(d3.format('d'))
-            .tickSize(-width + PADDING.l + PADDING.r)
-
-        chart.select('.y-axis')
-            .attr(`transform`, `translate(${PADDING.l},0)`)
-            .transition()
-            .duration(TRANSITION_TIMING)
-            .call(y_axis);
-
-        chart.selectAll('.y-axis .tick text')
-            .style('transform', 'translate(-10px, 0)')
-
-        chart.select('.x-axis .axis__label')
-            .attr('x', width / 2)
-            .attr('y', 50)
-
-        chart.select('.y-axis .axis__label')
-            .style('transform', `translate(-40px, ${height/2 - PADDING.t + 5}px) rotate(-90deg)`)
-
-        const line = d3.line()
-            .x(d => x(d['Index Year']))
-            .y(d => y(d['field']))
-            .curve(d3.curveCardinal.tension(0.5));
-
-        const labelConnector = (d) => {
-            if (data.length > 0) {
-                return `M${getLabelX()},${getLabelY(d.key)} L${x(data[0]['Index Year']) + 5},${getLabelY(d.key)} L${x(data[0]['Index Year']) + 5},${y(data[0][d.key])}`
-            }
-            return '';
-        }
+        const definedData: Array<FPData> = Object.values(data).filter((dataset: Array<FPData>) => {
+            return dataset.findIndex(d => d[onlyIndicator] > -1) > -1
+        })
 
         chart.select('.paths')
             .selectAll('.path-g')
-            .data(FLATTENED_INDICATORS)
+            // @ts-expect-error
+            .data(definedData, (d: Array<FPData>) => `${d[0].ISO3 + onlyIndicator}`)
             .join(
                 enter => enter.append('g')
                     .attr('class', 'path-g')
-                    .each(function (d, i) {
-                        const g = d3.select(this);
-
-                        g.append('path')
-                            .attr('class', 'label-connector')
-                            .attr('d', labelConnector)
-                            .style('opacity', init ? 1 : 0)
+                    .attr('data-iso', d => d[0].ISO3)
+                    .each(function (thisData, i) {
+                        const g = d3.select(this)
+                        const generalizedData = thisData.map(row => ({ ...row, field: row[onlyIndicator] || -1 }));
 
                         const path = g.append('path')
                             .attr('class', 'country-path')
-                            .style('stroke', d.color)
-                            .style('stroke-dasharray', d.subindicator ? '5 3' : '')
-                            .style('stroke-width', d.subindicator ? 1.5 : 5)
+                            .style('stroke', getColorFromIndex(assignedColors[thisData[0].ISO3 as keyof typeof assignedColors]))
+
+                        // @ts-expect-error
+                        path.attr('d', line(generalizedData))
+                            .each(function () {
+                                // @ts-expect-error
+                                const length = d3.select(this).node().getTotalLength();
+
+                                d3.select(this)
+                                    .attr("stroke-dasharray", length + " " + length)
+                                    .attr("stroke-dashoffset", -length)
+                                    .transition()
+                                    .ease(d3.easeLinear)
+                                    .attr("stroke-dashoffset", 0)
+                                    .duration(TRANSITION_TIMING * 3)
+                            })
+                    })
+                , update => update.each(function (thisData: Array<FPData>, i) {
+                    const g = d3.select(this);
+                    const path = g.select('.country-path');
+                    const generalizedData = thisData.map(row => ({ ...row, field: row[onlyIndicator] || -1 }));
+
+                    path.attr("stroke-dasharray", null)
+                        .transition()
+                        .duration(TRANSITION_TIMING)
+                        // @ts-expect-error
+                        .attr('d', line(generalizedData))
+                }),
+                exit => exit.remove()
+            )
+
+        const labelPositions = getLabelPositions(onlyIndicator, definedData, y);
+
+        chart.select('.labels')
+            .selectAll('.label-g')
+            .data(labelPositions, d => d.key)
+            .join(
+                enter => enter.append('g')
+                    .attr('class', 'label-g')
+                    .attr('data-iso', d => d.key)
+                    .each(function (d, i) {
+                        const g = d3.select(this)
+
+                        g.append('path')
+                            .attr('class', 'label-connector')
+                            .attr('d', d => labelConnectorPathGenerator(d, labelPositions, x))
+                            .each(function () {
+                                const length = d3.select(this).node().getTotalLength();
+
+                                d3.select(this).attr("stroke-dasharray", length + " " + length)
+                                    .attr("stroke-dashoffset", length)
+                                    .transition()
+                                    .ease(d3.easeLinear)
+                                    .attr("stroke-dashoffset", 0)
+                                    .delay(TRANSITION_TIMING * 3)
+                                    .duration(TRANSITION_TIMING / 4)
+                            })
 
                         const label = g.append('g')
                             .attr('class', 'label')
-                            .style('opacity', init ? 1 : 0)
 
                         const labelContainer = label.append('path')
-                            .style('fill', d.color)
+                            .style('fill', getColorFromIndex(assignedColors[d.key]))
 
                         const text = label.append('text')
                             .attr('transform', 'translate(8,3)')
                             .text(d.label)
-                            .style('fill', d.subindicator ? d.color : '#fff')
-                            .style('font-weight', d.subindicator ? 800 : 400)
+                            .style('font-weight', 800)
 
-                        if (!d.subindicator) {
-                            const dim = text.node().getBBox();
-                            labelContainer.attr('d', `M8,-12 h${dim.width} a10,10 0 0 1 10,10 v4 a10,10 0 0 1 -10,10 h-${dim.width} a10,10 0 0 1 -10,-10 v-4 a10,10 0 0 1 10,-10 z`)
-                        }
-                    })
-                , update => update.style('opacity', d => selectedChartIndicators.findIndex(x => x.key === d.key) > -1 ? 1 : 0)
-            )
-
-        if (data.length > 0) {
-            if (!init) {
-                chart.selectAll('.country-path')
-                    .attr('d', d => line(data.map(row => ({ ...row, field: row[d.key] }))))
-                    .each(function () {
-                        const length = d3.select(this).node().getTotalLength();
-
-                        d3.select(this).attr("stroke-dasharray", length + " " + length)
-                            .attr("stroke-dashoffset", -length)
+                        label.attr('transform', `translate(${getLabelX(x)},${getLabelY(labelPositions, d.key)})`)
+                            .style('opacity', 0)
                             .transition()
-                            .ease(d3.easeLinear)
-                            .attr("stroke-dashoffset", 0)
-                            .duration(TRANSITION_TIMING * 3)
+                            .delay(TRANSITION_TIMING * 2)
+                            .duration(TRANSITION_TIMING)
+                            .style('opacity', 1)
+
+                        const dim = text.node().getBBox();
+                        labelContainer.attr('d', `M8,-12 h${dim.width} a10,10 0 0 1 10,10 v4 a10,10 0 0 1 -10,10 h-${dim.width} a10,10 0 0 1 -10,-10 v-4 a10,10 0 0 1 10,-10 z`)
                     })
+                , update => update.each(function (d: any, i) {
+                    const g = d3.select(this);
 
-                chart.selectAll('.label')
-                    .attr('transform', d => `translate(${getLabelX()},${getLabelY(d.key)})`)
-                    .transition()
-                    .duration(TRANSITION_TIMING)
-                    .delay(TRANSITION_TIMING * 2)
-                    .style('opacity', 1)
+                    g.select('.label')
+                        .style('opacity', 1)
+                        .transition()
+                        .duration(TRANSITION_TIMING)
+                        .attr('transform', d => `translate(${getLabelX(x)},${getLabelY(labelPositions, d.key)})`)
 
-                chart.selectAll('.label-connector')
-                    .transition()
-                    .duration(TRANSITION_TIMING)
-                    .delay(TRANSITION_TIMING * 3)
-                    .attr('d', labelConnector)
-                    .style('opacity', 1)
-
-                setInit(true)
-            } else {
-                chart.selectAll('.country-path')
-                    .attr("stroke-dasharray", null)
-                    .transition()
-                    .duration(TRANSITION_TIMING)
-                    .attr('d', d => line(data.map(row => ({ ...row, field: row[d.key] }))))
-                    .style('opacity', 1)
-
-                chart.selectAll('.label')
-                    .transition()
-                    .duration(TRANSITION_TIMING)
-                    .attr('transform', d => `translate(${getLabelX()},${getLabelY(d.key)})`)
-                    .style('opacity', 1)
-
-                chart.selectAll('.label-connector')
-                    .transition()
-                    .duration(TRANSITION_TIMING)
-                    .attr('d', labelConnector)
-                    .style('opacity', 1)
-            }
-        }
-
-
-        // const positionHoverPoint = (d: FPData, key: string) => `translate(${x(d['Index Year']) - 25}px, ${y(d[key]) - 40}px)`
-
-        // chart.select('.hover-points--freedom')
-        //     .selectAll('rect')
-        //     .data(data)
-        //     .join(
-        //         enter => enter.append('rect')
-        //             .style('transform', (d: FPData) => positionHoverPoint(d, 'Prosperity score')),
-        //         update => update.style('transform', (d: FPData) => positionHoverPoint(d, 'Prosperity score'))
-        //     )
-
-        // chart.select('.hover-points--prosperity')
-        //     .selectAll('rect')
-        //     .data(data)
-        //     .join(
-        //         enter => enter.append('rect')
-        //             .style('transform', (d: FPData) => positionHoverPoint(d, 'Freedom score')),
-        //         update => update.style('transform', (d: FPData) => positionHoverPoint(d, 'Freedom score'))
-        //     )
-
-        // chart.selectAll('.hover-points')
-        //     .selectAll('rect')
-        //     .attr('width', 50)
-        //     .attr('height', 80)
-        //     .on('mouseenter', (e, d) => {
-        //         console.log(d)
-        //     })
+                    g.select('.label-connector')
+                        .attr("stroke-dasharray", null)
+                        .transition()
+                        .duration(TRANSITION_TIMING)
+                        .attr('d', d => labelConnectorPathGenerator(d, labelPositions, x))
+                }),
+                exit => exit.remove()
+            )
 
     }
 
@@ -276,13 +291,20 @@ function    CompareChart(props: ICompareChart) {
                         Score
                     </text>
                 </g>
+                <g className='labels'>
+                </g>
                 <g className='paths'>
                 </g>
                 <g className='hover-points'>
-                    <g className='hover-points hover-points--freedom'></g>
-                    <g className='hover-points hover-points--prosperity'></g>
                 </g>
             </svg>
+            <div ref={tooltipNode} className='tooltip__container'>
+                <Tooltip
+                    data={hoverData}
+                    indicators={hoverIndicator}
+                    mode={IndexType.COMBINED}
+                />
+            </div>
         </div>
     )
 }

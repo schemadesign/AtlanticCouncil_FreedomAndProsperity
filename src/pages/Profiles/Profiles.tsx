@@ -2,13 +2,13 @@ import { Page } from '../../@enums/Page';
 import CountryProfileChart from '../../components/CountryProfileChart/CountryProfileChart';
 
 interface IProfiles {
-    selectedCountry: FPData[],
+    selectedCountries: FPData[],
     panelOpen: boolean,
     selectedIndicators: Array<string>,
 }
 
 function Profiles(props: IProfiles) {
-    const { selectedCountry, panelOpen, selectedIndicators } = props;
+    const { selectedCountries, panelOpen, selectedIndicators } = props;
 
     return (
         <div className="page page--profiles" id={Page.PROFILES}>
@@ -20,7 +20,7 @@ function Profiles(props: IProfiles) {
                     
                 </div>
             </div>
-            <CountryProfileChart selectedCountry={selectedCountry} 
+            <CountryProfileChart selectedCountries={selectedCountries} 
                 selectedIndicators={selectedIndicators}
                 panelOpen={panelOpen}
                 />

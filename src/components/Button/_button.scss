@@ -21,6 +21,38 @@
             fill-rule: nonzero;
         }
     }
+
+    &--prosperity {
+        path {
+            fill: var(--neutral---gray--dark);
+            fill-rule: evenodd;
+        }
+
+        &.button--selected {
+            svg {
+                path {
+                    fill: var(--neutral---gray--dark);
+                    fill-rule: nonzero;
+                }
+            }
+        }
+    }
+
+    &--freedom {
+        path {
+            fill: none;
+            fill-rule: evenodd;
+        }
+
+        &.button--selected {
+            svg {
+                path {
+                    fill: var(--neutral---gray--dark);
+                    fill-rule: nonzero;
+                }
+            }
+        }
+    }
     &--close {
         background: var(--neutral---white);
         width: 2.5rem;

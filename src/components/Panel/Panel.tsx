@@ -60,7 +60,9 @@ function Panel(props: IPanel) {
                         mode={mode}
                         setMode={setMode}
                         selectedIndicators={selectedIndicators}
-                        toggleFilter={toggleFilter}
+                        toggleFilter={(indicator: string) => setSelectedIndicators([indicator])}
+                        selected={data}
+                        setSelected={setSelected}
                     />
                 )
             default:
