@@ -26,7 +26,6 @@ function CompareTooltip(props: ICompareTooltip) {
             <div className='tooltip__data'>
                 <div className={`tooltip__col ${data.length > 8 ? 'tooltip__col--two-col' : ''}`}>
                     {data.sort((a, b) => b[indicator] - a[indicator]).map((d: FPData) => {
-                        console.log(assignedColors)
                         return (
                             <div key={d.ISO3}>
                                 <h6>

@@ -1,9 +1,9 @@
 import * as d3 from 'd3';
 import _ from 'lodash';
 import { useEffect, useRef, useState } from "react"
-import { ChartLabelPosition, IChartIndicator } from '../../@types/chart';
+import { ChartLabelPosition } from '../../@types/chart';
 import { TRANSITION_TIMING, PADDING, getHeight, getWidth, lineGenerator, setUpChart, getLabelX, getLabelY, handleCollisionDetection, labelConnectorPathGenerator, animatePath, initChart, setUpHoverZones, positionTooltip } from '../../data/d3-chart-util';
-import { FLATTENED_INDICATORS, formatData, getYDomain } from '../../data/data-util';
+import { formatData, getYDomain } from '../../data/data-util';
 import CompareTooltip from '../Tooltip/CompareTooltip/CompareTooltip';
 
 import './_country-compare-chart.scss';
@@ -35,10 +35,10 @@ function CompareChart(props: ICompareChart) {
     useEffect(() => {
         initChart(d3.select(svg.current), getWidth(panelOpen));
 
-        window.addEventListener("resize", () => drawChart());
+        // window.addEventListener("resize", () => drawChart());
 
-        // remove on unmount
-        return () => window.removeEventListener("resize", () => drawChart());
+        // // remove on unmount
+        // return () => window.removeEventListener("resize", () => drawChart());
     }, [])
 
     const getColorFromIndex = (i: number) => {
@@ -86,31 +86,32 @@ function CompareChart(props: ICompareChart) {
                         [country.ISO3]: getColorFromIndex(next),
                     }
                 })
-                files.push(`./../../data/processed/by-country/${country.ISO3}.csv`)
+
+                import(`./../../data/processed/by-country/${country.ISO3}.csv`).then(res => {
+                    const hasData = res.default.find((d: FPData) => d[onlyIndicator] > -1)
+                    
+                    if (hasData) {
+                        setData((prev: ICompareChartDatasets) => {
+                            const formatted = formatData(res.default, true);
+                            let updated: ICompareChartDatasets = {}
+        
+                            selectedCountries.forEach((country) => {
+                                if (prev[country.ISO3]) {
+                                    updated[country.ISO3] = prev[country.ISO3]
+                                }
+                            })
+        
+                            return {
+                                ...updated,
+                                [formatted[0].ISO3]: formatted,
+                            }
+                        })
+                    }
+                }).catch((reason) => {
+                    console.error(reason)
+                })
             }
         })
-
-        files.map((file: string) =>
-            import(file).then(res => {
-                setData((prev: ICompareChartDatasets) => {
-                    const formatted = formatData(res.default, true);
-                    let updated: ICompareChartDatasets = {}
-
-                    selectedCountries.forEach((country) => {
-                        if (prev[country.ISO3]) {
-                            updated[country.ISO3] = prev[country.ISO3]
-                        }
-                    })
-
-                    return {
-                        ...updated,
-                        [formatted[0].ISO3]: formatted,
-                    }
-                })
-            }).catch((reason) => {
-                console.error(reason)
-            })
-        )
     }
 
     useEffect(() => {
