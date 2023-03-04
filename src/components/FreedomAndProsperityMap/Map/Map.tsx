@@ -7,7 +7,7 @@ import geojson from '../../../data/world.geo.json';
 import './_map.scss';
 import { getDataByISO, getFreedomCategory, getProsperityCategory } from '../../../data/data-util';
 import { IndexType } from '../../../@enums/IndexType';
-import Tooltip from '../Tooltip/Tooltip';
+import Tooltip from '../../Tooltip/Tooltip';
 import { positionCentroid, colors, fillByProsperity } from '../../../data/d3-map-util';
 import { FreedomCategory } from '../../../@enums/FreedomCategory';
 

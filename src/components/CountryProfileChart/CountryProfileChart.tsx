@@ -3,9 +3,9 @@ import _ from 'lodash';
 import { useEffect, useRef, useState } from "react"
 import { IndexType } from '../../@enums/IndexType';
 import { ChartLabelPosition, IChartIndicator } from '../../@types/chart';
-import { TRANSITION_TIMING, PADDING, getHeight, getWidth, lineGenerator, setUpChart, getLabelX, getLabelY, handleCollisionDetection, labelConnectorPathGenerator, animatePath, initChart } from '../../data/d3-chart-util';
+import { TRANSITION_TIMING, PADDING, getHeight, getWidth, lineGenerator, setUpChart, getLabelX, getLabelY, handleCollisionDetection, labelConnectorPathGenerator, animatePath, initChart, setUpHoverZones, positionTooltip } from '../../data/d3-chart-util';
 import { formatData, FLATTENED_INDICATORS, getSelectedFlattenedIndicators, getYDomain } from '../../data/data-util';
-import Tooltip from '../FreedomAndProsperityMap/Tooltip/Tooltip';
+import Tooltip from '../Tooltip/Tooltip';
 
 import './_country-profile-chart.scss';
 
@@ -18,7 +18,7 @@ interface ICountryProfileChart {
 function CountryProfileChart(props: ICountryProfileChart) {
     const { panelOpen, selectedCountries, selectedIndicators } = props;
     const [data, setData] = useState<Array<FPData>>([])
-    const [hoverData, setHoverData] = useState<number | null>(null)
+    const [hoverYear, setHoverYear] = useState<number | null>(null)
     const svg = useRef(null);
     const tooltipNode = useRef(null);
 
@@ -195,7 +195,7 @@ function CountryProfileChart(props: ICountryProfileChart) {
                             .attr('r', indicator.subindicator ? 3 : 5)
                     })
 
-                setHoverData(null)
+                setHoverYear(null)
 
                 return
             }
@@ -216,34 +216,15 @@ function CountryProfileChart(props: ICountryProfileChart) {
                         })
                 })
 
-            const thisYear: FPData | null = data.find(d => d['Index Year'] === year) || null;
+            const thisYearData: FPData | null = data.find(d => d['Index Year'] === year) || null;
 
-            if (thisYear) {
-                setHoverData(year as number)
-                // @ts-expect-error
-                const bbox = tooltipNode.current.getBoundingClientRect();
-                const tooltipWidth = bbox.width;
-                const tooltipHeight = bbox.height;
-                let tooltipX = x(year as number) + 40;
-                const midY = y(d3.mean(selectedChartIndicators().map(i => thisYear[i.key])) || 0)
-                let tooltipY = (midY as number) - tooltipHeight / 2; //y(minY); //y(d[indicator.key]) + 20;
+            if (thisYearData && year) {
+                setHoverYear(year as number)
+                const midY = y(d3.mean(selectedChartIndicators().map(i => thisYearData[i.key])) || 0)
 
-                if (tooltipX + tooltipWidth > window.innerWidth) {
-                    tooltipX = window.innerWidth - (tooltipWidth * 2) - 40
-                }
-
-                if (tooltipY + tooltipHeight > height - PADDING.b) {
-                    tooltipY = height - tooltipHeight - 40;
-                }
-
-                if (tooltipNode.current) {
-                    // @ts-expect-error
-                    tooltipNode.current.style.left = tooltipX + 'px';
-                    // @ts-expect-error
-                    tooltipNode.current.style.top = tooltipY + 'px';
-                }
+                positionTooltip(tooltipNode, x, year, height, midY)
             } else {
-                setHoverData(null)
+                setHoverYear(null)
             }
         }
 
@@ -292,48 +273,8 @@ function CountryProfileChart(props: ICountryProfileChart) {
                         exit => exit.remove(),
                     )
             })
-
-        let years = [x.domain()[0]];
-        while (years[years.length - 1] < x.domain()[1]) {
-            years.push(years[years.length - 1] + 1)
-        }
-
-        const positionHoverZone = (selection: any, year: number) => {
-            const increment = (x.range()[1] - x.range()[0]) / (years.length - 1);
-            selection.attr('width', increment)
-                .attr('height', y.range()[0])
-                .attr('transform', `translate(${-increment / 2}, 0)`)
-                .attr('x', x(year))
-                .on('mouseenter', (e: any, d: number) => {
-                    handleHover(e, d)
-                })
-                .on('mouseleave', () => {
-                    handleHover(null)
-                })
-        }
-
-        chart.select('.hover-zones')
-            .selectAll('.hover-zones-g')
-            .data(years)
-            .join(
-                enter => enter.append('g')
-                    .attr('class', 'hover-zones-g')
-                    .attr('data-year', d => d)
-                    .each(function (d, i) {
-                        const rect = d3.select(this)
-                            .append('rect')
-                            .style('fill', 'rgb(0,0,0,0)')
-                        positionHoverZone(rect, d)
-                    }),
-                update => update.each(function (d, i) {
-                    const rect = d3.select(this)
-                        .select('rect')
-
-                    positionHoverZone(rect, d)
-                })
-                ,
-                exit => exit.remove(),
-            )
+        
+        setUpHoverZones(chart, x, y, handleHover);
     }
 
 
@@ -359,7 +300,7 @@ function CountryProfileChart(props: ICountryProfileChart) {
             </svg>
             <div ref={tooltipNode} className='tooltip__container'>
                 <Tooltip
-                    data={data.find(d => d['Index Year'] === hoverData) || null}
+                    data={data.find(d => d['Index Year'] === hoverYear) || null}
                     indicators={selectedChartIndicators()}
                     mode={IndexType.COMBINED}
                     countryProfileChart={true}

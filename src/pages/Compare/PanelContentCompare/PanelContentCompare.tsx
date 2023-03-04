@@ -35,7 +35,9 @@ function PanelContentCompare(props: IPanelContentCompare) {
                                 )
                             })}
                         </div>
-                        <Button onClick={() => setSelected([], true)}>
+                        <Button onClick={() => setSelected([], true)}
+                            variant={'outline'}
+                            >
                             Reset
                         </Button>
                     </div>

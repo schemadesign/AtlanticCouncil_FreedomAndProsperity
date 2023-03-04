@@ -1,9 +1,9 @@
-import { IndexType } from "../../../../@enums/IndexType";
-import { getData, totalCountries } from "../../../../data/data-util";
-import Category from "../../../Category/Category";
-import ScoreBar from "../../../ScoreBar/ScoreBar";
-import Freedom from '../../../../assets/icons/IconFreedom';
-import Prosperity from '../../../../assets/icons/IconProsperity';
+import { IndexType } from "../../../@enums/IndexType";
+import { getData, totalCountries } from "../../../data/data-util";
+import Category from "../../Category/Category";
+import ScoreBar from "../../ScoreBar/ScoreBar";
+import Freedom from '../../../assets/icons/IconFreedom';
+import Prosperity from '../../../assets/icons/IconProsperity';
 
 interface ITooltip {
     data: null | FPData,

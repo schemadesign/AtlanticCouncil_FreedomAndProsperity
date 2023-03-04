@@ -80,4 +80,10 @@
             }
         }
     }
+
+    &--outline {
+        border: 1px solid var(--neutral---text);
+        border-radius: 5px;
+        text-transform: none;
+    }
 }

@@ -1,4 +1,5 @@
-import { IndexType } from '../../../@enums/IndexType';
+import { IndexType } from '../../@enums/IndexType';
+import CompareTooltip from './CompareTooltip/CompareTooltip';
 import MapTooltip from './MapTooltip/MapTooltip';
 import ProfileTooltip from './ProfileTooltip/ProfileTooltip';
 import './_tooltip.scss';
@@ -7,8 +8,12 @@ interface ITooltip {
     data: null | FPData,
     mode: IndexType,
     countryProfileChart?: boolean,
-    indicators?: Array<any>
+    indicators?: Array<any>,
 }
+
+// TODO
+// refactor this to handle different versions better
+// generalized title etc
 
 function Tooltip(props: ITooltip) {
     let { data, mode, countryProfileChart, indicators } = props;
@@ -23,7 +28,7 @@ function Tooltip(props: ITooltip) {
                 <h3>
                     {data.Name}
                 </h3>
-                {countryProfileChart ? 
+                {countryProfileChart ?
                     <h3>
                         {data['Index Year']}
                     </h3>
@@ -34,11 +39,11 @@ function Tooltip(props: ITooltip) {
             {countryProfileChart && indicators ?
                 <ProfileTooltip data={data}
                     indicators={indicators}
-                    />
+                />
                 :
                 <MapTooltip data={data}
                     mode={mode}
-                    />
+                />
             }
         </div>
     )

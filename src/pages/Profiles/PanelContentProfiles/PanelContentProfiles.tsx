@@ -93,6 +93,7 @@ function PanelContentProfiles(props: IPanelContentProfiles) {
                                         )
                                     })}
                                     <Button className="panel__content--country-profiles__clear-filters"
+                                        variant={'outline'}
                                         onClick={() => toggleFilter(null)}>
                                         Reset
                                     </Button>

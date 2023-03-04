@@ -1,11 +1,10 @@
 import * as d3 from 'd3';
 import _ from 'lodash';
 import { useEffect, useRef, useState } from "react"
-import { IndexType } from '../../@enums/IndexType';
 import { ChartLabelPosition, IChartIndicator } from '../../@types/chart';
-import { TRANSITION_TIMING, PADDING, getHeight, getWidth, lineGenerator, setUpChart, getLabelX, getLabelY, handleCollisionDetection, labelConnectorPathGenerator, animatePath, initChart } from '../../data/d3-chart-util';
-import { formatData, getYDomain } from '../../data/data-util';
-import Tooltip from '../FreedomAndProsperityMap/Tooltip/Tooltip';
+import { TRANSITION_TIMING, PADDING, getHeight, getWidth, lineGenerator, setUpChart, getLabelX, getLabelY, handleCollisionDetection, labelConnectorPathGenerator, animatePath, initChart, setUpHoverZones, positionTooltip } from '../../data/d3-chart-util';
+import { FLATTENED_INDICATORS, formatData, getYDomain } from '../../data/data-util';
+import CompareTooltip from '../Tooltip/CompareTooltip/CompareTooltip';
 
 import './_country-compare-chart.scss';
 
@@ -19,15 +18,14 @@ interface ICompareChartDatasets {
     [key: string]: Array<FPData>,
 }
 
-interface IAssignedColorDictionary {
-    [key: string]: number,
+export interface IAssignedColorDictionary {
+    [key: string]: string,
 }
 
 function CompareChart(props: ICompareChart) {
     const { panelOpen, selectedCountries, selectedIndicators } = props;
     const [data, setData] = useState<ICompareChartDatasets>({})
-    const [hoverData, setHoverData] = useState(null)
-    const [hoverIndicator, setHoverIndicator] = useState([])
+    const [hoverYear, setHoverYear] = useState<number | null>(null)
     const [assignedColors, setAssignedColors] = useState<IAssignedColorDictionary>({})
     const svg = useRef(null);
     const tooltipNode = useRef(null);
@@ -36,13 +34,17 @@ function CompareChart(props: ICompareChart) {
 
     useEffect(() => {
         initChart(d3.select(svg.current), getWidth(panelOpen));
-        
+
         window.addEventListener("resize", () => drawChart());
 
         // remove on unmount
         return () => window.removeEventListener("resize", () => drawChart());
     }, [])
 
+    const getColorFromIndex = (i: number) => {
+        return `var(--color--chart--${i})`
+    }
+    
     function getData() {
         let files: Array<string> = [];
 
@@ -66,20 +68,22 @@ function CompareChart(props: ICompareChart) {
                     updated[country.ISO3] = prev[country.ISO3]
                 }
             })
-            
+
             return updated
         })
 
         selectedCountries.forEach((country: FPData) => {
             if (!data[country.ISO3]) {
-                setAssignedColors(prev => {
+                setAssignedColors((prev: IAssignedColorDictionary) => {
                     const colors = [1, 2, 3, 4, 5].filter(d => (
-                        !Object.values(prev).includes(d)
+                        !Object.values(prev).includes(getColorFromIndex(d))
                     ))
+
+                    const next = colors[0] || ((Object.keys(prev).length) % 5 + 1);
 
                     return {
                         ...prev,
-                        [country.ISO3]: colors[0] || ((Object.keys(prev).length) % 5 + 1) // `var(--color--chart--${(Object.keys(prev).length + 1) % 5})`
+                        [country.ISO3]: getColorFromIndex(next),
                     }
                 })
                 files.push(`./../../data/processed/by-country/${country.ISO3}.csv`)
@@ -97,7 +101,7 @@ function CompareChart(props: ICompareChart) {
                             updated[country.ISO3] = prev[country.ISO3]
                         }
                     })
-                    
+
                     return {
                         ...updated,
                         [formatted[0].ISO3]: formatted,
@@ -129,10 +133,6 @@ function CompareChart(props: ICompareChart) {
         })
 
         return handleCollisionDetection(labelPositions)
-    }
-
-    const getColorFromIndex = (i: number) => {
-        return `var(--color--chart--${i})`
     }
 
     const drawChart = () => {
@@ -183,7 +183,7 @@ function CompareChart(props: ICompareChart) {
 
                         const path = g.append('path')
                             .attr('class', 'country-path')
-                            .style('stroke', getColorFromIndex(assignedColors[thisData[0].ISO3 as keyof typeof assignedColors]))
+                            .style('stroke', assignedColors[thisData[0].ISO3 as keyof typeof assignedColors])
 
                         // @ts-expect-error
                         path.attr('d', line(generalizedData))
@@ -221,14 +221,14 @@ function CompareChart(props: ICompareChart) {
                             .attr('class', 'label-connector')
                             .attr('d', d => labelConnectorPathGenerator(d, labelPositions, x))
                             .each(function () {
-                                animatePath(d3.select(this), TRANSITION_TIMING * 3, TRANSITION_TIMING/4, true)
+                                animatePath(d3.select(this), TRANSITION_TIMING * 3, TRANSITION_TIMING / 4, true)
                             })
 
                         const label = g.append('g')
                             .attr('class', 'label')
 
                         const labelContainer = label.append('path')
-                            .style('fill', getColorFromIndex(assignedColors[d.key]))
+                            .style('fill', assignedColors[d.key])
 
                         const text = label.append('text')
                             .attr('transform', 'translate(8,3)')
@@ -265,6 +265,66 @@ function CompareChart(props: ICompareChart) {
                 exit => exit.remove()
             )
 
+
+        const handleHover = (e?: any, year?: number) => {
+            if (!e || !year) {
+                chart.selectAll('.dots-g')
+                    .each(function (indicator: any) {
+                        d3.select(this)
+                            .selectAll('circle')
+                            .transition()
+                            .duration(TRANSITION_TIMING / 2)
+                            .attr('r', indicator.subindicator ? 3 : 5)
+                    })
+
+                setHoverYear(null)
+
+                return
+            }
+            // chart.selectAll('.dots-g')
+            //     .each(function (indicator: any) {
+            //         d3.select(this)
+            //             .selectAll('g')
+            //             .each(function (d: any, i) {
+            //                 let r = 0;
+            //                 if (d['Index Year'] === year) {
+            //                     r = indicator.subindicator ? 4 : 6
+            //                 }
+            //                 d3.select(this)
+            //                     .selectAll('circle')
+            //                     .transition()
+            //                     .duration(TRANSITION_TIMING / 2)
+            //                     .attr('r', r)
+            //             })
+            //     })
+
+            if (selectedCountries.length > 0 && onlyIndicator) {
+                setHoverYear(year)
+
+                let midY = height/2;
+                positionTooltip(tooltipNode, x, year, height, midY)
+            } else {
+                setHoverYear(null)
+            }
+        }
+
+        setUpHoverZones(chart, x, y, handleHover);
+    }
+
+    const getHoverData = (): Array<FPData> | null => {
+        let hoverData: Array<FPData> = []
+        Object.keys(data).forEach((iso: string) => {
+            const thisYear: FPData | undefined = data[iso].find(d => d['Index Year'] === hoverYear);
+
+            if (thisYear) {
+                hoverData.push(thisYear)
+            }
+        })
+
+        if (!hoverData) {
+            return null;
+        }
+        return hoverData;
     }
 
     return (
@@ -286,13 +346,15 @@ function CompareChart(props: ICompareChart) {
                 </g>
                 <g className='hover-points'>
                 </g>
+                <g className='hover-zones'>
+                </g>
             </svg>
             <div ref={tooltipNode} className='tooltip__container'>
-                <Tooltip
-                    data={hoverData}
-                    indicators={hoverIndicator}
-                    mode={IndexType.COMBINED}
-                />
+                <CompareTooltip title={hoverYear}
+                    data={getHoverData()}
+                    indicator={onlyIndicator}
+                    assignedColors={assignedColors}
+                    />
             </div>
         </div>
     )

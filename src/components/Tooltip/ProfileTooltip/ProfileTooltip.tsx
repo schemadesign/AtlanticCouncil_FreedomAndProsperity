@@ -1,5 +1,5 @@
-import { formatLabel } from '../../../../data/data-util';
-import ScoreBar from '../../../ScoreBar/ScoreBar';
+import { formatLabel } from '../../../data/data-util';
+import ScoreBar from '../../ScoreBar/ScoreBar';
 
 interface IProfileTooltip {
     data: null | FPData,

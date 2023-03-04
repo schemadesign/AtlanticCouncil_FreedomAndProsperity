@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import { ChartLabelPosition } from '../@types/chart';
+import { ChartLabelPosition, IChartIndicator } from '../@types/chart';
 
 export const TRANSITION_TIMING = 500;
 export const PADDING = {
@@ -25,7 +25,7 @@ export const handleCollisionDetection = (labels: Array<ChartLabelPosition>) => {
     // if label is overlapping another, shift up or down
     let overlap = false;
     const diff = 24;
-    labels = labels.sort((a,b) => a.y - b.y)
+    labels = labels.sort((a, b) => a.y - b.y)
     do {
         overlap = false;
         labels.forEach((label: any, i) => {
@@ -158,7 +158,7 @@ export const setUpChart = (chart: any, height: number, width: number, x: any, y:
 
 /*
 *   animate path drawing from left to right
-*/ 
+*/
 export function animatePath(selection: any, delay: number, duration: number, rightToLeft?: boolean) {
     const length = selection.node().getTotalLength();
 
@@ -169,4 +169,82 @@ export function animatePath(selection: any, delay: number, duration: number, rig
         .attr("stroke-dashoffset", 0)
         .delay(delay)
         .duration(duration)
+}
+
+/*
+*
+*/
+export function setUpHoverZones(chart: any, x: any, y: any, handleHover: any) {
+    let years = [x.domain()[0]];
+    while (years[years.length - 1] < x.domain()[1]) {
+        years.push(years[years.length - 1] + 1)
+    }
+
+    const positionHoverZone = (selection: any, year: number) => {
+        const increment = (x.range()[1] - x.range()[0]) / (years.length - 1);
+        selection.attr('width', increment)
+            .attr('height', y.range()[0])
+            .attr('transform', `translate(${-increment / 2}, 0)`)
+            .attr('x', x(year))
+            .on('mouseenter', (e: any, d: number) => {
+                handleHover(e, d)
+            })
+            .on('mouseleave', () => {
+                handleHover(null)
+            })
+    }
+
+    chart.select('.hover-zones')
+        .selectAll('.hover-zones-g')
+        .data(years)
+        .join(
+            // @ts-expect-error
+            enter => enter.append('g')
+                .attr('class', 'hover-zones-g')
+                .attr('data-year', (d: number) => d)
+                .each(function (d: number) {
+                    // @ts-expect-error
+                    const rect = d3.select(this)
+                        .append('rect')
+                        .style('fill', 'rgb(0,0,0,0)')
+                    positionHoverZone(rect, d)
+                }),
+            // @ts-expect-error
+            update => update.each(function (d, i) {
+
+                // @ts-expect-error
+                const rect = d3.select(this)
+                    .select('rect')
+
+                positionHoverZone(rect, d)
+            })
+            ,
+
+            // @ts-expect-error
+            exit => exit.remove(),
+        )
+}
+
+/*
+*
+*/
+export const positionTooltip = (tooltipNode: any, x: any, year: number, height: number, midY: number) => {
+    const bbox = tooltipNode.current.getBoundingClientRect();
+    const tooltipWidth = bbox.width;
+    const tooltipHeight = bbox.height;
+    let tooltipX = x(year as number) + 40;
+    let tooltipY = (midY as number) - tooltipHeight / 2; //y(minY); //y(d[indicator.key]) + 20;
+
+    if (tooltipX + tooltipWidth > window.innerWidth) {
+        tooltipX = window.innerWidth - (tooltipWidth * 2) - 40
+    }
+
+    if (tooltipY + tooltipHeight > height - PADDING.b) {
+        tooltipY = height - tooltipHeight - 40;
+    }
+
+    if (tooltipNode.current) {
+        tooltipNode.current.style.left = tooltipX + 'px';
+        tooltipNode.current.style.top = tooltipY + 'px';
+    }
 }
