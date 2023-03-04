@@ -31,11 +31,11 @@ function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
         'split__Legal Freedom__ranked-Legal Freedom': 'score',
     })
 
-    let data = sortedData(sort);
-    const filteredData = selectedCountries.length > 0 ? selectedCountries : data;
+    const data = sortedData(sort);
+    let filteredData = selectedCountries.length > 0 ? selectedCountries : data;
 
     if (preview) {
-        data = data.slice(0, window.innerHeight / 68);
+        filteredData = filteredData.slice(0, window.innerHeight / 68);
     }
 
     const getCell = (row: FPData, col: string) => {

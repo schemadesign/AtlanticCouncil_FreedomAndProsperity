@@ -46,8 +46,6 @@ function CompareChart(props: ICompareChart) {
     }
     
     function getData() {
-        let files: Array<string> = [];
-
         setAssignedColors((prev: IAssignedColorDictionary) => {
             const updated: IAssignedColorDictionary = {};
             selectedCountries.forEach(country => {
@@ -89,7 +87,7 @@ function CompareChart(props: ICompareChart) {
 
                 import(`./../../data/processed/by-country/${country.ISO3}.csv`).then(res => {
                     const hasData = res.default.find((d: FPData) => d[onlyIndicator] > -1)
-                    
+
                     if (hasData) {
                         setData((prev: ICompareChartDatasets) => {
                             const formatted = formatData(res.default, true);
@@ -256,6 +254,7 @@ function CompareChart(props: ICompareChart) {
                         .transition()
                         .duration(TRANSITION_TIMING)
                         .attr('transform', (d: any) => `translate(${getLabelX(x)},${getLabelY(labelPositions, d.key)})`)
+                        .style('opacity', 1)
 
                     g.select('.label-connector')
                         .attr("stroke-dasharray", null)
@@ -321,6 +320,13 @@ function CompareChart(props: ICompareChart) {
                 hoverData.push(thisYear)
             }
         })
+        
+        // TODO
+        // follow up about sort order
+        // sort by most recent score:
+        hoverData = hoverData.sort((a, b) => data[b.ISO3][0][onlyIndicator] - data[a.ISO3][0][onlyIndicator])
+        // or sort by score at hover year:
+        // hoverData = hoverData.sort((a, b) => b[onlyIndicator] - b[onlyIndicator])
 
         if (!hoverData) {
             return null;
