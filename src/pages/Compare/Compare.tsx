@@ -1,5 +1,6 @@
-import { Page } from '../../@enums/Page';
+import { Pages } from '../../@enums/Pages';
 import CompareChart from '../../components/CompareChart/CompareChart';
+import Page from '../Page/Page';
 
 interface ICompare {
     selectedCountries: FPData[],
@@ -10,21 +11,18 @@ interface ICompare {
 function Compare(props: ICompare) {
     const { selectedCountries, panelOpen, selectedIndicators } = props;
 
+    const title = selectedCountries.length > 0 ? selectedCountries.map((d, i) => ' ' + d.Name).toString() : ''
+
     return (
-        <div className="page page--compare" id={Page.COMPARE}>
-            <div className="page__header">
-                <div className="container">
-                    <h1>
-                        Comparison Tool
-                    </h1>
-                </div>
-            </div>
+        <Page id={Pages.COMPARE}
+            title={title}>
+
             <CompareChart
                 panelOpen={panelOpen}
                 selectedCountries={selectedCountries}
                 selectedIndicators={selectedIndicators}
             />
-        </div>
+        </Page>
     )
 }
 

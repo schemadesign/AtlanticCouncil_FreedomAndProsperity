@@ -4,12 +4,12 @@ import _, { isArray } from 'lodash';
 import { FreedomCategory } from '../@enums/FreedomCategory';
 import { FreedomSubIndicator, IndexType, Indicator } from '../@enums/IndexType';
 import { ProsperityCategory } from '../@enums/ProsperityCategory';
-import { IChartIndicattor } from '../@types/chart';
+import { IChartIndicator } from '../@types/chart';
 import f_p_data from './processed/latest_all_countries.csv';
 import geojson from './world.geo.json';
 
 export const NESTED_INDICATORS = {
-    [IndexType.PROSPERITY]: [
+    [Indicator.PROSPERITY]: [
         'Income',
         'Health',
         'Inequality',
@@ -18,7 +18,7 @@ export const NESTED_INDICATORS = {
         'Education',
         'Informality',
     ],
-    [IndexType.FREEDOM]: {
+    [Indicator.FREEDOM]: {
         [FreedomSubIndicator.ECONOMIC]: [
             'Womens Economic Freedom',
             'Investment Freedom',
@@ -44,14 +44,16 @@ export const formatLabel = (label: string) => {
     return label.replaceAll('_', ' ').replaceAll('+', ' and ')
 }
 
-export let FLATTENED_INDICATORS: Array<IChartIndicattor> = [];
-
+/*
+*   build flat list of Indicators from nested Indicators
+*/
+export let FLATTENED_INDICATORS: Array<IChartIndicator> = [];
 Object.keys(NESTED_INDICATORS).forEach((topLevel: string) => {
     FLATTENED_INDICATORS.push(
         {
-            key: Indicator[topLevel.toUpperCase() as keyof typeof Indicator],
-            indicator: topLevel,
-            color: `var(--color--chart--${topLevel.toLowerCase()})`
+            key: topLevel,
+            color: `var(--color--chart--${topLevel.toLowerCase().replace('score', '')})`,
+            label: formatLabel(topLevel)
         }
     )
 
@@ -63,8 +65,8 @@ Object.keys(NESTED_INDICATORS).forEach((topLevel: string) => {
                 {
                     key: subindicator,
                     subindicator: true,
-                    indicator: subindicator,
-                    color: `var(--color--chart--${topLevel.toLowerCase()})`
+                    color: `var(--color--chart--${topLevel.toLowerCase().replace('score', '')})`,
+                    label: formatLabel(subindicator)
                 }
             )
         })
@@ -73,8 +75,8 @@ Object.keys(NESTED_INDICATORS).forEach((topLevel: string) => {
             FLATTENED_INDICATORS.push(
                 {
                     key: subindicator,
-                    indicator: subindicator,
-                    color: `var(--color--chart--${subindicator.toLowerCase().replaceAll(' ', '-')})`
+                    color: `var(--color--chart--${subindicator.toLowerCase().replaceAll(' ', '-')})`,
+                    label: formatLabel(subindicator)
                 }
             )
 
@@ -83,8 +85,8 @@ Object.keys(NESTED_INDICATORS).forEach((topLevel: string) => {
                     {
                         key: subsub,
                         subindicator: true,
-                        indicator: subsub,
-                        color: `var(--color--chart--${subindicator.toLowerCase().replaceAll(' ', '-')})`
+                        color: `var(--color--chart--${subindicator.toLowerCase().replaceAll(' ', '-')})`,
+                        label: formatLabel(subsub)
                     }
                 )
             })
@@ -92,13 +94,16 @@ Object.keys(NESTED_INDICATORS).forEach((topLevel: string) => {
     }
 })
 
-FLATTENED_INDICATORS = FLATTENED_INDICATORS.map(d => (
-    {
-        ...d,
-        label: formatLabel(d.indicator),
-    }
-))
+/*
+*   translate IndexType (used for mode) to Indicator type (used for keying into data)
+*/
+export const indexTypeToIndicatorType = (indexType: IndexType): Indicator => {
+    return Indicator[indexType.toUpperCase() as keyof typeof Indicator]
+}
 
+/*
+*   returns non-null data with labeled prosperity and freedom categories 
+*/
 export const formatData = (data: Array<FPData>, includeCategories = true): Array<FPData> => {
     return data.map((row: any) => {
         Object.keys(row).forEach((col: string) => {
@@ -124,8 +129,23 @@ export const formatData = (data: Array<FPData>, includeCategories = true): Array
 }
 let dataWithRanks = formatData(f_p_data);
 
+/*
+*
+*/
 export const totalCountries = dataWithRanks.length;
 
+/*
+*
+*/
+export const DEFAULT_DATA = {
+    ...dataWithRanks[Math.floor(dataWithRanks.length/2)],
+    Name: 'Global (placeholder)',
+    ISO3: '__global__',
+}
+ 
+/*
+*
+*/
 const defaultDirection = (key: string) => {
     if (key === 'Freedom score' ||
         'Prosperity score'
@@ -262,9 +282,12 @@ export const formatValue = (value: number, toFixed = 0): number => {
     return value
 }
 
-export const getSelectedFlattenedIndicators = (indicators: Array<string>) => {
+/*
+*   
+*/
+export const getSelectedFlattenedIndicators = (indicators: Array<string>): Array<IChartIndicator> => {
     return FLATTENED_INDICATORS.filter((type) => {
-        return indicators.includes(type.indicator)
+        return indicators.includes(type.key)
     })
 }
 

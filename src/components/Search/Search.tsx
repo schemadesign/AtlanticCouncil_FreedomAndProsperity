@@ -6,20 +6,24 @@ import './_search.scss';
 interface ISearch {
     selected: Array<any>,
     setSelected: (selected: Array<any>) => void,
+    multiple?: boolean,
 }
 
 function Search(props: ISearch) {
-    const { selected, setSelected } = props;
+    const { selected, setSelected, multiple = false } = props;
 
     return (
         <div className='search'>
             <Typeahead
                 id='country-search'
+                multiple={multiple}
+                selected={selected}
                 labelKey='Name'
                 onChange={setSelected}
                 className='search'
                 options={sortedData({col: 'Name', direction: 1})}
                 placeholder='Type country or region'
+                renderToken={() => <></>}
                 />
             <img src={SearchIcon} />
         </div>

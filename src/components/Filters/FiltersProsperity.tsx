@@ -1,4 +1,4 @@
-import { IndexType } from "../../@enums/IndexType";
+import { IndexType, Indicator } from "../../@enums/IndexType";
 import { NESTED_INDICATORS } from "../../data/data-util";
 import Button from "../Button/Button";
 import { IFiltersFreedom } from "./FiltersFreedom";
@@ -15,7 +15,7 @@ function FiltersProsperity(props: IFiltersProsperity) {
 
     return (
         <div className="filters--prosperity">
-            {NESTED_INDICATORS[IndexType.PROSPERITY].map((type: string) => (
+            {NESTED_INDICATORS[Indicator.PROSPERITY].map((type: string) => (
                 <Button key={type}
                     variant={IndexType.PROSPERITY}
                     selected={filters.includes(type)}

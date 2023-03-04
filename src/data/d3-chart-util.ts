@@ -16,7 +16,7 @@ export const getWidth = (panelOpen: boolean) => window.innerWidth < 1440 ? windo
 export const lineGenerator = (x: (val: number) => number, y: (val: number) => number) => d3.line()
     .x((d: any) => x(d['Index Year']))
     .y((d: any) => y(d['field']))
-    .curve(d3.curveCardinal.tension(0.85));
+    .curve(d3.curveCardinal.tension(0.92));
 
 /*
  * calculate non-overlapping y positions of labels 
@@ -79,19 +79,30 @@ export const getLabelX = (x: any) => {
     return x(x.domain()[1]) + 20
 }
 
-
-export const labelConnectorPathGenerator = (d, labelPositions: Array<ChartLabelPosition>, x) => {
+/*
+*   draw path from line to label
+*/
+export const labelConnectorPathGenerator = (d: any, labelPositions: Array<ChartLabelPosition>, x: (val: number) => number) => {
     try {
-        return `M${getLabelX(x)},${getLabelY(labelPositions, d.key)} L${getLabelX(x) - 20 + (d.subindicator ? 5 : 2)},${getLabelY(labelPositions, d.key)} L${getLabelX(x) - 20 + (d.subindicator ? 5 : 2)},${getLabelY(labelPositions, d.key, true)}`
+        return `M${getLabelX(x)},${getLabelY(labelPositions, d.key)} L${getLabelX(x) - 20 + (2)},${getLabelY(labelPositions, d.key)} L${getLabelX(x) - 20 + (2)},${getLabelY(labelPositions, d.key, true)}`
     } catch {
         return ''
     }
 }
 
 /*
+ * position elements that shouldn't animate on initialization
+*/
+export const initChart = (chart: any, width: number) => {
+    chart.select('.x-axis .axis__label')
+        .attr('x', width / 2)
+        .attr('y', 50)
+}
+
+/*
  * add axes etc
 */
-export const setUpChart = (chart: any, height: number, width: number, x: any, y: any, init: boolean) => {
+export const setUpChart = (chart: any, height: number, width: number, x: any, y: any) => {
 
     chart.attr('viewBox', `0 0 ${width} ${height}`)
         .style('max-height', height)
@@ -132,15 +143,30 @@ export const setUpChart = (chart: any, height: number, width: number, x: any, y:
 
     chart.selectAll('.y-axis .tick text')
         .transition()
-        .duration(init ? TRANSITION_TIMING : 0)
+        .duration(TRANSITION_TIMING)
         .style('transform', 'translate(-10px, 0)')
 
     chart.select('.x-axis .axis__label')
         .transition()
-        .duration(init ? TRANSITION_TIMING : 0)
+        .duration(TRANSITION_TIMING)
         .attr('x', width / 2)
         .attr('y', 50)
 
     chart.select('.y-axis .axis__label')
         .style('transform', `translate(-40px, ${height / 2 - PADDING.t + 5}px) rotate(-90deg)`)
+}
+
+/*
+*   animate path drawing from left to right
+*/ 
+export function animatePath(selection: any, delay: number, duration: number, rightToLeft?: boolean) {
+    const length = selection.node().getTotalLength();
+
+    selection.attr("stroke-dasharray", length + " " + length)
+        .attr("stroke-dashoffset", length * (rightToLeft ? 1 : -1))
+        .transition()
+        .ease(d3.easeLinear)
+        .attr("stroke-dashoffset", 0)
+        .delay(delay)
+        .duration(duration)
 }

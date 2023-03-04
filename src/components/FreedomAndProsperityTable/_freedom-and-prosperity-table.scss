@@ -10,6 +10,15 @@
         }
     }
 
+    tr {
+        cursor: pointer;
+        &:hover {
+            td {
+                background: var(--color--hover--table);
+            }
+        }
+    }
+
     td {
         position: relative;
         font-weight: 400;

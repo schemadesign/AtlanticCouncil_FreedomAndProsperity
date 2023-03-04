@@ -36,6 +36,16 @@
     &__col {
         width: 9rem;
 
+        &--two-col {
+            width: 16rem;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            > div {
+                width: 50%;
+            }
+        }
+
         &:nth-child(2) {
             border-left: 1px solid var(--neutral---gray--light);
         }

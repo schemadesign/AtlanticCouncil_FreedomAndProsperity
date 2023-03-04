@@ -1,94 +1,54 @@
-import { IndexType, Indicator } from "../../../@enums/IndexType";
+import { IndexType } from "../../../@enums/IndexType";
 import Button from "../../../components/Button/Button";
 import Checkbox from "../../../components/Checkbox/Checkbox";
-import FiltersFreedom from "../../../components/Filters/FiltersFreedom";
-import FiltersProsperity from "../../../components/Filters/FiltersProsperity";
-import ModeControls from "../../../components/ModeControls/ModeControls";
-import Search from "../../../components/Search/Search";
-import { sortedData } from "../../../data/data-util";
+import { DEFAULT_DATA, sortedData } from "../../../data/data-util";
+
+import './_panel-content-compare.scss';
 
 interface IPanelContentCompare {
     mode: IndexType,
     setMode: (mode: IndexType) => void,
-    setOpen: (open: boolean) => void,
-    selectedIndicators: Array<string>,
-    toggleFilter: (indicator: string) => void,
-    selected: FPData[],
-    setSelected: (val: FPData[]) => void,
+    selectedCountries: FPData[],
+    setSelected: (val: FPData[], resetCountries?: boolean) => void,
+    children: React.ReactNode,
 }
 
 function PanelContentCompare(props: IPanelContentCompare) {
-    const { mode, setMode, selectedIndicators, toggleFilter, setOpen, selected, setSelected } = props;
+    const { mode, setMode, selectedCountries, setSelected, children } = props;
 
     return (
         <div className='panel__content panel__content--compare'>
-            <div className='panel__content__header'>
-                {/* <ModeControls setMode={setMode}
-                    mode={mode} />
-                <span>
-                    {mode !== IndexType.PROSPERITY ?
-                        <FiltersFreedom toggleFilter={toggleFilter}
-                            includeSubindicators={true}
-                            filters={selectedIndicators}
-                        />
-                        :
-                        <></>
-                    }
-                    {mode !== IndexType.FREEDOM ?
-                        <FiltersProsperity toggleFilter={toggleFilter}
-                            filters={selectedIndicators}
-                        />
-                        :
-                        <></>
-                    }
-                </span> */}
-                <Button key={Indicator.FREEDOM}
-                    variant={IndexType.FREEDOM}
-                    selected={selectedIndicators.includes(Indicator.FREEDOM)}
-                    onClick={() => toggleFilter(Indicator.FREEDOM)}>
-                    {Indicator.FREEDOM}
-                </Button>
-                <FiltersFreedom toggleFilter={toggleFilter}
-                    includeSubindicators={true}
-                    filters={selectedIndicators}
-                />
-                <Button key={Indicator.PROSPERITY}
-                    variant={IndexType.PROSPERITY}
-                    selected={selectedIndicators.includes(Indicator.PROSPERITY)}
-                    onClick={() => toggleFilter(Indicator.PROSPERITY)}>
-                    {Indicator.PROSPERITY}
-                </Button>
-                <FiltersProsperity toggleFilter={toggleFilter}
-                    filters={selectedIndicators}
-                />
+            <div className='panel__content__inner panel__content__padded'>
+                {selectedCountries.length > 0 ?
+                    <div style={{margin: '2rem 0'}}>
+                        <div>
+                            {selectedCountries.map((country: FPData) => {
+                                return (
+                                    <Checkbox key={`${country.ISO3}--selected`}
+                                        value={country.ISO3}
+                                        label={country.Name}
+                                        checked={true}
+                                        handleClick={() => {
+                                            setSelected(selectedCountries.filter(d => d.ISO3 !== country.ISO3))
+                                        }}
+                                    />
+                                )
+                            })}
+                        </div>
+                        <Button onClick={() => setSelected([], true)}>
+                            Reset
+                        </Button>
+                    </div>
+                    :
+                    <></>
+                }
 
-                <Button onClick={() => setOpen(false)}
-                    variant={'close'}>
-
-                </Button>
-            </div>
-            <div>
-                <Search selected={selected}
-                    setSelected={setSelected}
-                />
-            </div>
-            <div className='panel__content__inner'>
                 <div>
-                    {selected.map((country: FPData) => {
-                        return (
-                            <Checkbox key={`${country.ISO3}--selected`}
-                                value={country.ISO3}
-                                label={country.Name}
-                                checked={true}
-                                handleClick={() => {
-                                    setSelected(selected.filter(d => d.ISO3 !== country.ISO3))
-                                }}
-                            />
-                        )
-                    })}
+                    {children}
                 </div>
+
                 {sortedData({ col: 'Name', direction: 1 }).map((country: FPData) => {
-                    if (selected.findIndex(d => d.ISO3 === country.ISO3) > -1) {
+                    if (selectedCountries.findIndex(d => d.ISO3 === country.ISO3) > -1) {
                         return <></>
                     }
                     return (
@@ -97,7 +57,7 @@ function PanelContentCompare(props: IPanelContentCompare) {
                             label={country.Name}
                             checked={false}
                             handleClick={() => {
-                                setSelected([...selected, country])
+                                setSelected([...selectedCountries, country])
                             }}
                         />
                     )

@@ -4,7 +4,8 @@ import FreedomAndProsperityMap from "../../components/FreedomAndProsperityMap/Ma
 import FreedomAndProsperityMapLegend from "../../components/FreedomAndProsperityMap/Legend/Legend";
 
 import './_map.scss';
-import { Page } from "../../@enums/Page";
+import { Pages } from "../../@enums/Pages";
+import Page from "../Page/Page";
 
 interface IHome {
     mode: IndexType,
@@ -17,14 +18,9 @@ function Map(props: IHome) {
     const { mode, setMode, setSelected, setPanelOpen } = props;
 
     return (
-        <div className="page page--map" id={Page.MAP}>
-            <div className="page__header">
-                <div className="container">
-                    <h1>
-                        Freedom and Prosperity Map
-                    </h1>
-                </div>
-            </div>
+        <Page id={Pages.MAP}
+            title={'Freedom and Prosperity Map'}
+            >
             <div className="container">
                 <ModeControls mode={mode}
                     setMode={(mode: IndexType) => setMode(mode)}
@@ -37,7 +33,7 @@ function Map(props: IHome) {
                 />
                 <FreedomAndProsperityMapLegend mode={mode} />
             </div>
-        </div>
+        </Page>
     )
 }
 

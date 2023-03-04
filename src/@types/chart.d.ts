@@ -7,10 +7,9 @@ export type ChartLabelPosition = {
     label?: string,
 }
 
-export interface IChartIndicattor {
-    key: string,
-    indicator: IndexType | FreedomSubIndicator | string,
+export interface IChartIndicator {
+    key: IndexType | FreedomSubIndicator | string,
     color: string,
     subindicator?: boolean,
-    label?: string,
+    label: string,
 }

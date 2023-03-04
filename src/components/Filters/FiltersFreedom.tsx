@@ -1,4 +1,4 @@
-import { IndexType } from "../../@enums/IndexType";
+import { IndexType, Indicator } from "../../@enums/IndexType";
 import { formatLabel, NESTED_INDICATORS } from "../../data/data-util";
 import Button from "../Button/Button";
 
@@ -15,31 +15,35 @@ function FiltersFreedom(props: IFiltersFreedom) {
 
     return (
         <div className="filters--freedom">
-            {Object.keys(NESTED_INDICATORS[IndexType.FREEDOM]).map((type: string) => (
-                <>
-                    <Button key={type}
-                        variant={IndexType.FREEDOM}
-                        selected={filters.includes(type)}
-                        onClick={() => toggleFilter(type) }>
-                        {type}
-                    </Button>
-                    
-                    {includeSubindicators ?
-                        <>
-                        {NESTED_INDICATORS[IndexType.FREEDOM][type].map((subindicator: string) => (
-                            <Button key={subindicator}
-                                variant={IndexType.FREEDOM}
-                                selected={filters.includes(subindicator)}
-                                onClick={() => toggleFilter(subindicator) }>
-                                {formatLabel(subindicator)}
-                            </Button>
-                        ))}
-                        </>
-                        :
-                        <></>
-                    }
-                </>
-            ))}
+            {Object.keys(NESTED_INDICATORS[Indicator.FREEDOM]).map((type: string) => {
+                // @ts-expect-error
+                const subindicators: Array<string> = NESTED_INDICATORS[Indicator.FREEDOM][type];
+                return (
+                    <>
+                        <Button key={type}
+                            variant={IndexType.FREEDOM}
+                            selected={filters.includes(type)}
+                            onClick={() => toggleFilter(type) }>
+                            {type}
+                        </Button>
+                        
+                        {includeSubindicators ?
+                            <>
+                            {subindicators.map((subindicator: string) => (
+                                <Button key={subindicator}
+                                    variant={IndexType.FREEDOM}
+                                    selected={filters.includes(subindicator)}
+                                    onClick={() => toggleFilter(subindicator) }>
+                                    {formatLabel(subindicator)}
+                                </Button>
+                            ))}
+                            </>
+                            :
+                            <></>
+                        }
+                    </>
+                )
+            })}
         </div>
     )
 }

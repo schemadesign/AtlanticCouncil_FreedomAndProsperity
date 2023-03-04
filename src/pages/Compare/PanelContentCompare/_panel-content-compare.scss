@@ -1,0 +1,11 @@
+.panel__content--compare {
+    .search {
+        width: 100%;
+        max-width: 100%;
+        input[type="text"] {
+            background: var(--neutral---background--white);
+            border-radius: 0;
+            border-bottom: 1px solid var(--neutral---gray--light);
+        }
+    }
+}

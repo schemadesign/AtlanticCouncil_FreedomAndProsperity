@@ -1,23 +1,24 @@
 import { useRef } from "react";
-import { Page } from "../../@enums/Page";
+import { Pages } from "../../@enums/Pages";
 
 import './_header.scss';
 
 interface IHeader {
-    page: Page | null,
-    setPage: (page: Page) => void,
+    page: Pages | null,
+    setPage: (page: Pages) => void,
     children: React.ReactNode,
+    className: string,
 }
 
 function Header(props: IHeader) {
-    const { page, setPage, children } = props;
+    const { page, setPage, children, className } = props;
     const node = useRef(null);
 
     return (
-        <header ref={node} className={`header`}>
+        <header ref={node} className={`header ${className}`}>
             <div className='container'>
                 <div className='flex-row'>
-                    {[Page.MAP, Page.RANKINGS, Page.PROFILES, Page.COMPARE, Page.ABOUT, Page.LIBRARY].map(p => {
+                    {[Pages.MAP, Pages.RANKINGS, Pages.PROFILES, Pages.COMPARE, Pages.ABOUT, Pages.LIBRARY].map(p => {
                         return (
                             <a href={`#${p}`} 
                                 key={p}

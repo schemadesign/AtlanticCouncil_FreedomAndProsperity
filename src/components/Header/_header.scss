@@ -14,12 +14,17 @@
         align-items: center;
         flex: 1 1 auto;
     }
-
-    &--bottom {
-        position: absolute;
-        top: auto;
-        bottom: 0;
+    .search, .button--open-panel {
+        opacity: 0;
+        transition: opacity 300ms;
     }
+
+    &--search-visible {
+        .search, .button--open-panel {
+            opacity: 1;
+        }
+    }
+
     > .flex-row {
         height: 6rem;
         display: flex;

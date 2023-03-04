@@ -4,8 +4,15 @@ import FreedomAndProsperityTable from "../../components/FreedomAndProsperityTabl
 import { getColumns } from "../../data/data-util";
 import ModeControls from "../../components/ModeControls/ModeControls";
 
-function Rankings() {
+interface IRankings {
+    goToProfile: (val: FPData) => void,
+    selectedCountries: FPData[],
+}
+
+function Rankings(props: IRankings) {
+    const { goToProfile, selectedCountries } = props;
     const [mode, setMode] = useState<IndexType>(IndexType.COMBINED);
+
     return (
         <div className="page page--rankings">
             <div className="page__header">
@@ -19,6 +26,8 @@ function Rankings() {
                 <ModeControls mode={mode}
                     setMode={(mode: IndexType) => setMode(mode)} />
                 <FreedomAndProsperityTable columns={getColumns(mode)}
+                    goToProfile={goToProfile}
+                    selectedCountries={selectedCountries}
                     />
             </div>
         </div>

@@ -2,8 +2,8 @@ import * as d3 from 'd3';
 import _ from 'lodash';
 import { useEffect, useRef, useState } from "react"
 import { IndexType } from '../../@enums/IndexType';
-import { ChartLabelPosition } from '../../@types/chart';
-import { TRANSITION_TIMING, PADDING, getHeight, getWidth, lineGenerator, setUpChart, getLabelX, getLabelY, handleCollisionDetection, labelConnectorPathGenerator } from '../../data/d3-chart-util';
+import { ChartLabelPosition, IChartIndicator } from '../../@types/chart';
+import { TRANSITION_TIMING, PADDING, getHeight, getWidth, lineGenerator, setUpChart, getLabelX, getLabelY, handleCollisionDetection, labelConnectorPathGenerator, animatePath, initChart } from '../../data/d3-chart-util';
 import { formatData, FLATTENED_INDICATORS, getSelectedFlattenedIndicators, getYDomain } from '../../data/data-util';
 import Tooltip from '../FreedomAndProsperityMap/Tooltip/Tooltip';
 
@@ -17,23 +17,21 @@ interface ICountryProfileChart {
 
 function CountryProfileChart(props: ICountryProfileChart) {
     const { panelOpen, selectedCountries, selectedIndicators } = props;
-    const [init, setInit] = useState(false);
     const [data, setData] = useState<Array<FPData>>([])
-    const [hoverData, setHoverData] = useState(null)
-    const [hoverIndicators, setHoverIndicators] = useState([])
+    const [hoverData, setHoverData] = useState<number | null>(null)
     const svg = useRef(null);
     const tooltipNode = useRef(null);
 
     const selectedISO = () => _.get(selectedCountries, '[0].ISO3', null);
 
-    // useEffect(() => {
-    //     window.addEventListener("resize", drawChart);
+    useEffect(() => {
+        initChart(d3.select(svg.current), getWidth(panelOpen));
 
-    //     drawChart()
+        // window.addEventListener("resize", () => drawChart());
 
-    //     // remove on unmount
-    //     return () => window.removeEventListener("resize", drawChart);
-    // }, [])
+        // // remove on unmount
+        // return () => window.removeEventListener("resize", () => drawChart());
+    }, [])
 
     useEffect(() => {
         const iso = selectedISO();
@@ -51,7 +49,7 @@ function CountryProfileChart(props: ICountryProfileChart) {
         drawChart()
     }, [data, panelOpen, selectedIndicators])
 
-    const selectedChartIndicators = () => getSelectedFlattenedIndicators(selectedIndicators);
+    const selectedChartIndicators = () => data.length > 0 ? getSelectedFlattenedIndicators(selectedIndicators) : [];
 
     const getLabelPositions = (selectedIndicators: Array<string>, data: Array<FPData>, y: (val: number) => number): Array<ChartLabelPosition> => {
         let labelPositions = FLATTENED_INDICATORS.map((d) => {
@@ -62,7 +60,7 @@ function CountryProfileChart(props: ICountryProfileChart) {
                 initialY: yVal,
             }
         })
-    
+
         const visibleIndicators = getSelectedFlattenedIndicators(selectedIndicators);
         const visibleLabels = labelPositions.filter((label: any) => {
             return visibleIndicators.findIndex(d => d.key === label.key) > -1
@@ -72,7 +70,7 @@ function CountryProfileChart(props: ICountryProfileChart) {
             const i = labelPositions.findIndex(label => label.key === d.key);
             labelPositions[i] = d;
         })
-    
+
         return labelPositions;
     }
 
@@ -97,36 +95,55 @@ function CountryProfileChart(props: ICountryProfileChart) {
 
         const labelPositions = getLabelPositions(selectedIndicators, data, y);
 
-        setUpChart(chart, height, width, x, y, init);
+        setUpChart(chart, height, width, x, y);
 
         const line = lineGenerator(x, y)
 
         chart.select('.paths')
             .selectAll('.path-g')
-            .data(FLATTENED_INDICATORS)
+            // @ts-expect-error
+            .data(selectedChartIndicators(), d => d.key)
             .join(
                 enter => enter.append('g')
                     .attr('class', 'path-g')
-                    .each(function (d, i) {
+                    .each(function (d: IChartIndicator, i) {
                         const g = d3.select(this);
 
                         g.append('path')
                             .attr('class', 'label-connector')
                             .attr('d', d => labelConnectorPathGenerator(d, labelPositions, x))
-                            .style('opacity', init ? 1 : 0)
+                            .each(function () {
+                                animatePath(d3.select(this), TRANSITION_TIMING * 3, TRANSITION_TIMING / 4, true)
+                            })
 
                         const path = g.append('path')
                             .attr('class', 'country-path')
                             .style('stroke', d.color)
-                            .style('stroke-dasharray', d.subindicator ? '5 3' : '')
                             .style('stroke-width', d.subindicator ? 1.5 : 5)
+                            // @ts-expect-error
+                            .attr('d', d => line(data.map(row => ({ ...row, field: row[d.key] }))))
+                            .each(function () {
+                                animatePath(d3.select(this), 0, TRANSITION_TIMING * 3)
+
+                                setTimeout(() => {
+                                    d3.select(this)
+                                        .style('stroke-dasharray', d.subindicator ? '5 3' : '')
+                                }, TRANSITION_TIMING * 4)
+                            })
 
                         const label = g.append('g')
                             .attr('class', 'label')
-                            .style('opacity', init ? 1 : 0)
+
+                        label.attr('transform', `translate(${getLabelX(x)},${getLabelY(labelPositions, d.key)})`)
+                            .style('opacity', 0)
+                            .transition()
+                            .duration(TRANSITION_TIMING / 2)
+                            .delay(TRANSITION_TIMING * 3)
+                            .style('opacity', 1)
 
                         const labelContainer = label.append('path')
                             .style('fill', d.color)
+                            .attr('d', labelConnectorPathGenerator(d, labelPositions, x))
 
                         const text = label.append('text')
                             .attr('transform', 'translate(8,3)')
@@ -134,134 +151,108 @@ function CountryProfileChart(props: ICountryProfileChart) {
                             .style('fill', d.subindicator ? d.color : '#fff')
                             .style('font-weight', d.subindicator ? 800 : 400)
 
+                        g.select('text, path')
+
                         if (!d.subindicator) {
+                            // @ts-expect-error
                             const dim = text.node().getBBox();
                             labelContainer.attr('d', `M8,-12 h${dim.width} a10,10 0 0 1 10,10 v4 a10,10 0 0 1 -10,10 h-${dim.width} a10,10 0 0 1 -10,-10 v-4 a10,10 0 0 1 10,-10 z`)
                         }
                     })
-                , update => update.style('opacity', d => selectedChartIndicators().findIndex(x => x.key === d.key) > -1 ? 1 : 0)
+                , update => update.each(d => {
+                    update.select('.country-path')
+                        .attr('stroke-dasharray', d.subindicator ? '5 3' : '')
+                        .transition()
+                        .duration(TRANSITION_TIMING)
+                        // @ts-expect-error
+                        .attr('d', d => line(data.map(row => ({ ...row, field: row[d.key] }))))
+
+                    update.select('.label')
+                        .transition()
+                        .duration(TRANSITION_TIMING)
+                        .attr('transform', (d: any) => `translate(${getLabelX(x)},${getLabelY(labelPositions, d.key)})`)
+                        .style('opacity', 1)
+
+                    update.select('.label-connector')
+                        .attr("stroke-dasharray", null)
+                        .transition()
+                        .duration(TRANSITION_TIMING)
+                        .attr('d', d => labelConnectorPathGenerator(d, labelPositions, x))
+                        .style('opacity', 1)
+                })
             )
 
-        if (data.length > 0) {
-            if (!init) {
-                chart.selectAll('.country-path')
-                    .attr('d', d => line(data.map(row => ({ ...row, field: row[d.key] }))))
-                    .each(function () {
-                        const length = d3.select(this).node().getTotalLength();
+        const positionDot = (d: FPData, key: string) => `translate(${x(d['Index Year'])}px, ${y(d[key])}px)`
 
-                        d3.select(this).attr("stroke-dasharray", length + " " + length)
-                            .attr("stroke-dashoffset", -length)
+        const handleHover = (e?: any, year?: number) => {
+            if (!e) {
+                chart.selectAll('.dots-g')
+                    .each(function (indicator: any) {
+                        d3.select(this)
+                            .selectAll('circle')
                             .transition()
-                            .ease(d3.easeLinear)
-                            .attr("stroke-dashoffset", 0)
-                            .duration(TRANSITION_TIMING * 3)
+                            .duration(TRANSITION_TIMING / 2)
+                            .attr('r', indicator.subindicator ? 3 : 5)
                     })
 
-                chart.selectAll('.label')
-                    .attr('transform', d => `translate(${getLabelX(x)},${getLabelY(labelPositions, d.key)})`)
-                    .transition()
-                    .duration(TRANSITION_TIMING)
-                    .delay(TRANSITION_TIMING * 2)
-                    .style('opacity', 1)
+                setHoverData(null)
 
-                chart.selectAll('.label-connector')
-                    .transition()
-                    .duration(TRANSITION_TIMING)
-                    .delay(TRANSITION_TIMING * 3)
-                    .attr('d', d => labelConnectorPathGenerator(d, labelPositions, x))
-                    .style('opacity', 1)
+                return
+            }
+            chart.selectAll('.dots-g')
+                .each(function (indicator: any) {
+                    d3.select(this)
+                        .selectAll('g')
+                        .each(function (d: any, i) {
+                            let r = 0;
+                            if (d['Index Year'] === year) {
+                                r = indicator.subindicator ? 4 : 6
+                            }
+                            d3.select(this)
+                                .selectAll('circle')
+                                .transition()
+                                .duration(TRANSITION_TIMING / 2)
+                                .attr('r', r)
+                        })
+                })
 
-                setInit(true)
+            const thisYear: FPData | null = data.find(d => d['Index Year'] === year) || null;
+
+            if (thisYear) {
+                setHoverData(year as number)
+                // @ts-expect-error
+                const bbox = tooltipNode.current.getBoundingClientRect();
+                const tooltipWidth = bbox.width;
+                const tooltipHeight = bbox.height;
+                let tooltipX = x(year as number) + 40;
+                const midY = y(d3.mean(selectedChartIndicators().map(i => thisYear[i.key])) || 0)
+                let tooltipY = (midY as number) - tooltipHeight / 2; //y(minY); //y(d[indicator.key]) + 20;
+
+                if (tooltipX + tooltipWidth > window.innerWidth) {
+                    tooltipX = window.innerWidth - (tooltipWidth * 2) - 40
+                }
+
+                if (tooltipY + tooltipHeight > height - PADDING.b) {
+                    tooltipY = height - tooltipHeight - 40;
+                }
+
+                if (tooltipNode.current) {
+                    // @ts-expect-error
+                    tooltipNode.current.style.left = tooltipX + 'px';
+                    // @ts-expect-error
+                    tooltipNode.current.style.top = tooltipY + 'px';
+                }
             } else {
-                chart.selectAll('.country-path')
-                    .attr("stroke-dasharray", null)
-                    .transition()
-                    .duration(TRANSITION_TIMING)
-                    .attr('d', d => line(data.map(row => ({ ...row, field: row[d.key] }))))
-                    .style('opacity', 1)
-
-                chart.selectAll('.label')
-                    .transition()
-                    .duration(TRANSITION_TIMING)
-                    .attr('transform', d => `translate(${getLabelX(x)},${getLabelY(labelPositions, d.key)})`)
-                    .style('opacity', 1)
-
-                chart.selectAll('.label-connector')
-                    .transition()
-                    .duration(TRANSITION_TIMING)
-                    .attr('d', d => labelConnectorPathGenerator(d, labelPositions, x))
-                    .style('opacity', 1)
+                setHoverData(null)
             }
-        } else {
-            chart.selectAll('.country-path')
-                .attr('d', null)
-
-            chart.selectAll('.label')
-                .style('opacity', 0)
-
-            chart.selectAll('.label-connector')
-                .attr('d', null)
         }
 
-        const positionHoverPoint = (d: FPData, key: string) => `translate(${x(d['Index Year'])}px, ${y(d[key])}px)`
-
-        const handleTooltipHover = (e, d, indicator) => {
-            chart.selectAll('.hover-points-g > g')
-                .filter(g => g['Index Year'] === d['Index Year'])
-                .selectAll('circle')
-                .transition()
-                .duration(TRANSITION_TIMING / 2)
-                .attr('r', 6)
-
-            setHoverData(d)
-            setHoverIndicators([indicator])
-
-            const tooltipWidth = 180; 
-            const tooltipHeight = 150;
-            let tooltipX = x(d['Index Year']) + 40;
-            let tooltipY = y(d[indicator.key]) + 20;
-            
-            if (tooltipX > width - tooltipWidth) {
-                tooltipX -= tooltipWidth
-            }
-
-            if (tooltipY > height/2) {
-                tooltipY -= tooltipHeight;
-            }
-
-            tooltipNode.current.style.left = tooltipX + 'px';
-            tooltipNode.current.style.top = tooltipY + 'px';
-        }
-
-        const hoverPointSize = () => {
-            return width / data.length
-        }
-
-        const styleHoverPoint = (selection, indicator) => {
-            selection.style('fill', 'rgba(0,0,0,0)')
-                .attr('width', hoverPointSize())
-                .attr('height', 30)
-                .attr('y', hoverPointSize() * -0.5)
-                .attr('x', 30 * -0.5)
-                .on('mouseover', function (e, d) {
-                    handleTooltipHover(e, d, indicator)
-                })
-                .on('mouseleave', () => {
-                    setHoverData(null);
-                    chart.selectAll('.hover-points-g')
-                        .selectAll('circle')
-                        .transition()
-                        .duration(TRANSITION_TIMING / 2)
-                        .attr('r', 0)
-                })
-        }
-
-        chart.select('.hover-points')
-            .selectAll('.hover-points-g')
-            .data(selectedChartIndicators())
+        chart.select('.dots')
+            .selectAll('.dots-g')
+            .data(selectedChartIndicators(), (d: any) => d.key)
             .join(
                 enter => enter.append('g')
-                    .attr('class', 'hover-points-g'),
+                    .attr('class', 'dots-g'),
                 update => update,
                 exit => exit.remove(),
             )
@@ -272,23 +263,27 @@ function CountryProfileChart(props: ICountryProfileChart) {
                     .join(
                         enter => enter
                             .append('g')
-                            .style('transform', (d: FPData) => positionHoverPoint(d, indicator.key))
                             .each(function (d, i) {
-                                // stagger entry to prevent hover before first draw
-                                setTimeout(() => {
-                                    const rect = d3.select(this)
-                                        .append('rect')
-                                    styleHoverPoint(rect, indicator)
-                                }, ((TRANSITION_TIMING * 3) / data.length) * (data.length - i))
-
-                                d3.select(this)
+                                const circle = d3.select(this)
                                     .append('circle')
                                     .style('fill', indicator.color)
+                                    .attr('r', 0)
                                     .style('pointer-events', 'none')
+
+                                d3.select(this)
+                                    .style('transform', positionDot(d, indicator.key))
+
+                                circle.transition()
+                                    .delay(((TRANSITION_TIMING * 4) / data.length) * (data.length - i))
+                                    .duration(TRANSITION_TIMING)
+                                    .attr('r', indicator.subindicator ? 3 : 5)
                             }),
-                        update => update.style('transform', (d: FPData) => positionHoverPoint(d, indicator.key))
+                        update => update
                             .each(function (d) {
-                                styleHoverPoint(d3.select(this).select('rect'), indicator)
+                                d3.select(this)
+                                    .transition()
+                                    .duration(TRANSITION_TIMING)
+                                    .style('transform', positionDot(d, indicator.key))
 
                                 d3.select(this)
                                     .select('circle')
@@ -298,7 +293,49 @@ function CountryProfileChart(props: ICountryProfileChart) {
                     )
             })
 
+        let years = [x.domain()[0]];
+        while (years[years.length - 1] < x.domain()[1]) {
+            years.push(years[years.length - 1] + 1)
+        }
+
+        const positionHoverZone = (selection: any, year: number) => {
+            const increment = (x.range()[1] - x.range()[0]) / (years.length - 1);
+            selection.attr('width', increment)
+                .attr('height', y.range()[0])
+                .attr('transform', `translate(${-increment / 2}, 0)`)
+                .attr('x', x(year))
+                .on('mouseenter', (e: any, d: number) => {
+                    handleHover(e, d)
+                })
+                .on('mouseleave', () => {
+                    handleHover(null)
+                })
+        }
+
+        chart.select('.hover-zones')
+            .selectAll('.hover-zones-g')
+            .data(years)
+            .join(
+                enter => enter.append('g')
+                    .attr('class', 'hover-zones-g')
+                    .attr('data-year', d => d)
+                    .each(function (d, i) {
+                        const rect = d3.select(this)
+                            .append('rect')
+                            .style('fill', 'rgb(0,0,0,0)')
+                        positionHoverZone(rect, d)
+                    }),
+                update => update.each(function (d, i) {
+                    const rect = d3.select(this)
+                        .select('rect')
+
+                    positionHoverZone(rect, d)
+                })
+                ,
+                exit => exit.remove(),
+            )
     }
+
 
     return (
         <div className="container country-profile-chart">
@@ -315,13 +352,15 @@ function CountryProfileChart(props: ICountryProfileChart) {
                 </g>
                 <g className='paths'>
                 </g>
-                <g className='hover-points'>
+                <g className='dots'>
+                </g>
+                <g className='hover-zones'>
                 </g>
             </svg>
             <div ref={tooltipNode} className='tooltip__container'>
                 <Tooltip
-                    data={hoverData}
-                    indicators={hoverIndicators}
+                    data={data.find(d => d['Index Year'] === hoverData) || null}
+                    indicators={selectedChartIndicators()}
                     mode={IndexType.COMBINED}
                     countryProfileChart={true}
                 />

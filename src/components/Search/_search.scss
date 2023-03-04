@@ -6,8 +6,8 @@
         &[type="text"] {
             width: 100%;
             border-radius: 20px;
-            padding: 0.625rem 3rem 0.625rem 1rem;
-            background: var(--neutral---gray--light);
+            padding: 0.625rem 3rem 0.625rem 1rem !important;
+            background: #FBFBFB !important;
             border: none;
         }
     }
@@ -16,11 +16,13 @@
         position: absolute;
         right: 1rem;
         top: 0.375rem;
+        z-index: 1;
     }
 
     .dropdown-menu {
         background: var(--neutral---white);
         border: 1px solid var(--neutral---gray--light);
+        z-index: 1;
         a {
             display: block;
             padding: 0.25rem;

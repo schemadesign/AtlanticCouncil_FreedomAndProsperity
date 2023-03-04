@@ -15,10 +15,12 @@ interface IFreedomAndProsperityTable {
     handleSelectCountry?: (iso: string) => void,
     preview?: boolean,
     defaultSort?: { col: string, direction: number },
+    selectedCountries?: FPData[],
+    goToProfile: (val: FPData) => void,
 }
 
 function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
-    const { columns, handleSelectCountry, preview, defaultSort } = props;
+    const { columns, handleSelectCountry, preview, defaultSort, goToProfile, selectedCountries = [] } = props;
     const [sort, setSort] = useState(defaultSort ? defaultSort : { col: columns[0], direction: 1 })
     const [rankOrScoreByColumn, setRankOrScoreByColumn] = useState<{ [key: string]: string }>({
         'split__Income__ranked-Income': 'score',
@@ -30,6 +32,7 @@ function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
     })
 
     let data = sortedData(sort);
+    const filteredData = selectedCountries.length > 0 ? selectedCountries : data;
 
     if (preview) {
         data = data.slice(0, window.innerHeight / 68);
@@ -156,8 +159,10 @@ function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
                 </tr>
             </thead>
             <tbody>
-                {data.map((row: FPData) => (
-                    <tr key={row.Name}>
+                {filteredData.map((row: FPData) => (
+                    <tr key={row.Name} 
+                        tabIndex={0}
+                        onClick={() => goToProfile(row)}>
                         {columns.map((col: string) => (
                             getCell(row, col)
                         ))}

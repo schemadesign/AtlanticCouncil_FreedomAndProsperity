@@ -1,7 +1,14 @@
 $MAP_HEIGHT: 12rem;
 
 .panel__content {
+
     &--map {
+        h2,
+        h4 {
+            max-width: calc(100% - 13rem);
+            line-height: 100%;
+        }
+
         .freedom-and-prosperity-table {
             margin-top: 0;
 
@@ -40,8 +47,6 @@ $MAP_HEIGHT: 12rem;
 
     .mini-map {
         width: $MAP_HEIGHT;
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
+        margin-top: 2rem;
     }
 }

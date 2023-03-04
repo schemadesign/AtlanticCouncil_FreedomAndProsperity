@@ -11,32 +11,24 @@ import { formatLabel, NESTED_INDICATORS } from "../../../data/data-util";
 import './_panel-content-profiles.scss';
 
 interface IPanelContentProfiles {
-    data: FPData[],
-    setOpen: (open: boolean) => void,
+    selectedCountries: FPData[],
     selectedIndicators: Array<string>,
     toggleFilter: (indicator: string | null) => void,
 }
 
 function PanelContentProfiles(props: IPanelContentProfiles) {
-    const [ country, setCountry ] = useState<FPData | null>(null)
-    const { setOpen, data, selectedIndicators, toggleFilter } = props;
-
-    useEffect(() => {
-        // prevent reseting panel when searching for new country
-        if (data.length > 0) {
-            setCountry(data[0] as FPData)
-        }
-    }, [data])
+    const { selectedCountries, selectedIndicators, toggleFilter } = props;
 
     const isDisabled = (key: string) => {
-        if (country) {
-            return data.findIndex(d => d[key] > 0) === -1
+        if (selectedCountries) {
+            return selectedCountries.findIndex(d => d[key] > 0) === -1
         }
-
         return true;
     }
 
     let inner = <></>
+
+    const country = selectedCountries ? selectedCountries[0] : null;
 
     if (country) {
         inner = (
@@ -69,88 +61,77 @@ function PanelContentProfiles(props: IPanelContentProfiles) {
     }
 
     return (
-        <div className='panel__content panel__content--profiles'>
-            <div className='panel__content__header'>
-                <Button onClick={() => setOpen(false)}
-                    variant={'close'}>
+        <div className='panel__content__inner'>
+            {inner}
 
-                </Button>
-            </div>
-            <div className='panel__content__inner'>
-                {inner}
-
-                <div className='d-flex flex-row panel__content--profiles__checkboxes'>
-                    {Object.keys(NESTED_INDICATORS).sort().map((type: string) => {
-                        const subindicators = NESTED_INDICATORS[type as keyof typeof NESTED_INDICATORS];
-                        return (
-                            <div key={type}>
-                                <div>
-                                    <Checkbox value={type}
-                                        label={formatLabel(type)}
-                                        handleClick={() => toggleFilter(type)}
-                                        checked={selectedIndicators.includes(type)}
-                                    />
-                                </div>
-                                {isArray(subindicators) ?
-                                    <div className='panel__content--profiles__checkboxes__subsubsection'
-                                    >
-                                        {subindicators.map((subindicator: string) => {
-                                            return (
-                                                <div key={subindicator}>
-                                                    <Checkbox
-                                                        value={subindicator}
-                                                        label={formatLabel(subindicator)}
-                                                        disabled={isDisabled(subindicator)}
-                                                        checked={selectedIndicators.includes(subindicator)}
-                                                        handleClick={() => toggleFilter(subindicator)}
-                                                    />
-                                                </div>
-                                            )
-                                        })}
-                                    </div>
-                                    :
-                                    (Object.keys(subindicators)).map((subindicator: string) => {
+            <div className='d-flex flex-row panel__content--country-profiles__checkboxes'>
+                {Object.keys(NESTED_INDICATORS).sort().map((type: string) => {
+                    const subindicators = NESTED_INDICATORS[type as keyof typeof NESTED_INDICATORS];
+                    return (
+                        <div key={type}>
+                            <div>
+                                <Checkbox value={type}
+                                    label={formatLabel(type)}
+                                    handleClick={() => toggleFilter(type)}
+                                    checked={selectedIndicators.includes(type)}
+                                />
+                            </div>
+                            {isArray(subindicators) ?
+                                <div className='panel__content--country-profiles__checkboxes__subsubsection'
+                                >
+                                    {subindicators.map((subindicator: string) => {
                                         return (
-                                            <div key={subindicator}
-                                                className='panel__content--profiles__checkboxes__subsection'
-                                            >
-                                                <Checkbox value={subindicator}
-                                                    disabled={isDisabled(subindicator)}
+                                            <div key={subindicator}>
+                                                <Checkbox
+                                                    value={subindicator}
                                                     label={formatLabel(subindicator)}
-                                                    handleClick={() => toggleFilter(subindicator)}
+                                                    disabled={isDisabled(subindicator)}
                                                     checked={selectedIndicators.includes(subindicator)}
+                                                    handleClick={() => toggleFilter(subindicator)}
                                                 />
-                                                <div key={subindicator}
-                                                    className='panel__content--profiles__checkboxes__subsubsection'
-                                                >
-                                                    {subindicators[subindicator as keyof typeof subindicators].map((subsub: string) => {
-                                                        return (
-                                                            <div key={subsub}>
-                                                                <Checkbox value={subsub}
-                                                                    label={formatLabel(subsub)}
-                                                                    disabled={isDisabled(subsub)}
-                                                                    handleClick={() => toggleFilter(subsub)}
-                                                                    checked={selectedIndicators.includes(subsub)}
-                                                                />
-                                                            </div>
-                                                        )
-                                                    })}
-                                                </div>
                                             </div>
                                         )
-                                    })
-                                }
-                            </div>
-                        )
-                    })}
-                </div>
-
-                <div className="flex-row">
-                    <Button className="panel__content--profiles__clear-filters"
-                        onClick={() => toggleFilter(null)}>
-                        Clear all
-                    </Button>
-                </div>
+                                    })}
+                                    <Button className="panel__content--country-profiles__clear-filters"
+                                        onClick={() => toggleFilter(null)}>
+                                        Reset
+                                    </Button>
+                                </div>
+                                :
+                                (Object.keys(subindicators)).map((subindicator: string) => {
+                                    return (
+                                        <div key={subindicator}
+                                            className='panel__content--country-profiles__checkboxes__subsection'
+                                        >
+                                            <Checkbox value={subindicator}
+                                                disabled={isDisabled(subindicator)}
+                                                label={formatLabel(subindicator)}
+                                                handleClick={() => toggleFilter(subindicator)}
+                                                checked={selectedIndicators.includes(subindicator)}
+                                            />
+                                            <div key={subindicator}
+                                                className='panel__content--country-profiles__checkboxes__subsubsection'
+                                            >
+                                                {subindicators[subindicator as keyof typeof subindicators].map((subsub: string) => {
+                                                    return (
+                                                        <div key={subsub}>
+                                                            <Checkbox value={subsub}
+                                                                label={formatLabel(subsub)}
+                                                                disabled={isDisabled(subsub)}
+                                                                handleClick={() => toggleFilter(subsub)}
+                                                                checked={selectedIndicators.includes(subsub)}
+                                                            />
+                                                        </div>
+                                                    )
+                                                })}
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                    )
+                })}
             </div>
         </div>
     )

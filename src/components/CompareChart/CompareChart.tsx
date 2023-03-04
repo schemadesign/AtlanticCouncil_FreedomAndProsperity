@@ -2,10 +2,12 @@ import * as d3 from 'd3';
 import _ from 'lodash';
 import { useEffect, useRef, useState } from "react"
 import { IndexType } from '../../@enums/IndexType';
-import { ChartLabelPosition } from '../../@types/chart';
-import { TRANSITION_TIMING, PADDING, getHeight, getWidth, lineGenerator, setUpChart, getLabelX, getLabelY, handleCollisionDetection, labelConnectorPathGenerator } from '../../data/d3-chart-util';
-import { formatData, getSelectedFlattenedIndicators, getYDomain } from '../../data/data-util';
+import { ChartLabelPosition, IChartIndicator } from '../../@types/chart';
+import { TRANSITION_TIMING, PADDING, getHeight, getWidth, lineGenerator, setUpChart, getLabelX, getLabelY, handleCollisionDetection, labelConnectorPathGenerator, animatePath, initChart } from '../../data/d3-chart-util';
+import { formatData, getYDomain } from '../../data/data-util';
 import Tooltip from '../FreedomAndProsperityMap/Tooltip/Tooltip';
+
+import './_country-compare-chart.scss';
 
 interface ICompareChart {
     selectedCountries: FPData[],
@@ -17,31 +19,35 @@ interface ICompareChartDatasets {
     [key: string]: Array<FPData>,
 }
 
+interface IAssignedColorDictionary {
+    [key: string]: number,
+}
+
 function CompareChart(props: ICompareChart) {
     const { panelOpen, selectedCountries, selectedIndicators } = props;
     const [data, setData] = useState<ICompareChartDatasets>({})
     const [hoverData, setHoverData] = useState(null)
     const [hoverIndicator, setHoverIndicator] = useState([])
-    const [assignedColors, setAssignedColors] = useState({})
+    const [assignedColors, setAssignedColors] = useState<IAssignedColorDictionary>({})
     const svg = useRef(null);
     const tooltipNode = useRef(null);
 
     const onlyIndicator = selectedIndicators[0] || '';
 
-    // useEffect(() => {
-    //     window.addEventListener("resize", drawChart);
+    useEffect(() => {
+        initChart(d3.select(svg.current), getWidth(panelOpen));
+        
+        window.addEventListener("resize", () => drawChart());
 
-    //     drawChart()
-
-    //     // remove on unmount
-    //     return () => window.removeEventListener("resize", drawChart);
-    // }, [])
+        // remove on unmount
+        return () => window.removeEventListener("resize", () => drawChart());
+    }, [])
 
     function getData() {
         let files: Array<string> = [];
 
-        setAssignedColors((prev: ICompareChartDatasets) => {
-            const updated: ICompareChartDatasets = {};
+        setAssignedColors((prev: IAssignedColorDictionary) => {
+            const updated: IAssignedColorDictionary = {};
             selectedCountries.forEach(country => {
                 if (prev[country.ISO3]) {
                     updated[country.ISO3] = prev[country.ISO3]
@@ -125,8 +131,6 @@ function CompareChart(props: ICompareChart) {
         return handleCollisionDetection(labelPositions)
     }
 
-    console.log(selectedIndicators)
-
     const getColorFromIndex = (i: number) => {
         return `var(--color--chart--${i})`
     }
@@ -157,11 +161,11 @@ function CompareChart(props: ICompareChart) {
             .nice()
             .range([height - PADDING.b, PADDING.t])
 
-        setUpChart(chart, height, width, x, y, true);
+        setUpChart(chart, height, width, x, y);
 
         const line = lineGenerator(x, y)
 
-        const definedData: Array<FPData> = Object.values(data).filter((dataset: Array<FPData>) => {
+        const definedData: Array<Array<FPData>> = Object.values(data).filter((dataset: Array<FPData>) => {
             return dataset.findIndex(d => d[onlyIndicator] > -1) > -1
         })
 
@@ -184,16 +188,7 @@ function CompareChart(props: ICompareChart) {
                         // @ts-expect-error
                         path.attr('d', line(generalizedData))
                             .each(function () {
-                                // @ts-expect-error
-                                const length = d3.select(this).node().getTotalLength();
-
-                                d3.select(this)
-                                    .attr("stroke-dasharray", length + " " + length)
-                                    .attr("stroke-dashoffset", -length)
-                                    .transition()
-                                    .ease(d3.easeLinear)
-                                    .attr("stroke-dashoffset", 0)
-                                    .duration(TRANSITION_TIMING * 3)
+                                animatePath(d3.select(this), 0, TRANSITION_TIMING * 3)
                             })
                     })
                 , update => update.each(function (thisData: Array<FPData>, i) {
@@ -214,7 +209,7 @@ function CompareChart(props: ICompareChart) {
 
         chart.select('.labels')
             .selectAll('.label-g')
-            .data(labelPositions, d => d.key)
+            .data(labelPositions, (d: any) => d.key)
             .join(
                 enter => enter.append('g')
                     .attr('class', 'label-g')
@@ -226,15 +221,7 @@ function CompareChart(props: ICompareChart) {
                             .attr('class', 'label-connector')
                             .attr('d', d => labelConnectorPathGenerator(d, labelPositions, x))
                             .each(function () {
-                                const length = d3.select(this).node().getTotalLength();
-
-                                d3.select(this).attr("stroke-dasharray", length + " " + length)
-                                    .attr("stroke-dashoffset", length)
-                                    .transition()
-                                    .ease(d3.easeLinear)
-                                    .attr("stroke-dashoffset", 0)
-                                    .delay(TRANSITION_TIMING * 3)
-                                    .duration(TRANSITION_TIMING / 4)
+                                animatePath(d3.select(this), TRANSITION_TIMING * 3, TRANSITION_TIMING/4, true)
                             })
 
                         const label = g.append('g')
@@ -245,8 +232,9 @@ function CompareChart(props: ICompareChart) {
 
                         const text = label.append('text')
                             .attr('transform', 'translate(8,3)')
+                            // @ts-expect-error
                             .text(d.label)
-                            .style('font-weight', 800)
+                            .style('font-weight', 400)
 
                         label.attr('transform', `translate(${getLabelX(x)},${getLabelY(labelPositions, d.key)})`)
                             .style('opacity', 0)
@@ -255,6 +243,7 @@ function CompareChart(props: ICompareChart) {
                             .duration(TRANSITION_TIMING)
                             .style('opacity', 1)
 
+                        // @ts-expect-error
                         const dim = text.node().getBBox();
                         labelContainer.attr('d', `M8,-12 h${dim.width} a10,10 0 0 1 10,10 v4 a10,10 0 0 1 -10,10 h-${dim.width} a10,10 0 0 1 -10,-10 v-4 a10,10 0 0 1 10,-10 z`)
                     })
@@ -265,7 +254,7 @@ function CompareChart(props: ICompareChart) {
                         .style('opacity', 1)
                         .transition()
                         .duration(TRANSITION_TIMING)
-                        .attr('transform', d => `translate(${getLabelX(x)},${getLabelY(labelPositions, d.key)})`)
+                        .attr('transform', (d: any) => `translate(${getLabelX(x)},${getLabelY(labelPositions, d.key)})`)
 
                     g.select('.label-connector')
                         .attr("stroke-dasharray", null)
@@ -279,7 +268,7 @@ function CompareChart(props: ICompareChart) {
     }
 
     return (
-        <div className="container country-profile-chart">
+        <div className="container country-compare-chart">
             <svg ref={svg}>
                 <g className='axis x-axis'>
                     <text className='axis__label'>
