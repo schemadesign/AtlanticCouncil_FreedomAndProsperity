@@ -158,6 +158,7 @@ function CountryProfileChart(props: ICountryProfileChart) {
                 , update => update.each(d => {
                     update.select('.country-path')
                         .attr('stroke-dasharray', d.subindicator ? '5 3' : '')
+                        .attr('stroke-dashoffset', 0)
                         .transition()
                         .duration(TRANSITION_TIMING)
                         // @ts-expect-error
@@ -178,93 +179,58 @@ function CountryProfileChart(props: ICountryProfileChart) {
                 })
             )
 
-        const positionDot = (d: FPData, key: string) => `translate(${x(d['Index Year'])}px, ${y(d[key])}px)`
+        const positionDot = (d: FPData, key: string) => `translate(${x(d['Index Year'])}, ${y(d[key])})`
 
         const handleHover = (e?: any, year?: number) => {
-            if (!e) {
-                chart.selectAll('.dots-g')
-                    .selectAll('circle')
+            if (!e || !year) {
+                chart.selectAll('.dot')
                     .transition()
                     .duration(TRANSITION_TIMING / 2)
-                    .attr('r',0)
+                    .attr('r', 0)
 
                 setHoverYear(null)
 
                 return
             }
-            chart.selectAll('.dots-g')
-                .each(function (indicator: any) {
-                    d3.select(this)
-                        .selectAll('g')
-                        .each(function (d: any, i) {
-                            let r = 0;
-                            if (d['Index Year'] === year) {
-                                r = indicator.subindicator ? 4 : 6
-                            }
-                            d3.select(this)
-                                .selectAll('circle')
-                                .transition()
-                                .duration(TRANSITION_TIMING / 2)
-                                .attr('r', r)
-                        })
+
+            const hoverData = getDataByYear(year);
+
+            if (hoverData) {
+                chart.selectAll('.dot')
+                    .each(function (indicator: any) {
+                        const r = indicator.subindicator ? 4 : 6;
+
+                        d3.select(this)
+                            .attr('transform', positionDot(hoverData, indicator.key))
+                            .transition()
+                            .duration(TRANSITION_TIMING / 2)
+                            .attr('r', r)
                 })
 
-            const thisYearData: FPData | null = data.find(d => d['Index Year'] === year) || null;
-
-            if (thisYearData && year) {
                 setHoverYear(year as number)
-                const midY = y(d3.mean(selectedChartIndicators().map(i => thisYearData[i.key])) || 0)
+                const midY = y(d3.mean(selectedChartIndicators().map(i => hoverData[i.key])) || 0)
 
-                positionTooltip(tooltipNode, x, year, height, midY)
+                positionTooltip(tooltipNode, x, year as number, height, midY)
             } else {
                 setHoverYear(null)
             }
         }
 
         chart.select('.dots')
-            .selectAll('.dots-g')
+            .selectAll('.dot')
             .data(selectedChartIndicators(), (d: any) => d.key)
             .join(
-                enter => enter.append('g')
-                    .attr('class', 'dots-g'),
-                update => update,
-                exit => exit.remove(),
+                enter => enter.append('circle')
+                    .attr('class', 'dot')
+                    .style('fill', d => d.color)
+                    .attr('r', 0)
+                    .style('pointer-events', 'none')
             )
-            .each(function (indicator) {
-                d3.select(this)
-                    .selectAll('g')
-                    .data(data)
-                    .join(
-                        enter => enter
-                            .append('g')
-                            .each(function (d, i) {
-                                const circle = d3.select(this)
-                                    .append('circle')
-                                    .style('fill', indicator.color)
-                                    .attr('r', 0)
-                                    .style('pointer-events', 'none')
-
-                                d3.select(this)
-                                    .style('transform', positionDot(d, indicator.key))
-                            }),
-                        update => update
-                            .each(function (d) {
-                                d3.select(this)
-                                    .transition()
-                                    .duration(TRANSITION_TIMING)
-                                    .style('transform', positionDot(d, indicator.key))
-
-                                d3.select(this)
-                                    .select('circle')
-                                    .style('fill', indicator.color)
-                            }),
-                        exit => exit.remove(),
-                    )
-            })
         
         setUpHoverZones(chart, x, y, handleHover);
     }
 
+    const getDataByYear = (year: number | null): FPData | null => year ? data.find(d => d['Index Year'] === year) || null : null;
 
     return (
         <div className="container country-profile-chart">
@@ -288,7 +254,7 @@ function CountryProfileChart(props: ICountryProfileChart) {
             </svg>
             <div ref={tooltipNode} className='tooltip__container'>
                 <Tooltip
-                    data={data.find(d => d['Index Year'] === hoverYear) || null}
+                    data={getDataByYear(hoverYear)}
                     indicators={selectedChartIndicators()}
                     mode={IndexType.COMBINED}
                     countryProfileChart={true}

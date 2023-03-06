@@ -266,56 +266,69 @@ function CompareChart(props: ICompareChart) {
                 exit => exit.remove()
             )
 
+        const positionDot = (d: FPData, key: string) => `translate(${x(d['Index Year'])}, ${y(d[key])})`
 
         const handleHover = (e?: any, year?: number) => {
             if (!e || !year) {
-                chart.selectAll('.dots-g')
-                    .each(function (indicator: any) {
-                        d3.select(this)
-                            .selectAll('circle')
-                            .transition()
-                            .duration(TRANSITION_TIMING / 2)
-                            .attr('r', indicator.subindicator ? 3 : 5)
-                    })
+                chart.selectAll('.dot')
+                    .transition()
+                    .duration(TRANSITION_TIMING / 2)
+                    .attr('r', 0)
 
                 setHoverYear(null)
 
                 return
             }
-            // chart.selectAll('.dots-g')
-            //     .each(function (indicator: any) {
-            //         d3.select(this)
-            //             .selectAll('g')
-            //             .each(function (d: any, i) {
-            //                 let r = 0;
-            //                 if (d['Index Year'] === year) {
-            //                     r = indicator.subindicator ? 4 : 6
-            //                 }
-            //                 d3.select(this)
-            //                     .selectAll('circle')
-            //                     .transition()
-            //                     .duration(TRANSITION_TIMING / 2)
-            //                     .attr('r', r)
-            //             })
-            //     })
 
-            if (selectedCountries.length > 0 && onlyIndicator) {
+            const hoverData = getDataByYear(year);
+
+            if (selectedCountries.length > 0 && onlyIndicator && hoverData) {
                 setHoverYear(year)
 
                 let midY = height/2;
                 positionTooltip(tooltipNode, x, year, height, midY)
+
+                chart.selectAll('.dot')
+                    .each(function (country: any) {
+                        const r = 6;
+
+                        const d = hoverData.find(d => d.ISO3 === country.ISO3)
+
+                        if (d) {
+                            d3.select(this)
+                                .attr('transform', positionDot(d, onlyIndicator))
+                                .transition()
+                                .duration(TRANSITION_TIMING / 2)
+                                .attr('r', r)
+                        }
+                })
+
             } else {
                 setHoverYear(null)
             }
         }
 
+        chart.select('.dots')
+            .selectAll('.dot')
+            .data(selectedCountries, (d: any) => d.ISO3)
+            .join(
+                enter => enter.append('circle')
+                    .attr('class', 'dot')
+                    .style('fill', d => assignedColors[d.ISO3])
+                    .attr('r', 0)
+                    .style('pointer-events', 'none')
+            )
+
         setUpHoverZones(chart, x, y, handleHover);
     }
 
-    const getHoverData = (): Array<FPData> | null => {
+    const getDataByYear = (year: number | null): Array<FPData> | null => {
+        if (!year) {
+            return null;
+        }
         let hoverData: Array<FPData> = []
         Object.keys(data).forEach((iso: string) => {
-            const thisYear: FPData | undefined = data[iso].find(d => d['Index Year'] === hoverYear);
+            const thisYear: FPData | undefined = data[iso].find(d => d['Index Year'] === year);
 
             if (thisYear) {
                 hoverData.push(thisYear)
@@ -327,7 +340,7 @@ function CompareChart(props: ICompareChart) {
         // sort by most recent score:
         // hoverData = hoverData.sort((a, b) => data[b.ISO3][0][onlyIndicator] - data[a.ISO3][0][onlyIndicator])
         // or sort by score at hover year:
-        hoverData = hoverData.sort((a, b) => b[onlyIndicator] - b[onlyIndicator])
+        hoverData = hoverData.sort((a, b) => b[onlyIndicator] - a[onlyIndicator])
 
         if (!hoverData) {
             return null;
@@ -352,14 +365,14 @@ function CompareChart(props: ICompareChart) {
                 </g>
                 <g className='paths'>
                 </g>
-                <g className='hover-points'>
+                <g className='dots'>
                 </g>
                 <g className='hover-zones'>
                 </g>
             </svg>
             <div ref={tooltipNode} className='tooltip__container'>
                 <CompareTooltip title={hoverYear}
-                    data={getHoverData()}
+                    data={getDataByYear(hoverYear)}
                     indicator={onlyIndicator}
                     assignedColors={assignedColors}
                     />
