@@ -23,6 +23,8 @@ export interface IAssignedColorDictionary {
     [key: string]: string,
 }
 
+const COLORS = [1, 2, 3, 4, 5];
+
 function CompareChart(props: ICompareChart) {
     const { panelOpen, selectedCountries, selectedIndicators, isAxisScaled } = props;
     const [data, setData] = useState<ICompareChartDatasets>({})
@@ -34,6 +36,13 @@ function CompareChart(props: ICompareChart) {
     const onlyIndicator = selectedIndicators[0] || '';
 
     useEffect(() => {
+        const initColors: IAssignedColorDictionary = {}
+        selectedCountries.forEach((country, i) => {
+            initColors[country.ISO3] = getColorFromIndex(COLORS[i % COLORS.length] + 1)
+        })
+
+        setAssignedColors(initColors)
+
         initChart(d3.select(svg.current), getWidth(panelOpen));
 
         // window.addEventListener("resize", () => drawChart());
@@ -74,11 +83,11 @@ function CompareChart(props: ICompareChart) {
         selectedCountries.forEach((country: FPData) => {
             if (!data[country.ISO3]) {
                 setAssignedColors((prev: IAssignedColorDictionary) => {
-                    const colors = [1, 2, 3, 4, 5].filter(d => (
+                    const colors = COLORS.filter(d => (
                         !Object.values(prev).includes(getColorFromIndex(d))
                     ))
 
-                    const next = colors[0] || ((Object.keys(prev).length) % 5 + 1);
+                    const next = colors[0] || ((Object.keys(prev).length) % COLORS.length) + 1;
 
                     return {
                         ...prev,
@@ -316,7 +325,8 @@ function CompareChart(props: ICompareChart) {
                     .attr('class', 'dot')
                     .style('fill', d => assignedColors[d.ISO3])
                     .attr('r', 0)
-                    .style('pointer-events', 'none')
+                    .style('pointer-events', 'none'),
+                update => update.style('fill', d => assignedColors[d.ISO3])
             )
 
         setUpHoverZones(chart, x, y, handleHover);

@@ -10,10 +10,11 @@ $MAP_HEIGHT: 12rem;
         }
 
         .freedom-and-prosperity-table {
-            margin-top: 0;
+            margin-top: 2rem;
             .button {
                 text-transform: none;
-                padding: 0;
+                padding: 0.5rem 0.75rem;
+                width: 100%;
             }
 
             thead {
@@ -26,7 +27,7 @@ $MAP_HEIGHT: 12rem;
             tr {
                 border: none;
             }
-            td, th {
+            th {
                 padding: 0.5rem 0.75rem;
             }
             th {
@@ -42,9 +43,12 @@ $MAP_HEIGHT: 12rem;
                 border: none;
             }
 
-            td[data-col="Name"] {
-                font-weight: 700;
-                font-size: 0.875rem;
+            td {
+                padding: 0;
+                &[data-col="Name"] {
+                    font-weight: 700;
+                    font-size: 0.875rem;
+                }
             }
         }
 

@@ -22,7 +22,7 @@ function Switch(props: ISwitch) {
                 width={32}
                 handleDiameter={14}
                 offColor={'#e6e6e6'}
-                onColor={'#629BFA'}
+                onColor={'#000'}
             />
             <span className="switch__label">{label}</span>
         </label>

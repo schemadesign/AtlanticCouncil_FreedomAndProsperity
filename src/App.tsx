@@ -110,7 +110,7 @@ function App() {
 
     const handleSetSelected = (val: FPData[], resetCountries?: boolean) => {
         setSelected(val);
-        console.log(val, resetCountries)
+        
         if (resetCountries) {
             setSelectedCountries([])
         }
@@ -178,7 +178,7 @@ function App() {
                 {!panelOpen ?
                     <div className='flex-row justify-end'>
                         <Search selected={selected}
-                            setSelected={handleSetSelected}
+                            setSelected={(val: FPData[], resetCountries?: boolean) => handleSetSelected(val, page === Pages.MAP ? resetCountries : false)}
                             multiple={page === Pages.COMPARE ? true : false}
                         />
 

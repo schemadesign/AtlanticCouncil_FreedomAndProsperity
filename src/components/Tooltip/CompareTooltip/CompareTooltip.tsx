@@ -1,3 +1,4 @@
+import { formatLabel } from '../../../data/data-util';
 import { IAssignedColorDictionary } from '../../CompareChart/CompareChart';
 import ScoreBar from '../../ScoreBar/ScoreBar';
 import './../_tooltip.scss';
@@ -21,6 +22,9 @@ function CompareTooltip(props: ICompareTooltip) {
             <div className='tooltip__title'>
                 <h3>
                     {title}
+                </h3>
+                <h3>
+                    {formatLabel(indicator)}
                 </h3>
             </div>
             <div className='tooltip__data'>
