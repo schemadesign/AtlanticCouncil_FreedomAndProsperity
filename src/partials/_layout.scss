@@ -2,12 +2,6 @@
     width: 8.5rem;
 }
 
-.page {
-    min-height: 100vh;
-    padding-top: 6rem;
-    margin-top: -6rem;
-}
-
 .container {
     max-width: $MAX_WIDTH;
     padding: 0 1rem;
@@ -36,10 +30,4 @@
     &-0 {
         padding: 0;
     }
-}
-
-.page__header {
-    background: var(--neutral---white);
-    padding-bottom: 2rem;
-    border-bottom: var(--neutral---gray--medium) 1px solid;
 }

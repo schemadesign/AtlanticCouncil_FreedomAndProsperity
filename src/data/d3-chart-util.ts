@@ -16,7 +16,7 @@ export const getWidth = (panelOpen: boolean) => window.innerWidth < 1440 ? windo
 export const lineGenerator = (x: (val: number) => number, y: (val: number) => number) => d3.line()
     .x((d: any) => x(d['Index Year']))
     .y((d: any) => y(d['field']))
-    .curve(d3.curveCardinal.tension(0.92));
+    .curve(d3.curveMonotoneX);
 
 /*
  * calculate non-overlapping y positions of labels 
@@ -84,7 +84,7 @@ export const getLabelX = (x: any) => {
 */
 export const labelConnectorPathGenerator = (d: any, labelPositions: Array<ChartLabelPosition>, x: (val: number) => number) => {
     try {
-        return `M${getLabelX(x)},${getLabelY(labelPositions, d.key)} L${getLabelX(x) - 20 + (2)},${getLabelY(labelPositions, d.key)} L${getLabelX(x) - 20 + (2)},${getLabelY(labelPositions, d.key, true)}`
+        return `M${getLabelX(x)},${getLabelY(labelPositions, d.key)} L${getLabelX(x) - 20},${getLabelY(labelPositions, d.key)} L${getLabelX(x) - 20},${getLabelY(labelPositions, d.key, true)}`
     } catch {
         return ''
     }
@@ -159,11 +159,27 @@ export const setUpChart = (chart: any, height: number, width: number, x: any, y:
 /*
 *   animate path drawing from left to right
 */
-export function animatePath(selection: any, delay: number, duration: number, rightToLeft?: boolean) {
+export function animatePath(selection: any, delay: number, duration: number, rightToLeft?: boolean, dashed?: boolean) {
     const length = selection.node().getTotalLength();
 
-    selection.attr("stroke-dasharray", length + " " + length)
-        .attr("stroke-dashoffset", length * (rightToLeft ? 1 : -1))
+    let dashArray = length + " " + length;
+
+    if (dashed) {
+        const dashing = '5, 3'
+
+        let dashLength = dashing
+                .split(/[\s,]/)
+                .map(function (a) { return parseFloat(a) || 0 })
+                .reduce(function (a, b) { return a + b });
+
+        let dashCount = Math.ceil(length / dashLength);
+
+        let newDashes = new Array(dashCount).join(dashing + " ");
+        dashArray = newDashes + " 0, " + length;
+    }
+
+    selection.attr("stroke-dashoffset", length * (rightToLeft ? 1 : -1))
+        .attr("stroke-dasharray", dashArray)
         .transition()
         .ease(d3.easeLinear)
         .attr("stroke-dashoffset", 0)

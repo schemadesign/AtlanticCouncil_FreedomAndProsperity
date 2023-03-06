@@ -6,10 +6,11 @@ interface IProfiles {
     selectedCountries: FPData[],
     panelOpen: boolean,
     selectedIndicators: Array<string>,
+    isAxisScaled: boolean,
 }
 
 function Profiles(props: IProfiles) {
-    const { selectedCountries, panelOpen, selectedIndicators } = props;
+    const { selectedCountries, panelOpen, selectedIndicators, isAxisScaled } = props;
 
     const title = selectedCountries.length > 0 ? selectedCountries[0].Name : ''
 
@@ -20,6 +21,7 @@ function Profiles(props: IProfiles) {
             <CountryProfileChart selectedCountries={selectedCountries} 
                 selectedIndicators={selectedIndicators}
                 panelOpen={panelOpen}
+                isAxisScaled={isAxisScaled}
                 />
         </Page>
     )

@@ -1,12 +1,12 @@
 import _ from "lodash";
 import { isArray } from "lodash";
-import { useEffect, useState } from "react";
 import { IndexType } from "../../../@enums/IndexType";
+import { IChartIndicator } from "../../../@types/chart";
 import Button from "../../../components/Button/Button";
 import Category from "../../../components/Category/Category";
 import Checkbox from "../../../components/Checkbox/Checkbox";
 import PanelOverviewValues from "../../../components/Panel/PanelOverviewValues/PanelOverviewValues";
-import { formatLabel, NESTED_INDICATORS } from "../../../data/data-util";
+import { formatLabel, getSelectedFlattenedIndicators, NESTED_INDICATORS } from "../../../data/data-util";
 
 import './_panel-content-profiles.scss';
 
@@ -14,10 +14,12 @@ interface IPanelContentProfiles {
     selectedCountries: FPData[],
     selectedIndicators: Array<string>,
     toggleFilter: (indicator: string | null) => void,
+    axisToggle: React.ReactNode,
+    resetFilters: () => void
 }
 
 function PanelContentProfiles(props: IPanelContentProfiles) {
-    const { selectedCountries, selectedIndicators, toggleFilter } = props;
+    const { selectedCountries, selectedIndicators, toggleFilter, axisToggle, resetFilters } = props;
 
     const isDisabled = (key: string) => {
         if (selectedCountries) {
@@ -65,55 +67,60 @@ function PanelContentProfiles(props: IPanelContentProfiles) {
             {inner}
 
             <div className='d-flex flex-row panel__content--country-profiles__checkboxes'>
-                {Object.keys(NESTED_INDICATORS).sort().map((type: string) => {
-                    const subindicators = NESTED_INDICATORS[type as keyof typeof NESTED_INDICATORS];
+                {getSelectedFlattenedIndicators(Object.keys(NESTED_INDICATORS).sort()).map((topLevel: IChartIndicator) => {
+                    const subindicators = NESTED_INDICATORS[topLevel.key as keyof typeof NESTED_INDICATORS];
                     return (
-                        <div key={type}>
-                            <div>
-                                <Checkbox value={type}
-                                    label={formatLabel(type)}
-                                    handleClick={() => toggleFilter(type)}
-                                    checked={selectedIndicators.includes(type)}
+                        <div key={topLevel.key}>
+                            <div className='d-flex flex-row panel__content--country-profiles__checkboxes'>
+                                <Checkbox value={topLevel.key}
+                                    label={topLevel.label}
+                                    handleClick={() => toggleFilter(topLevel.key)}
+                                    checked={selectedIndicators.includes(topLevel.key)}
+                                    color={topLevel.color}
                                 />
                             </div>
                             {isArray(subindicators) ?
                                 <div className='panel__content--country-profiles__checkboxes__subsubsection'
                                 >
-                                    {subindicators.map((subindicator: string) => {
+                                    { getSelectedFlattenedIndicators(subindicators).map((subindicator: IChartIndicator) => {
                                         return (
-                                            <div key={subindicator}>
+                                            <div key={subindicator.key}>
                                                 <Checkbox
-                                                    value={subindicator}
-                                                    label={formatLabel(subindicator)}
-                                                    disabled={isDisabled(subindicator)}
-                                                    checked={selectedIndicators.includes(subindicator)}
-                                                    handleClick={() => toggleFilter(subindicator)}
+                                                    value={subindicator.key}
+                                                    label={subindicator.label}
+                                                    disabled={isDisabled(subindicator.key)}
+                                                    checked={selectedIndicators.includes(subindicator.key)}
+                                                    handleClick={() => toggleFilter(subindicator.key)}
                                                 />
                                             </div>
                                         )
                                     })}
                                     <Button className="panel__content--country-profiles__clear-filters"
                                         variant={'outline'}
-                                        onClick={() => toggleFilter(null)}>
+                                        onClick={resetFilters}>
                                         Reset
                                     </Button>
+                                    <div>
+                                        {axisToggle}
+                                    </div>
                                 </div>
                                 :
-                                (Object.keys(subindicators)).map((subindicator: string) => {
+                                getSelectedFlattenedIndicators(Object.keys(subindicators)).map((subindicator: IChartIndicator) => {
                                     return (
-                                        <div key={subindicator}
+                                        <div key={subindicator.key}
                                             className='panel__content--country-profiles__checkboxes__subsection'
                                         >
-                                            <Checkbox value={subindicator}
-                                                disabled={isDisabled(subindicator)}
-                                                label={formatLabel(subindicator)}
-                                                handleClick={() => toggleFilter(subindicator)}
-                                                checked={selectedIndicators.includes(subindicator)}
+                                            <Checkbox value={subindicator.key}
+                                                disabled={isDisabled(subindicator.key)}
+                                                label={subindicator.label}
+                                                handleClick={() => toggleFilter(subindicator.key)}
+                                                checked={selectedIndicators.includes(subindicator.key)}
+                                                color={subindicator.color}
                                             />
-                                            <div key={subindicator}
+                                            <div key={subindicator.key}
                                                 className='panel__content--country-profiles__checkboxes__subsubsection'
                                             >
-                                                {subindicators[subindicator as keyof typeof subindicators].map((subsub: string) => {
+                                                {subindicators[subindicator.key as keyof typeof subindicators].map((subsub: string) => {
                                                     return (
                                                         <div key={subsub}>
                                                             <Checkbox value={subsub}

@@ -9,15 +9,6 @@ import f_p_data from './processed/latest_all_countries.csv';
 import geojson from './world.geo.json';
 
 export const NESTED_INDICATORS = {
-    [Indicator.PROSPERITY]: [
-        'Income',
-        'Health',
-        'Inequality',
-        'Environment',
-        'Minority Rights',
-        'Education',
-        'Informality',
-    ],
     [Indicator.FREEDOM]: {
         [FreedomSubIndicator.ECONOMIC]: [
             'Womens Economic Freedom',
@@ -37,7 +28,16 @@ export const NESTED_INDICATORS = {
             'Clarity_of_the_law',
             'Judicial_independence_and_effectiveness',
         ],
-    }
+    },
+    [Indicator.PROSPERITY]: [
+        'Income',
+        'Health',
+        'Inequality',
+        'Environment',
+        'Minority Rights',
+        'Education',
+        'Informality',
+    ],
 }
 
 export const formatLabel = (label: string) => {

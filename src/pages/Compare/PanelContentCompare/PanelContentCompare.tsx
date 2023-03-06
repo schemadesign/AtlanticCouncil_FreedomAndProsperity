@@ -1,26 +1,24 @@
-import { IndexType } from "../../../@enums/IndexType";
 import Button from "../../../components/Button/Button";
 import Checkbox from "../../../components/Checkbox/Checkbox";
-import { DEFAULT_DATA, sortedData } from "../../../data/data-util";
+import { sortedData } from "../../../data/data-util";
 
 import './_panel-content-compare.scss';
 
 interface IPanelContentCompare {
-    mode: IndexType,
-    setMode: (mode: IndexType) => void,
     selectedCountries: FPData[],
     setSelected: (val: FPData[], resetCountries?: boolean) => void,
-    children: React.ReactNode,
+    search: React.ReactNode,
+    axisToggle: React.ReactNode,
 }
 
 function PanelContentCompare(props: IPanelContentCompare) {
-    const { mode, setMode, selectedCountries, setSelected, children } = props;
+    const { selectedCountries, setSelected, search, axisToggle } = props;
 
     return (
         <div className='panel__content panel__content--compare'>
             <div className='panel__content__inner panel__content__padded'>
                 {selectedCountries.length > 0 ?
-                    <div style={{margin: '2rem 0'}}>
+                    <div style={{ margin: '2rem 0' }}>
                         <div>
                             {selectedCountries.map((country: FPData) => {
                                 return (
@@ -37,7 +35,7 @@ function PanelContentCompare(props: IPanelContentCompare) {
                         </div>
                         <Button onClick={() => setSelected([], true)}
                             variant={'outline'}
-                            >
+                        >
                             Reset
                         </Button>
                     </div>
@@ -46,7 +44,11 @@ function PanelContentCompare(props: IPanelContentCompare) {
                 }
 
                 <div>
-                    {children}
+                    {axisToggle}
+                </div>
+
+                <div>
+                    {search}
                 </div>
 
                 {sortedData({ col: 'Name', direction: 1 }).map((country: FPData) => {
@@ -64,8 +66,6 @@ function PanelContentCompare(props: IPanelContentCompare) {
                         />
                     )
                 })}
-            </div>
-            <div>
             </div>
         </div>
     )

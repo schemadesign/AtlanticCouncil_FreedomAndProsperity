@@ -1,3 +1,4 @@
+import IconCheck from '../../assets/icons/IconCheck';
 import './_checkbox.scss';
 
 interface IPanelContentProfiles {
@@ -6,17 +7,21 @@ interface IPanelContentProfiles {
     disabled?: boolean,
     handleClick: (value: string) => void,
     checked: boolean,
+    color?: string,
 }
 
 function Checkbox(props: IPanelContentProfiles) {
-    const { label, value, checked, handleClick, disabled } = props;
+    const { label, value, checked, handleClick, disabled, color } = props;
     return (
-        <label className='checkbox'>
+        <label className={`checkbox ${!color ? 'checkbox--default' : ''}`}>
             <input type='checkbox'
                 checked={checked}
                 disabled={disabled}
                 onChange={() => handleClick(value)}
             />
+            <span className='checkbox__marker' style={{backgroundColor: checked ? color : ''}}>
+                {checked ? <IconCheck /> : null}
+            </span>
             <span>
                 {label ? label : value}
             </span>

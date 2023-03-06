@@ -4,34 +4,30 @@
     align-items: center;
     padding: 0.625rem;
     text-transform: uppercase;
-    color: var(--neutral---gray--dark);
-    &--freedom, &--prosperity {
+    color: var(--neutral---text);
+    &--mode-select {
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+        padding: 0.625rem;
+    }
+    &--freedom, &--prosperity, &--combined {
+        @extend .button--mode-select;
         svg {
             display: block;
-            margin-right: 0.25rem;
-        }
-        path {
-            // &.no-stroke {
-            //     fill-rule: evenodd;
-            // }
-            // &:not(.no-stroke) {
-            //     fill: rgba(255, 255, 255, 0);
-            // }
-            fill: var(--neutral---gray--dark);
-            fill-rule: nonzero;
+            margin-right: 0.5rem;
         }
     }
 
     &--prosperity {
         path {
-            fill: var(--neutral---gray--dark);
+            fill: var(--neutral---text);
             fill-rule: evenodd;
         }
 
         &.button--selected {
             svg {
                 path {
-                    fill: var(--neutral---gray--dark);
+                    fill: var(--neutral---text);
                     fill-rule: nonzero;
                 }
             }
@@ -47,7 +43,7 @@
         &.button--selected {
             svg {
                 path {
-                    fill: var(--neutral---gray--dark);
+                    fill: var(--neutral---text);
                     fill-rule: nonzero;
                 }
             }

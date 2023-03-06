@@ -13,10 +13,11 @@ interface ICountryProfileChart {
     selectedCountries: FPData[],
     panelOpen: boolean,
     selectedIndicators: Array<string>,
+    isAxisScaled: boolean,
 }
 
 function CountryProfileChart(props: ICountryProfileChart) {
-    const { panelOpen, selectedCountries, selectedIndicators } = props;
+    const { panelOpen, selectedCountries, selectedIndicators, isAxisScaled } = props;
     const [data, setData] = useState<Array<FPData>>([])
     const [hoverYear, setHoverYear] = useState<number | null>(null)
     const svg = useRef(null);
@@ -47,7 +48,7 @@ function CountryProfileChart(props: ICountryProfileChart) {
 
     useEffect(() => {
         drawChart()
-    }, [data, panelOpen, selectedIndicators])
+    }, [data, panelOpen, selectedIndicators, isAxisScaled])
 
     const selectedChartIndicators = () => data.length > 0 ? getSelectedFlattenedIndicators(selectedIndicators) : [];
 
@@ -81,7 +82,7 @@ function CountryProfileChart(props: ICountryProfileChart) {
 
         const chart = d3.select(svg.current);
 
-        const yDomain = getYDomain(selectedIndicators, data);
+        const yDomain = isAxisScaled ? getYDomain(selectedIndicators, data) : [0, 100];
         const xDomain = data.length > 0 ? d3.extent(data.map(row => row['Index Year'])) as Iterable<number> : [1995, 2022];
 
         const x = d3.scaleLinear()
@@ -123,12 +124,7 @@ function CountryProfileChart(props: ICountryProfileChart) {
                             // @ts-expect-error
                             .attr('d', d => line(data.map(row => ({ ...row, field: row[d.key] }))))
                             .each(function () {
-                                animatePath(d3.select(this), 0, TRANSITION_TIMING * 3)
-
-                                setTimeout(() => {
-                                    d3.select(this)
-                                        .style('stroke-dasharray', d.subindicator ? '5 3' : '')
-                                }, TRANSITION_TIMING * 4)
+                                animatePath(d3.select(this), 0, TRANSITION_TIMING * 3, false, d.subindicator)
                             })
 
                         const label = g.append('g')
@@ -187,13 +183,10 @@ function CountryProfileChart(props: ICountryProfileChart) {
         const handleHover = (e?: any, year?: number) => {
             if (!e) {
                 chart.selectAll('.dots-g')
-                    .each(function (indicator: any) {
-                        d3.select(this)
-                            .selectAll('circle')
-                            .transition()
-                            .duration(TRANSITION_TIMING / 2)
-                            .attr('r', indicator.subindicator ? 3 : 5)
-                    })
+                    .selectAll('circle')
+                    .transition()
+                    .duration(TRANSITION_TIMING / 2)
+                    .attr('r',0)
 
                 setHoverYear(null)
 
@@ -253,11 +246,6 @@ function CountryProfileChart(props: ICountryProfileChart) {
 
                                 d3.select(this)
                                     .style('transform', positionDot(d, indicator.key))
-
-                                circle.transition()
-                                    .delay(((TRANSITION_TIMING * 4) / data.length) * (data.length - i))
-                                    .duration(TRANSITION_TIMING)
-                                    .attr('r', indicator.subindicator ? 3 : 5)
                             }),
                         update => update
                             .each(function (d) {

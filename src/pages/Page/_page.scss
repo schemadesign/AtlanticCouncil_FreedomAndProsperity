@@ -1,0 +1,11 @@
+.page {
+    min-height: 100vh;
+    padding-top: 6rem;
+    margin-top: -6rem;
+
+    &__header {
+        background: var(--neutral---white);
+        padding-bottom: 2rem;
+        border-bottom: var(--neutral---gray--light) 1px solid;
+    }
+}

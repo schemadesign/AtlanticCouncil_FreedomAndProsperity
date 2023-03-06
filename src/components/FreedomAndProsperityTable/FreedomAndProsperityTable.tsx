@@ -42,7 +42,9 @@ function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
         if (col.startsWith('split__')) {
             const split = col.split('__');
             return (
-                <TableCell className='split' key={row.Name + col}>
+                <TableCell className='split' 
+                    key={row.Name + col}
+                    col={col}>
                     <div className='split__content'>
                         {/* @ts-ignore */}
                         <div className={rankOrScoreByColumn[col] === 'score' ? 'split__content--selected' : ''}>
@@ -72,6 +74,7 @@ function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
         return (
             <TableCell key={row.Name + col}
                 className={col === 'Country' ? 'p-0' : ''}
+                col={col}
             >
                 {col === 'Freedom score' || col === 'Prosperity score' ?
                     <ScoreBar key={row.Name + col}

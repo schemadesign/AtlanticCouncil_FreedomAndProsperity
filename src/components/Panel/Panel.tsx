@@ -10,6 +10,7 @@ import Search from "../Search/Search";
 import Button from "../Button/Button";
 import FiltersFreedom from "../Filters/FiltersFreedom";
 import FiltersProsperity from "../Filters/FiltersProsperity";
+import Switch from "../Switch/Switch";
 
 interface IPanel {
     searchSelected: FPData[],
@@ -22,10 +23,12 @@ interface IPanel {
     selectedIndicators: Array<string>,
     setSelectedIndicators: (indicators: Array<string>) => void,
     page: Pages,
+    toggleIsAxisScaled: () => void,
+    isAxisScaled: boolean,
 }
 
 function Panel(props: IPanel) {
-    const { open, selectedCountries, mode, setMode, setOpen, setSelected, page, selectedIndicators, setSelectedIndicators, searchSelected } = props;
+    const { open, selectedCountries, mode, setMode, setOpen, setSelected, page, selectedIndicators, setSelectedIndicators, searchSelected, toggleIsAxisScaled, isAxisScaled } = props;
     const nodeRef = useRef(null);
 
     const toggleFilter = (type: string | null) => {
@@ -76,7 +79,7 @@ function Panel(props: IPanel) {
                     <div className='panel__content__header'>
 
                         <Search selected={searchSelected}
-                            setSelected={(data: FPData[]) => setSelected(data)}
+                            setSelected={(data: FPData[], resetCountries?: boolean) => setSelected(data, resetCountries)}
                         />
 
                         <Button onClick={() => setOpen(false)}
@@ -87,14 +90,19 @@ function Panel(props: IPanel) {
         }
     }
 
+    const axisToggle = (
+        <Switch handleChange={toggleIsAxisScaled}
+            checked={isAxisScaled}
+            label={'Scale Axis'}
+        />
+    )
+
     const inner = () => {
         switch (page) {
             case Pages.MAP:
                 return (
                     <PanelContentMap
                         mode={mode}
-                        filters={selectedIndicators}
-                        toggleFilter={toggleFilter}
                         selectedCountries={selectedCountries}
                         setSelected={setSelected}
                     />
@@ -104,21 +112,23 @@ function Panel(props: IPanel) {
                     <PanelContentProfiles selectedCountries={selectedCountries}
                         selectedIndicators={selectedIndicators}
                         toggleFilter={toggleFilter}
+                        axisToggle={axisToggle}
+                        resetFilters={() => setSelectedIndicators([Indicator.PROSPERITY, Indicator.FREEDOM])}
                     />
                 )
             case Pages.COMPARE:
                 return (
                     <PanelContentCompare
-                        mode={mode}
-                        setMode={setMode}
                         selectedCountries={selectedCountries}
                         setSelected={setSelected}
-                    >
-                        <Search selected={searchSelected}
-                            setSelected={(data: FPData[]) => setSelected(data)}
-                            multiple={true}
-                        />
-                    </PanelContentCompare>
+                        search={
+                            <Search selected={searchSelected}
+                                setSelected={(data: FPData[]) => setSelected(data)}
+                                multiple={true}
+                            />
+                        }
+                        axisToggle={axisToggle}
+                    />
                 )
             default:
                 return <></>

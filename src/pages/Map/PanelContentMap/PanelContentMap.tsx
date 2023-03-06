@@ -13,13 +13,11 @@ import './_panel-content-map.scss';
 interface IPanelContentMap {
     selectedCountries: FPData[],
     setSelected: (data: FPData[]) => void,
-    filters: Array<string>,
-    toggleFilter: (type: string) => void,
     mode: IndexType,
 }
 
 function PanelContentMap(props: IPanelContentMap) {
-    const { selectedCountries, filters, mode, setSelected, toggleFilter } = props;
+    const { selectedCountries, mode, setSelected } = props;
 
     const handleSelectCountry = (iso: string) => {
         const data = getDataByISO(iso);
@@ -36,16 +34,14 @@ function PanelContentMap(props: IPanelContentMap) {
                         {country.Name}
                     </h2>
                     {/* <h4>
-                                                {country['Region (WB 2022)'] || ''}
-                                            </h4> */}
+                        {country['Region (WB 2022)'] || ''}
+                    </h4> */}
                     <MiniMap iso={country.ISO3} />
                 </div>
                 <div>
                     <CountryOverview data={country}
-                        filters={filters}
                         type={IndexType.FREEDOM} />
                     <CountryOverview data={country}
-                        filters={filters}
                         type={IndexType.PROSPERITY} />
                 </div>
             </div>

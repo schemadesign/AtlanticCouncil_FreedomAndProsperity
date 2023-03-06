@@ -11,18 +11,17 @@ import PanelOverviewValues from '../../../components/Panel/PanelOverviewValues/P
 interface ICountryOverview {
     type: IndexType.FREEDOM | IndexType.PROSPERITY,
     data: FPData,
-    filters: Array<string>,
 }
 
 function CountryOverview(props: ICountryOverview) {
-    const { type, data, filters } = props;
+    const { type, data } = props;
 
     const indicators = NESTED_INDICATORS[indexTypeToIndicatorType(type)];
 
     const subindictorNode = (subindictor: string) => {
         return (
             <div className='panel__country-overview__subindicator' key={subindictor}>
-                <h6>{ formatLabel(subindictor) }</h6>
+                <h6>{formatLabel(subindictor)}</h6>
                 <div className='flex-row justify-space-between'>
                     <div className={''}>
                         <ScoreBar value={data[subindictor]} />
@@ -39,36 +38,30 @@ function CountryOverview(props: ICountryOverview) {
 
     return (
         <div className='panel__country-overview'>
-           <PanelOverviewValues type={type}
+            <PanelOverviewValues type={type}
                 data={data}
-                />
+            />
             <Category type={type}
                 category={_.get(data, `${type} category`) as string} />
             {isArray(indicators) ?
                 indicators.map((subindictor: string) => {
-                    if (filters.length === 0 || filters.includes(subindictor)) {
-                        return (
-                            <div key={subindictor}>
-                                {subindictorNode(subindictor)}
-                            </div>
-                        )
-                    }
-                    return null;
+                    return (
+                        <div key={subindictor}>
+                            {subindictorNode(subindictor)}
+                        </div>
+                    )
                 })
                 :
                 Object.keys(indicators).map((subindictor: string) => {
-                    if (filters.length === 0 || filters.includes(subindictor)) {
-                        return (
-                            <Accordion key={subindictor}
-                                header={subindictorNode(subindictor)}
-                                content={
-                                    indicators[subindictor as FreedomSubIndicator].map((d: string) => (
-                                        subindictorNode(d)
-                                    ))}
-                            />
-                        )
-                    }
-                    return null
+                    return (
+                        <Accordion key={subindictor}
+                            header={subindictorNode(subindictor)}
+                            content={
+                                indicators[subindictor as FreedomSubIndicator].map((d: string) => (
+                                    subindictorNode(d)
+                                ))}
+                        />
+                    )
                 })
             }
         </div>

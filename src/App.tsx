@@ -19,6 +19,7 @@ function App() {
     const [mode, setMode] = useState<IndexType>(IndexType.COMBINED);
     const [panelOpen, setPanelOpen] = useState(false);
     const [selectedIndicators, setSelectedIndicators] = useState<Array<string>>([Indicator.PROSPERITY, Indicator.FREEDOM])
+    const [isAxisScaled, setIsAxisScaled] = useState(false)
     /* used in search */
     const [selected, setSelected] = useState<Array<FPData>>([]);
     /* used for display */
@@ -107,8 +108,9 @@ function App() {
         }, 10)
     }
 
-    const handelSetSelected = (val: FPData[], resetCountries?: boolean) => {
+    const handleSetSelected = (val: FPData[], resetCountries?: boolean) => {
         setSelected(val);
+        console.log(val, resetCountries)
         if (resetCountries) {
             setSelectedCountries([])
         }
@@ -141,6 +143,7 @@ function App() {
                         <Profiles selectedCountries={selectedCountries}
                             panelOpen={panelOpen}
                             selectedIndicators={selectedIndicators}
+                            isAxisScaled={isAxisScaled}
                         />
                     </Suspense>
                 )
@@ -151,6 +154,7 @@ function App() {
                             selectedCountries={selectedCountries}
                             panelOpen={panelOpen}
                             selectedIndicators={selectedIndicators}
+                            isAxisScaled={isAxisScaled}
                         />
                     </Suspense>
                 )
@@ -174,7 +178,7 @@ function App() {
                 {!panelOpen ?
                     <div className='flex-row justify-end'>
                         <Search selected={selected}
-                            setSelected={(newSelection: Array<FPData>) => setSelected(newSelection)}
+                            setSelected={handleSetSelected}
                             multiple={page === Pages.COMPARE ? true : false}
                         />
 
@@ -197,12 +201,15 @@ function App() {
                     page={page ? page : Pages.MAP}
                     setMode={setMode}
                     setOpen={setPanelOpen}
-                    setSelected={handelSetSelected}
+                    setSelected={handleSetSelected}
                     selectedIndicators={selectedIndicators}
                     setSelectedIndicators={setSelectedIndicators}
                     open={panelOpen}
                     searchSelected={selected}
-                    selectedCountries={selectedCountries} />
+                    selectedCountries={selectedCountries} 
+                    isAxisScaled={isAxisScaled}
+                    toggleIsAxisScaled={() => setIsAxisScaled(prev => !prev)}
+                    />
             </div>
         </>
     )

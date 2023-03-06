@@ -17,6 +17,11 @@
                 background: var(--color--hover--table);
             }
         }
+        &:nth-child(2n) {
+            td {
+                background: #F8FAFF;
+            }
+        }
     }
 
     td {
@@ -41,6 +46,10 @@
         .score-bar__label {
             font-weight: 400;
             font-size: 0.75rem;
+        }
+
+        .score-bar__label {
+            width: 2rem;
         }
     }
 

@@ -11,9 +11,40 @@ $MAP_HEIGHT: 12rem;
 
         .freedom-and-prosperity-table {
             margin-top: 0;
+            .button {
+                text-transform: none;
+                padding: 0;
+            }
 
             thead {
-                display: none;
+                tr {
+                    border-top: 1px solid var(--neutral---gray--light);
+                    border-bottom: 1px solid var(--neutral---gray--light);
+                }
+            }
+
+            tr {
+                border: none;
+            }
+            td, th {
+                padding: 0.5rem 0.75rem;
+            }
+            th {
+                border-bottom: 0;
+                .button {
+                    color: #629BFA;
+                }
+                svg {
+                    display: none;
+                }
+            }
+            td:not(:last-child), th:not(:last-child) {
+                border: none;
+            }
+
+            td[data-col="Name"] {
+                font-weight: 700;
+                font-size: 0.875rem;
             }
         }
 

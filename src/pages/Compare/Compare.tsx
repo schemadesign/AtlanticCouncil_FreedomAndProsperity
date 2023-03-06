@@ -6,10 +6,11 @@ interface ICompare {
     selectedCountries: FPData[],
     panelOpen: boolean,
     selectedIndicators: Array<string>,
+    isAxisScaled: boolean,
 }
 
 function Compare(props: ICompare) {
-    const { selectedCountries, panelOpen, selectedIndicators } = props;
+    const { selectedCountries, panelOpen, selectedIndicators, isAxisScaled } = props;
 
     const title = selectedCountries.length > 0 ? selectedCountries.map((d, i) => ' ' + d.Name).toString() : ''
 
@@ -21,6 +22,7 @@ function Compare(props: ICompare) {
                 panelOpen={panelOpen}
                 selectedCountries={selectedCountries}
                 selectedIndicators={selectedIndicators}
+                isAxisScaled={isAxisScaled}
             />
         </Page>
     )

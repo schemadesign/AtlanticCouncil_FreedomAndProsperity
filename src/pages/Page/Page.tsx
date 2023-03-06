@@ -1,3 +1,5 @@
+import './_page.scss';
+
 interface IPage {
     id: string,
     title: string,

@@ -4,22 +4,20 @@
 
     .button {
         background: white;
-        box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.15);
-        border: 1px solid var(--neutral---gray--medium);
+        box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.15);
+        border: 1px solid var(--neutral---gray--light);
         border-left: none;
         margin-top: -1px;
+        width: 9.25rem;
+        justify-content: center;
 
         &--selected {
-            background: var(--neutral---gray--light);
+            background: #FBFBFB;
             box-shadow: none;
         }
 
         &:first-child {
-            border-bottom-left-radius: 5px;
-            border-left: 1px solid var(--neutral---gray--medium);
-        }
-        &:last-child {
-            border-bottom-right-radius: 5px;
+            border-left: 1px solid var(--neutral---gray--light);
         }
     }
 }

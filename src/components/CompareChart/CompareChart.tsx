@@ -12,6 +12,7 @@ interface ICompareChart {
     selectedCountries: FPData[],
     panelOpen: boolean,
     selectedIndicators: Array<string>,
+    isAxisScaled: boolean,
 }
 
 interface ICompareChartDatasets {
@@ -23,7 +24,7 @@ export interface IAssignedColorDictionary {
 }
 
 function CompareChart(props: ICompareChart) {
-    const { panelOpen, selectedCountries, selectedIndicators } = props;
+    const { panelOpen, selectedCountries, selectedIndicators, isAxisScaled } = props;
     const [data, setData] = useState<ICompareChartDatasets>({})
     const [hoverYear, setHoverYear] = useState<number | null>(null)
     const [assignedColors, setAssignedColors] = useState<IAssignedColorDictionary>({})
@@ -118,7 +119,7 @@ function CompareChart(props: ICompareChart) {
 
     useEffect(() => {
         drawChart()
-    }, [data, panelOpen, selectedIndicators])
+    }, [data, panelOpen, selectedIndicators, isAxisScaled])
 
     const getLabelPositions = (onlyIndicator: string, data: Array<Array<FPData>>, y: (val: number) => number): Array<ChartLabelPosition> => {
         let labelPositions = data.map((countryDataset: Array<FPData>) => {
@@ -148,7 +149,7 @@ function CompareChart(props: ICompareChart) {
             xVals = [...xVals, ...d3.extent(dataset.map(row => row['Index Year'])) as Iterable<number>]
         })
 
-        const yDomain = [d3.min(yVals) || 0, d3.max(yVals) || 100]
+        const yDomain = isAxisScaled ? [d3.min(yVals) || 0, d3.max(yVals) || 100] : [0, 100]
         const xDomain = [d3.min(xVals) || 1995, d3.max(xVals) || 2022]
 
         const x = d3.scaleLinear()
@@ -324,9 +325,9 @@ function CompareChart(props: ICompareChart) {
         // TODO
         // follow up about sort order
         // sort by most recent score:
-        hoverData = hoverData.sort((a, b) => data[b.ISO3][0][onlyIndicator] - data[a.ISO3][0][onlyIndicator])
+        // hoverData = hoverData.sort((a, b) => data[b.ISO3][0][onlyIndicator] - data[a.ISO3][0][onlyIndicator])
         // or sort by score at hover year:
-        // hoverData = hoverData.sort((a, b) => b[onlyIndicator] - b[onlyIndicator])
+        hoverData = hoverData.sort((a, b) => b[onlyIndicator] - b[onlyIndicator])
 
         if (!hoverData) {
             return null;
