@@ -110,7 +110,7 @@ function App() {
 
     const handleSetSelected = (val: FPData[], resetCountries?: boolean) => {
         setSelected(val);
-        
+    
         if (resetCountries) {
             setSelectedCountries([])
         }

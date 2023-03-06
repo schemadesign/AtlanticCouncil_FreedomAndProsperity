@@ -10,6 +10,7 @@ import Logo from './Logo/Logo';
 
 import './_home.scss';
 import FreedomAndProsperityTable from '../../components/FreedomAndProsperityTable/FreedomAndProsperityTable';
+import { Pages } from '../../@enums/Pages';
 
 interface IHome {
 }
@@ -55,8 +56,12 @@ function Home(props: IHome) {
                         Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore,
                     </p>
                     <p>
-                        Map, Rankings, Country Profiles and Library
+                        Map, Rankings, Country Profiles, Comparison Tool, and Library
                     </p>
+                    <a className='page--home__anchor'
+                        href={`#${Pages.MAP}`}>
+                        Start Exploring
+                    </a>
                 </div>
                 <div>
                     <FreedomAndProsperityTable columns={['Name', 'Freedom rank', 'Freedom score', 'Freedom category']}
@@ -77,6 +82,10 @@ function Home(props: IHome) {
                     <p>
                         We constructed the same indexes going back in five-year increments for the years 2006, 2011, and 2016.
                     </p>
+                    <a className='page--home__anchor'
+                        href={`#${Pages.ABOUT}`}>
+                        Learn More
+                    </a>
                 </div>
                 <div>
 

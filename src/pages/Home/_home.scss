@@ -14,6 +14,20 @@
         }
     }
 
+    &__anchor {
+        margin: 1.25rem -1.25rem -1.25rem -1.25rem;
+        padding: 1.25rem;
+        border-top: 1px solid var(--neutral---gray--light);
+        text-align: center;
+        font-size: 1rem;
+        text-transform: uppercase;
+        color: inherit;
+        text-decoration: none;
+        &:hover {
+            background: var(--neutral---gray--light);
+        }
+    }
+
     &__image,
     &__logo {
         transition: left 500ms, opacity 500ms, visibility 500ms;
