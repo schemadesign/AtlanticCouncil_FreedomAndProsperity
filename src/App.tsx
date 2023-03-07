@@ -121,7 +121,7 @@ function App() {
             case Pages.RANKINGS:
                 return (
                     <Suspense fallback={<Page id={page} title={''}> </Page>}>
-                        <Rankings goToProfile={goToProfile}
+                        <Rankings handleSelectCountry={goToProfile}
                             selectedCountries={selected}
                         />
                     </Suspense>

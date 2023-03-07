@@ -13,8 +13,10 @@ $MAP_HEIGHT: 12rem;
             margin-top: 2rem;
             .button {
                 text-transform: none;
-                padding: 0.5rem 0.75rem;
                 width: 100%;
+                &--sort {
+                    flex-direction: row;
+                }
             }
 
             thead {
@@ -28,9 +30,6 @@ $MAP_HEIGHT: 12rem;
                 border: none;
             }
             th {
-                padding: 0.5rem 0.75rem;
-            }
-            th {
                 border-bottom: 0;
                 .button {
                     color: #629BFA;
@@ -38,16 +37,21 @@ $MAP_HEIGHT: 12rem;
                 svg {
                     display: none;
                 }
+                &:not(:last-child) {
+                    border: none;
+                }
             }
-            td:not(:last-child), th:not(:last-child) {
+            td {
                 border: none;
             }
 
             td {
-                padding: 0;
                 &[data-col="Name"] {
                     font-weight: 700;
                     font-size: 0.875rem;
+                }
+                &:not(:last-child) {
+                    border: none;
                 }
             }
         }

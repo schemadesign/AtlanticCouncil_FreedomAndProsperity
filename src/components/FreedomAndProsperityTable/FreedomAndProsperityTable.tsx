@@ -12,15 +12,14 @@ import TableCell from '../Table/TableCell';
 
 interface IFreedomAndProsperityTable {
     columns: Array<string>,
-    handleSelectCountry?: (iso: string) => void,
+    handleSelectCountry?: (country: FPData) => void,
     preview?: boolean,
     defaultSort?: { col: string, direction: number },
     selectedCountries?: FPData[],
-    goToProfile: (val: FPData) => void,
 }
 
 function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
-    const { columns, handleSelectCountry, preview, defaultSort, goToProfile, selectedCountries = [] } = props;
+    const { columns, handleSelectCountry, preview, defaultSort, selectedCountries = [] } = props;
     const [sort, setSort] = useState(defaultSort ? defaultSort : { col: columns[0], direction: 1 })
     const [rankOrScoreByColumn, setRankOrScoreByColumn] = useState<{ [key: string]: string }>({
         'split__Income__ranked-Income': 'score',
@@ -42,7 +41,7 @@ function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
         if (col.startsWith('split__')) {
             const split = col.split('__');
             return (
-                <TableCell className='split' 
+                <TableCell className='split'
                     key={row.Name + col}
                     col={col}>
                     <div className='split__content'>
@@ -59,17 +58,17 @@ function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
             )
         }
 
-        let button: ReactNode | string | null;
+        // let button: ReactNode | string | null;
 
-        if (handleSelectCountry) {
-            button = <Button onClick={() => {
-                handleSelectCountry(row.ISO3)
-            }}>
-                {row[col]}
-            </Button>
-        } else {
-            button = row[col]
-        }
+        // if (handleSelectCountry) {
+        //     button = <Button onClick={() => {
+        //         handleSelectCountry(row.ISO3)
+        //     }}>
+        //         {row[col]}
+        //     </Button>
+        // } else {
+        //     button = row[col]
+        // }
 
         return (
             <TableCell key={row.Name + col}
@@ -92,7 +91,7 @@ function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
                                 <IconFreedomCategory category={row[col] as FreedomCategory} />
                             </div>
                             :
-                            button
+                            row[col]
                 }
             </TableCell>
         )
@@ -162,15 +161,26 @@ function FreedomAndProsperityTable(props: IFreedomAndProsperityTable) {
                 </tr>
             </thead>
             <tbody>
-                {filteredData.map((row: FPData) => (
-                    <tr key={row.Name} 
-                        tabIndex={0}
-                        onClick={() => goToProfile(row)}>
-                        {columns.map((col: string) => (
-                            getCell(row, col)
-                        ))}
-                    </tr>
-                ))}
+                {filteredData.map((row: FPData) => {
+                    if (handleSelectCountry) {
+                        return (
+                            <tr key={row.Name}
+                                tabIndex={0}
+                                onClick={() => handleSelectCountry(row)}>
+                                {columns.map((col: string) => (
+                                    getCell(row, col)
+                                ))}
+                            </tr>
+                        )
+                    }
+                    return (
+                        <tr key={row.Name}>
+                            {columns.map((col: string) => (
+                                getCell(row, col)
+                            ))}
+                        </tr>
+                    )
+                })}
             </tbody>
         </table>
     )

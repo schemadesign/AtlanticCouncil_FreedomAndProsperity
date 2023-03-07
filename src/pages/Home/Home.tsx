@@ -66,7 +66,6 @@ function Home(props: IHome) {
                 <div>
                     <FreedomAndProsperityTable columns={['Name', 'Freedom rank', 'Freedom score', 'Freedom category']}
                         preview={true}
-                        goToProfile={() => {}}
                     />
                 </div>
             </div>

@@ -19,9 +19,8 @@ interface IPanelContentMap {
 function PanelContentMap(props: IPanelContentMap) {
     const { selectedCountries, mode, setSelected } = props;
 
-    const handleSelectCountry = (iso: string) => {
-        const data = getDataByISO(iso);
-        setSelected([data as FPData])
+    const handleSelectCountry = (data: FPData) => {
+        setSelected([data])
     }
 
     const country: FPData | null = selectedCountries.length > 0 ? selectedCountries[0] : null;
@@ -55,7 +54,6 @@ function PanelContentMap(props: IPanelContentMap) {
                 handleSelectCountry={handleSelectCountry}
                 columns={['Prosperity rank', 'Name', 'Prosperity score']}
                 selectedCountries={selectedCountries}
-                goToProfile={() => { }}
             />
         )
     } else if (mode === IndexType.FREEDOM) {
@@ -65,7 +63,6 @@ function PanelContentMap(props: IPanelContentMap) {
                 handleSelectCountry={handleSelectCountry}
                 columns={['Freedom rank', 'Name', 'Freedom score']}
                 selectedCountries={selectedCountries}
-                goToProfile={() => { }}
             />
         )
     }
@@ -76,7 +73,6 @@ function PanelContentMap(props: IPanelContentMap) {
             handleSelectCountry={handleSelectCountry}
             columns={['Freedom rank', 'Name', 'Freedom score', 'Prosperity rank', 'Prosperity score']}
             selectedCountries={selectedCountries}
-            goToProfile={() => { }}
         />
     )
 }
