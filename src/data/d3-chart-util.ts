@@ -1,6 +1,9 @@
 import * as d3 from 'd3';
-import { ChartLabelPosition, IChartIndicator } from '../@types/chart';
+import { ChartLabelPosition} from '../@types/chart';
 
+/*
+*
+*/
 export const TRANSITION_TIMING = 500;
 export const PADDING = {
     t: 30,
@@ -9,10 +12,16 @@ export const PADDING = {
     r: 150,
 }
 
+/*
+*
+*/
 export const getHeight = () => window.innerHeight - 200;
 export const getWidth = (panelOpen: boolean) => window.innerWidth < 1440 ? window.innerWidth - (panelOpen ? 480 : 0)
     : 1440 - (panelOpen ? 480 - (window.innerWidth - 1440) / 2 : 0)
 
+/*
+*
+*/
 export const lineGenerator = (x: (val: number) => number, y: (val: number) => number) => d3.line()
     .x((d: any) => x(d['Index Year']))
     .y((d: any) => y(d['field']))
@@ -24,13 +33,14 @@ export const lineGenerator = (x: (val: number) => number, y: (val: number) => nu
 export const handleCollisionDetection = (labels: Array<ChartLabelPosition>) => {
     // if label is overlapping another, shift up or down
     let overlap = false;
-    const diff = 24;
+    let getDiff = (label: ChartLabelPosition, other: ChartLabelPosition) => other.label.length > 20 || label.label.length > 20 ? 36 : 24
     labels = labels.sort((a, b) => a.y - b.y)
     do {
         overlap = false;
-        labels.forEach((label: any, i) => {
-            labels.forEach((other: any, j) => {
+        labels.forEach((label: ChartLabelPosition, i) => {
+            labels.forEach((other: ChartLabelPosition, j) => {
                 if (i > j && label.y !== 0) {
+                    let diff = getDiff(label, other)
                     if (Math.abs(label.y - other.y) < diff) {
                         if (label.initialY > 300) {
                             label.y += 1
@@ -53,9 +63,12 @@ export const handleCollisionDetection = (labels: Array<ChartLabelPosition>) => {
         labels.forEach((label, i) => {
             if (label.y < PADDING.t / 2) {
                 shift = true;
-                labels.forEach((other, i) => {
-                    if (Math.abs(other.y - label.y) < diff) {
-                        label.y += 1;
+                labels.forEach((other, j) => {
+                    if (j > i) {
+                        if (labels[j - 1].y + getDiff(labels[j - 1], other) > other.y) {
+                            other.y += 1;
+                        }
+                    } else {
                         other.y += 1;
                     }
                 })
@@ -66,6 +79,9 @@ export const handleCollisionDetection = (labels: Array<ChartLabelPosition>) => {
     return labels;
 }
 
+/*
+*
+*/
 export const getLabelY = (labelPositions: Array<ChartLabelPosition>, key: string, initial = false) => {
     const label = labelPositions.find(d => d.key === key);
     if (label) {
@@ -168,9 +184,9 @@ export function animatePath(selection: any, delay: number, duration: number, rig
         const dashing = '5, 3'
 
         let dashLength = dashing
-                .split(/[\s,]/)
-                .map(function (a) { return parseFloat(a) || 0 })
-                .reduce(function (a, b) { return a + b });
+            .split(/[\s,]/)
+            .map(function (a) { return parseFloat(a) || 0 })
+            .reduce(function (a, b) { return a + b });
 
         let dashCount = Math.ceil(length / dashLength);
 
@@ -249,7 +265,7 @@ export const positionTooltip = (tooltipNode: any, x: any, year: number, height: 
     const tooltipWidth = bbox.width;
     const tooltipHeight = bbox.height;
     let tooltipX = x(year as number) + 40;
-    let tooltipY = (midY as number) - tooltipHeight / 2; //y(minY); //y(d[indicator.key]) + 20;
+    let tooltipY = Math.max(0, (midY as number) - tooltipHeight / 2); //y(minY); //y(d[indicator.key]) + 20;
 
     if (tooltipX + tooltipWidth > window.innerWidth) {
         tooltipX = window.innerWidth - (tooltipWidth * 2) - 40
@@ -263,4 +279,54 @@ export const positionTooltip = (tooltipNode: any, x: any, year: number, height: 
         tooltipNode.current.style.left = tooltipX + 'px';
         tooltipNode.current.style.top = tooltipY + 'px';
     }
+}
+
+/*
+*
+*/
+export function wrap(text: any) {
+    text.each(function () {
+        var words = text.text().split(/\s+/).reverse();
+        var lineHeight = 10;
+        var width = PADDING.r - 50;
+        var y = parseFloat(text.attr('y'));
+        var x = text.attr('x');
+        var anchor = text.attr('text-anchor');
+
+        var tspan = text.text(null).append('tspan').attr('x', x).attr('y', y).attr('text-anchor', anchor);
+        var lineNumber = 0;
+        var line = [];
+        var word = words.pop();
+
+        while (word) {
+            line.push(word);
+            tspan.text(line.join(' '));
+            if (tspan.node().getComputedTextLength() > width) {
+                lineNumber += 1;
+                line.pop();
+                tspan.text(line.join(' '));
+                line = [word];
+                tspan = text.append('tspan').attr('x', x).attr('y', y + lineNumber * lineHeight).attr('anchor', anchor).text(word);
+            }
+            word = words.pop();
+        }
+    });
+}
+
+/*
+*
+*/
+export function drawLabelContainer(textNode: any, labelContainer: any) {
+    const pad = 8;
+
+    const dim = textNode.getBBox();
+    labelContainer.attr('d', `
+        M${pad},-12 
+        h${dim.width} 
+        a${(dim.height + pad) / 2},${(dim.height + pad) / 2} 0 0 1 ${(dim.height + pad) / 2},${(dim.height + pad) / 2} 
+        v4 a${(dim.height + pad) / 2},${(dim.height + pad) / 2} 0 0 1 -${(dim.height + pad) / 2},${(dim.height + pad) / 2} 
+        h-${dim.width} a${(dim.height + pad) / 2},${(dim.height + pad) / 2} 0 0 1 -${(dim.height + pad) / 2},-${(dim.height + pad) / 2} 
+        v-4 a${(dim.height + pad) / 2},${(dim.height + pad) / 2} 0 0 1 ${(dim.height + pad) / 2},-${(dim.height + pad) / 2} 
+        z
+    `)
 }

@@ -4,7 +4,7 @@ export type ChartLabelPosition = {
     key: string,
     y: number,
     initialY: number,
-    label?: string,
+    label: string,
 }
 
 export interface IChartIndicator {

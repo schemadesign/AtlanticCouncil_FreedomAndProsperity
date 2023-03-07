@@ -22,10 +22,10 @@ function PanelContentProfiles(props: IPanelContentProfiles) {
     const { selectedCountries, selectedIndicators, toggleFilter, axisToggle, resetFilters } = props;
 
     const isDisabled = (key: string) => {
-        if (selectedCountries) {
+        if (selectedCountries.length > 0) {
             return selectedCountries.findIndex(d => d[key] > 0) === -1
         }
-        return true;
+        return false;
     }
 
     let inner = <></>

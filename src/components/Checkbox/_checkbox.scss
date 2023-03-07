@@ -20,7 +20,7 @@
         height: 0;
         width: 0;
 
-        &:checked {
+        &:checked:not(:disabled) {
             &~.checkbox__marker {
                 svg {
                     path {
@@ -30,11 +30,23 @@
             }
         }
 
+        &:disabled {
+            ~.checkbox__label {
+                font-style: italic;
+            }
+            &~.checkbox__marker {
+                background-color: #fbfbfb;
+
+                svg {
+                    display: none;;
+                }
+            }
+        }
     }
 
     &--default {
         input {
-            &:checked {
+            &:checked:not(:disabled) {
                 &~.checkbox__marker {
                     background-color: #eee;
                     svg {
@@ -44,7 +56,6 @@
                     }
                 }
             }
-    
         }
     }
 

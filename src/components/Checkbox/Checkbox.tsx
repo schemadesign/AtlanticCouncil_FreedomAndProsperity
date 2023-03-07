@@ -22,7 +22,7 @@ function Checkbox(props: IPanelContentProfiles) {
             <span className='checkbox__marker' style={{backgroundColor: checked ? color : ''}}>
                 {checked ? <IconCheck /> : null}
             </span>
-            <span>
+            <span className='checkbox__label'>
                 {label ? label : value}
             </span>
         </label>

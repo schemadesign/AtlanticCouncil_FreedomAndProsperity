@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import _ from 'lodash';
 import { useEffect, useRef, useState } from "react"
 import { ChartLabelPosition } from '../../@types/chart';
-import { TRANSITION_TIMING, PADDING, getHeight, getWidth, lineGenerator, setUpChart, getLabelX, getLabelY, handleCollisionDetection, labelConnectorPathGenerator, animatePath, initChart, setUpHoverZones, positionTooltip } from '../../data/d3-chart-util';
+import { TRANSITION_TIMING, PADDING, getHeight, getWidth, lineGenerator, setUpChart, getLabelX, getLabelY, handleCollisionDetection, labelConnectorPathGenerator, animatePath, initChart, setUpHoverZones, positionTooltip, wrap, drawLabelContainer } from '../../data/d3-chart-util';
 import { formatData, getYDomain } from '../../data/data-util';
 import CompareTooltip from '../Tooltip/CompareTooltip/CompareTooltip';
 
@@ -241,9 +241,11 @@ function CompareChart(props: ICompareChart) {
 
                         const text = label.append('text')
                             .attr('transform', 'translate(8,3)')
-                            // @ts-expect-error
+                            .attr('x', 0)
+                            .attr('y', 0)
                             .text(d.label)
                             .style('font-weight', 400)
+                            .call(wrap)
 
                         label.attr('transform', `translate(${getLabelX(x)},${getLabelY(labelPositions, d.key)})`)
                             .style('opacity', 0)
@@ -252,10 +254,8 @@ function CompareChart(props: ICompareChart) {
                             .duration(TRANSITION_TIMING)
                             .style('opacity', 1)
 
-                        // @ts-expect-error
-                        const dim = text.node().getBBox();
-                        labelContainer.attr('d', `M8,-12 h${dim.width} a10,10 0 0 1 10,10 v4 a10,10 0 0 1 -10,10 h-${dim.width} a10,10 0 0 1 -10,-10 v-4 a10,10 0 0 1 10,-10 z`)
-                    })
+                        drawLabelContainer(text.node(), labelContainer)
+                })
                 , update => update.each(function (d: any, i) {
                     const g = d3.select(this);
 

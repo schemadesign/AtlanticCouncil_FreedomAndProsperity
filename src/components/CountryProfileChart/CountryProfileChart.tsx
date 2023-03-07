@@ -3,8 +3,8 @@ import _ from 'lodash';
 import { useEffect, useRef, useState } from "react"
 import { IndexType } from '../../@enums/IndexType';
 import { ChartLabelPosition, IChartIndicator } from '../../@types/chart';
-import { TRANSITION_TIMING, PADDING, getHeight, getWidth, lineGenerator, setUpChart, getLabelX, getLabelY, handleCollisionDetection, labelConnectorPathGenerator, animatePath, initChart, setUpHoverZones, positionTooltip } from '../../data/d3-chart-util';
-import { formatData, FLATTENED_INDICATORS, getSelectedFlattenedIndicators, getYDomain } from '../../data/data-util';
+import { TRANSITION_TIMING, PADDING, getHeight, getWidth, lineGenerator, setUpChart, getLabelX, getLabelY, handleCollisionDetection, labelConnectorPathGenerator, animatePath, initChart, setUpHoverZones, positionTooltip, drawLabelContainer, wrap } from '../../data/d3-chart-util';
+import { formatData, FLATTENED_INDICATORS, getSelectedFlattenedIndicators, getYDomain, formatLabel } from '../../data/data-util';
 import Tooltip from '../Tooltip/Tooltip';
 
 import './_country-profile-chart.scss';
@@ -59,6 +59,7 @@ function CountryProfileChart(props: ICountryProfileChart) {
                 key: d.key,
                 y: yVal,
                 initialY: yVal,
+                label: formatLabel(d.key),
             }
         })
 
@@ -144,20 +145,21 @@ function CountryProfileChart(props: ICountryProfileChart) {
                         const text = label.append('text')
                             .attr('transform', 'translate(8,3)')
                             .text(d.label)
+                            .attr('x', 0)
+                            .attr('y', 0)
                             .style('fill', d.subindicator ? d.color : '#fff')
                             .style('font-weight', d.subindicator ? 800 : 400)
+                            .call(wrap)
 
                         g.select('text, path')
 
                         if (!d.subindicator) {
-                            // @ts-expect-error
-                            const dim = text.node().getBBox();
-                            labelContainer.attr('d', `M8,-12 h${dim.width} a10,10 0 0 1 10,10 v4 a10,10 0 0 1 -10,10 h-${dim.width} a10,10 0 0 1 -10,-10 v-4 a10,10 0 0 1 10,-10 z`)
+                            drawLabelContainer(text.node(), labelContainer)
                         }
                     })
                 , update => update.each(d => {
                     update.select('.country-path')
-                        .attr('stroke-dasharray', d.subindicator ? '5 3' : '')
+                        .attr('stroke-dasharray', d => d.subindicator ? '5 3' : '')
                         .attr('stroke-dashoffset', 0)
                         .transition()
                         .duration(TRANSITION_TIMING)
